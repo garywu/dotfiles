@@ -1,0 +1,35 @@
+[data]
+    # Personal information
+    name = "Your Name"
+    email = "your.email@example.com"
+    
+    # Development preferences
+    editor = "code"
+    browser = "firefox"
+    
+    # Shell configuration
+    shell = "zsh"
+    shell_framework = "none"  # or "oh-my-zsh" if you prefer
+    
+    # Git configuration
+    git_config = {
+        core = {
+            editor = "code --wait"
+            autocrlf = "input"
+        }
+        init = {
+            defaultBranch = "main"
+        }
+    }
+    
+    # Node.js configuration
+    node_version = "20"
+    
+    # Python configuration
+    python_version = "3.11"
+    
+    # Go configuration
+    go_version = "1.21"
+    
+    # Rust configuration
+    rust_version = "stable" 

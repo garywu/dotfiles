@@ -1,0 +1,104 @@
+image: mcr.microsoft.com/devcontainers/base:ubuntu
+
+# List the start up tasks
+tasks:
+  - name: Install Dependencies
+    init: |
+      # Install system dependencies
+      sudo apt-get update
+      sudo apt-get install -y build-essential curl git gnupg lsb-release software-properties-common wget zsh
+      
+      # Install Python
+      sudo apt-get install -y python3 python3-pip python3-venv
+      pip3 install --user black flake8 isort mypy pre-commit pytest pytest-cov pytest-mock pytest-xdist sphinx sphinx-rtd-theme jupyter notebook ipywidgets
+      
+      # Install Node.js
+      curl -fsSL https://deb.nodesource.com/setup_18.x | sudo bash -
+      sudo apt-get install -y nodejs
+      npm install -g typescript ts-node nodemon prettier eslint jest @types/jest ts-jest
+      
+      # Install Go
+      wget https://go.dev/dl/go1.21.0.linux-amd64.tar.gz
+      sudo tar -C /usr/local -xzf go1.21.0.linux-amd64.tar.gz
+      rm go1.21.0.linux-amd64.tar.gz
+      go install golang.org/x/tools/cmd/godoc@latest
+      go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      go install github.com/cosmtrek/air@latest
+      
+      # Install Rust
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      cargo install cargo-watch cargo-expand cargo-udeps cargo-audit mdbook
+      
+      # Set up shell
+      chsh -s /bin/zsh
+      
+      # Install pre-commit hooks
+      pre-commit install
+
+  - name: Start Services
+    init: |
+      # Start PostgreSQL
+      sudo service postgresql start
+      
+      # Start Redis
+      sudo service redis-server start
+      
+      # Start MinIO
+      wget https://dl.min.io/server/minio/release/linux-amd64/minio
+      chmod +x minio
+      ./minio server /data --console-address ":9001" &
+
+# List the ports to expose
+ports:
+  - port: 3000
+    onOpen: open-preview
+  - port: 8000
+    onOpen: open-preview
+  - port: 8888
+    onOpen: open-preview
+  - port: 6060
+    onOpen: open-preview
+  - port: 8001
+    onOpen: open-preview
+  - port: 5432
+  - port: 6379
+  - port: 9000
+  - port: 9001
+    onOpen: open-preview
+
+# Configure GitPod
+vscode:
+  extensions:
+    - ms-python.python
+    - ms-python.vscode-pylance
+    - ms-azuretools.vscode-docker
+    - ms-vscode.vscode-typescript-next
+    - rust-lang.rust-analyzer
+    - golang.go
+    - eamodio.gitlens
+    - streetsidesoftware.code-spell-checker
+    - yzhang.markdown-all-in-one
+    - davidanson.vscode-markdownlint
+    - esbenp.prettier-vscode
+    - dbaeumer.vscode-eslint
+    - ms-kubernetes-tools.vscode-kubernetes-tools
+    - github.copilot
+    - github.copilot-chat
+    - github.vscode-pull-request-github
+
+# Configure environment variables
+env:
+  - name: DOCKER_BUILDKIT
+    value: "1"
+  - name: COMPOSE_DOCKER_CLI_BUILD
+    value: "1"
+  - name: POSTGRES_USER
+    value: "dev"
+  - name: POSTGRES_PASSWORD
+    value: "dev"
+  - name: POSTGRES_DB
+    value: "dev"
+  - name: MINIO_ROOT_USER
+    value: "minioadmin"
+  - name: MINIO_ROOT_PASSWORD
+    value: "minioadmin" 

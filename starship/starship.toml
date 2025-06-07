@@ -1,0 +1,58 @@
+# Starship Configuration
+# A modern, functional prompt theme
+
+# Don't add a newline before the prompt
+add_newline = false
+
+# Replace the "❯" symbol in the prompt with "➜"
+character = {
+    success_symbol = "[➜](green)"
+    error_symbol = "[✗](red)"
+}
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = true
+
+# Customize the git status module
+[git_status]
+conflicted = "="
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+
+# Customize the command execution time module
+[cmd_duration]
+min_time = 2000
+format = "took [$duration]($style) "
+
+# Customize the directory module
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "blue bold"
+
+# Customize the nodejs module
+[nodejs]
+format = "via [⬢ $version](green) "
+
+# Customize the python module
+[python]
+format = "via [🐍 $version](green) "
+
+# Customize the rust module
+[rust]
+format = "via [⚙️ $version](red) "
+
+# Customize the golang module
+[golang]
+format = "via [Go $version](cyan) "
+
+# Customize the aws module
+[aws]
+format = "on [☁️ $profile](yellow) " 

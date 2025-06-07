@@ -1,0 +1,61 @@
+{
+  "theme": "Dracula",
+  "font": {
+    "family": "JetBrains Mono",
+    "size": 14,
+    "ligatures": true
+  },
+  "shell": {
+    "path": "/bin/zsh",
+    "args": []
+  },
+  "editor": {
+    "default": "code"
+  },
+  "workflows": {
+    "enabled": true
+  },
+  "ai": {
+    "enabled": true,
+    "suggestions": true,
+    "explanations": true
+  },
+  "tabs": {
+    "show": true,
+    "position": "top"
+  },
+  "panes": {
+    "split": "vertical"
+  },
+  "scrollback": {
+    "lines": 10000
+  },
+  "bell": {
+    "style": "sound",
+    "sound": "default"
+  },
+  "cursor": {
+    "style": "block",
+    "blinking": true
+  },
+  "copyOnSelect": true,
+  "defaultProfile": "zsh",
+  "profiles": {
+    "zsh": {
+      "name": "Zsh",
+      "command": "/bin/zsh",
+      "args": []
+    }
+  },
+  "keybindings": {
+    "copy": "cmd+c",
+    "paste": "cmd+v",
+    "newTab": "cmd+t",
+    "newWindow": "cmd+n",
+    "closeTab": "cmd+w",
+    "splitVertical": "cmd+d",
+    "splitHorizontal": "cmd+shift+d",
+    "nextTab": "cmd+shift+]",
+    "prevTab": "cmd+shift+["
+  }
+} 

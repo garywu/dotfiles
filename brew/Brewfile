@@ -1,0 +1,57 @@
+# Taps
+tap "homebrew/cask"
+tap "homebrew/bundle"
+tap "homebrew/core"
+
+# Dotfile Management
+brew "chezmoi"
+
+# Development Tools
+brew "git"
+brew "zsh"
+brew "python@3.11"
+brew "node"
+brew "go"
+brew "rust"
+
+# Cloud Development Tools
+brew "awscli"
+brew "google-cloud-sdk"
+
+# Development Applications
+cask "visual-studio-code"
+cask "docker"
+cask "iterm2"
+cask "postman"
+cask "insomnia"
+cask "tableplus"
+cask "dbeaver-community"
+
+# Shell Tools
+brew "starship"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+
+# Version Managers
+brew "nvm"
+brew "pyenv"
+brew "rbenv"
+
+# Utilities
+brew "wget"
+brew "curl"
+brew "jq"
+brew "yq"
+brew "tree"
+brew "htop"
+brew "bat"
+brew "exa"
+brew "fd"
+brew "ripgrep"
+brew "tldr"
+brew "mas"  # Mac App Store command line interface
+
+# Mac App Store Apps
+mas "Xcode", id: 497799835
+mas "Slack", id: 803453959
+mas "Microsoft Teams", id: 1113153706 
