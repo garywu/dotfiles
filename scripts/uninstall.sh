@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# uninstall.sh (aka unbootstrap.sh)
+# This script will completely remove all tools, dotfiles, and configs installed by the bootstrap process.
+# It is intended to fully "unbootstrap" your system and restore it to a clean state.
+# Use with caution! You will be prompted for confirmation before anything is removed.
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'

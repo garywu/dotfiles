@@ -1,0 +1,1 @@
+/Users/admin/.dotfiles/scripts/uninstall.sh

@@ -2,6 +2,23 @@
 
 This repository contains configurations and scripts for setting up a modern development environment. It supports multiple development approaches and tools, allowing you to choose the best fit for your needs.
 
+## Uninstall / Rollback
+
+To completely remove all installed tools, dotfiles, and restore your environment, run:
+
+```sh
+~/.dotfiles/scripts/unbootstrap.sh
+```
+
+This will:
+- Remove Homebrew and all installed packages
+- Remove Nix, Home Manager, and related configs
+- Remove Chezmoi and dotfiles
+- Restore your default shell to bash
+- Clean up environment variables
+
+**You will be prompted for confirmation before anything is removed.**
+
 ## Quick Start
 
 1. Clone this repository:
@@ -14,6 +31,11 @@ This repository contains configurations and scripts for setting up a modern deve
    cd ~/.dotfiles
    ./scripts/bootstrap.sh
    ```
+
+> **To undo all changes, run:**
+> ```sh
+> ~/.dotfiles/scripts/unbootstrap.sh
+> ```
 
 ## Development Environment Options
 
