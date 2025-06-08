@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit on any error
+set -e
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -56,13 +59,22 @@ install_homebrew() {
     fi
 }
 
-# Function to install Nix
+# Function to install Nix using Determinate Nix Installer (more reliable)
 install_nix() {
     if ! command_exists nix; then
-        print_status "Installing Nix..."
-        sh <(curl -L https://nixos.org/nix/install) --daemon
-        # Source Nix environment
-        . ~/.nix-profile/etc/profile.d/nix.sh
+        print_status "Installing Nix using Determinate Nix Installer..."
+        if curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; then
+            print_status "Nix installed successfully"
+            # Source Nix environment - try multiple possible locations
+            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+                . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+            elif [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
+                . ~/.nix-profile/etc/profile.d/nix.sh
+            fi
+        else
+            print_error "Failed to install Nix"
+            exit 1
+        fi
     else
         print_status "Nix is already installed"
     fi
@@ -72,61 +84,71 @@ install_nix() {
 install_home_manager() {
     if ! command_exists home-manager; then
         print_status "Installing Home Manager..."
-        nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-        nix-channel --update
-        nix-shell '<home-manager>' -A install
+        if nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager && \
+           nix-channel --update && \
+           nix-shell '<home-manager>' -A install; then
+            print_status "Home Manager installed successfully"
+        else
+            print_error "Failed to install Home Manager"
+            exit 1
+        fi
     else
         print_status "Home Manager is already installed"
     fi
 }
 
-# Function to install chezmoi
-install_chezmoi() {
-    if ! command_exists chezmoi; then
-        print_status "Installing chezmoi..."
-        sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply
-    else
-        print_status "chezmoi is already installed"
+# Function to check if running on Apple Silicon
+is_apple_silicon() {
+    [[ "$(uname -m)" == "arm64" ]]
+}
+
+# Function to check for and remove existing Nix APFS volume
+check_nix_volume() {
+    if is_apple_silicon; then
+        print_status "Checking for existing Nix APFS volume..."
+        NIX_VOLUME=$(diskutil list | grep "Nix Store" | awk '{print $NF}')
+        if [ -n "$NIX_VOLUME" ]; then
+            print_warning "Found existing Nix volume: $NIX_VOLUME"
+            print_warning "This volume needs to be removed before installing Nix"
+            print_warning "Please run the unbootstrap script first to remove it"
+            exit 1
+        fi
     fi
 }
 
 # Main installation function
 install_requirements() {
-    print_status "Starting installation process..."
+    print_status "Starting clean installation process..."
     
-    # Install Homebrew
+    # Check for existing Nix volume on Apple Silicon
+    check_nix_volume
+    
+    # Install Homebrew first
     install_homebrew
     
-    # Install Nix
+    # Install packages from Brewfile (GUI apps and Mac-specific tools only)
+    print_status "Installing packages from Brewfile..."
+    cd "$DOTFILES_DIR/brew" && brew bundle
+    
+    # Install Nix (more reliable installer)
     install_nix
     
     # Install Home Manager
     install_home_manager
     
-    # Install chezmoi
-    install_chezmoi
-    
-    # Install all packages from Brewfile
-    print_status "Installing packages from Brewfile..."
-    cd "$DOTFILES_DIR/brew" && brew bundle
-    
-    # Apply Nix configuration
+    # Apply Nix configuration (this will install bun and other dev tools)
     print_status "Applying Nix configuration..."
-    cd "$DOTFILES_DIR/nix" && home-manager switch
+    if cd "$DOTFILES_DIR/nix" && home-manager switch; then
+        print_status "Nix configuration applied successfully"
+    else
+        print_error "Failed to apply Nix configuration"
+        exit 1
+    fi
     
-    # Apply chezmoi configuration
-    print_status "Applying chezmoi configuration..."
-    cd "$DOTFILES_DIR/chezmoi" && chezmoi apply
-    
-    # Copy Starship configuration
-    print_status "Configuring Starship..."
-    mkdir -p ~/.config
-    cp "$DOTFILES_DIR/starship/starship.toml" ~/.config/starship.toml
-    
-    # Set Zsh as default shell
-    if [ "$SHELL" != "$(which zsh)" ]; then
-        print_status "Setting Zsh as default shell..."
-        chsh -s "$(which zsh)"
+    # Set Fish as default shell
+    if [ "$SHELL" != "$(which fish)" ]; then
+        print_status "Setting Fish as default shell..."
+        chsh -s "$(which fish)"
     fi
     
     print_status "Installation completed successfully!"

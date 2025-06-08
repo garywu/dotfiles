@@ -21,21 +21,81 @@ This will:
 
 ## Quick Start
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/dotfiles.git ~/.dotfiles
+To set up your development environment on a new machine:
+
+### One-Command Setup
+```sh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/yourusername/dotfiles/main/minimal_install.sh)"
+```
+
+### Manual Setup
+1. **Install Nix** (if not present):
+   ```sh
+   sh <(curl -L https://nixos.org/nix/install) --daemon
    ```
 
-2. Run the bootstrap script:
-   ```bash
-   cd ~/.dotfiles
-   ./scripts/bootstrap.sh
+2. **Install and apply dotfiles**:
+   ```sh
+   nix profile install nixpkgs#chezmoi
+   chezmoi init --apply https://github.com/yourusername/dotfiles.git
    ```
 
-> **To undo all changes, run:**
-> ```sh
-> ~/.dotfiles/scripts/unbootstrap.sh
-> ```
+3. **Activate your environment**:
+   ```sh
+   cd ~/.dotfiles/nix && home-manager switch
+   ```
+
+4. **On Mac, install GUI apps**:
+   ```sh
+   brew bundle --file=~/.dotfiles/brew/Brewfile
+   ```
+
+5. **Restart your terminal** to apply all changes.
+
+### What Gets Installed
+
+- **Nix**: Manages all CLI tools and development languages (cross-platform)
+- **chezmoi**: Manages your dotfiles and configuration files
+- **Homebrew** (Mac only): GUI applications and Mac-specific tools
+- **Fish shell** with **Starship prompt** and modern CLI tools
+
+## OS-Specific Setup Templates
+
+For detailed, step-by-step instructions tailored to your operating system:
+
+### 🚀 Smart Setup (Recommended)
+Automatically detects your OS and runs the appropriate setup:
+```bash
+curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/setup.sh | bash
+```
+
+### 📱 macOS
+Complete setup for macOS using Nix + Homebrew:
+```bash
+curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/macos.md
+```
+**Includes**: Xcode tools, Homebrew GUI apps, system tweaks, performance optimizations
+
+### 🐧 Ubuntu/Debian
+Ubuntu/Debian setup using Nix + apt:
+```bash
+curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/ubuntu.md
+```
+**Includes**: System packages, development dependencies, GUI apps, security configurations
+
+### 🪟 WSL2
+Windows Subsystem for Linux setup with optimizations:
+```bash
+curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/wsl2.md
+```
+**Includes**: WSL2 optimizations, X11 forwarding, Windows integration, performance tuning
+
+Each template provides:
+- **Prerequisites** and system requirements
+- **Step-by-step** installation instructions
+- **OS-specific** configurations and optimizations
+- **Troubleshooting** guides for common issues
+- **Performance** tuning recommendations
 
 ## Development Environment Options
 
@@ -111,13 +171,19 @@ For cloud-based development environments.
 dotfiles/
 ├── .devcontainer/          # Dev Container configuration
 ├── .gitpod/               # GitPod configuration
-├── brew/                  # Homebrew packages
-├── nix/                   # Nix configuration
+├── brew/                  # Homebrew packages (macOS GUI apps)
+├── nix/                   # Nix configuration (cross-platform CLI tools)
 ├── scripts/              # Setup and utility scripts
 │   ├── bootstrap.sh      # Main setup script
 │   ├── create-project.sh # Project template generator
 │   └── setup-*.sh        # Various setup scripts
+├── templates/            # OS-specific setup templates
+│   ├── setup.sh          # Smart setup script (auto-detects OS)
+│   ├── macos.md          # macOS setup guide
+│   ├── ubuntu.md         # Ubuntu/Debian setup guide
+│   └── wsl2.md           # WSL2 setup guide
 ├── starship/             # Shell prompt configuration
+├── fish/                 # Fish shell configuration
 └── chezmoi/              # Dotfile management
 ```
 
@@ -200,6 +266,21 @@ dotfiles/
 - Implement gVisor for isolation
 - Use security scanning tools
 
+## Terminal Font Setup for Starship Prompt
+
+To see all icons and symbols (like the green arrow ➜) in your Starship prompt, you must use a Nerd Font in your terminal.
+
+1. **Install a Nerd Font:**
+   - The bootstrap script will install FiraCode Nerd Font automatically.
+   - Or you can download from [Nerd Fonts](https://www.nerdfonts.com/font-downloads)
+
+2. **Set the Font in Terminal:**
+   - Open Terminal → Settings → Profiles → Text → Change Font
+   - Select your installed Nerd Font (e.g., "FiraCode Nerd Font")
+   - Restart Terminal
+
+> **Note:** This step cannot be automated by a script. You must set the font manually in your terminal's preferences.
+
 ## Maintenance
 
 ### Updating Tools
@@ -229,4 +310,46 @@ nix-env -u '*'
 
 ## License
 
-MIT License - see LICENSE file for details 
+MIT License - see LICENSE file for details
+
+## Advanced CLI Tools & Features
+
+This setup uses a **Nix-first approach** for cross-platform reproducibility:
+
+### Managed by Nix (Cross-Platform)
+All CLI tools and development languages are managed by Nix for reproducibility across macOS, Linux, and WSL:
+
+- **chezmoi**: Dotfiles management and reproducible setup
+- **tmux**: Terminal multiplexer for persistent, multi-pane sessions
+- **mosh**: Robust remote shell that survives network drops
+- **fzf**: Fuzzy finder for files, history, and more
+- **zoxide**: Smarter directory jumping
+- **fish**: User-friendly shell
+- **starship**: Fast, customizable prompt
+- **thefuck**: Instantly correct previous command typos
+- **eza**: Modern replacement for ls
+- **bat**: Modern cat with syntax highlighting
+- **fd**: Fast, user-friendly find alternative
+- **rg (ripgrep)**: Fast recursive search
+- **delta**: Syntax-highlighting pager for git/diff
+- **lazygit**: TUI for git
+- **btop**: Resource monitor (modern htop alternative)
+- **neovim**: Modern Vim-based text editor
+- **glow**: Markdown previewer in the terminal
+- **vifm**: Terminal file manager with preview support for text and binary files
+
+### Managed by Homebrew (Mac-Only)
+Only GUI applications and Mac-specific tools are managed by Homebrew:
+
+- **Docker Desktop**: Container platform for Mac
+- **iTerm2**: Advanced terminal emulator
+- **Postman/Insomnia**: API testing tools
+- **TablePlus/DBeaver**: Database management tools
+- **Xcode**: Apple development tools (Mac App Store)
+- **Slack**: Team communication (Mac App Store)
+
+This separation ensures maximum **cross-platform compatibility** while keeping Mac-specific apps where they belong.
+
+## Neovim
+
+Neovim is a modern, extensible Vim-based text editor. It is included in this setup and installed automatically by the bootstrap script. 

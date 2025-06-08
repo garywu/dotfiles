@@ -1,50 +1,22 @@
-# Dotfile Management
-brew "chezmoi"
+# Mac GUI Applications (not available in Nix or Mac-specific)
+cask "docker"                    # Docker Desktop for Mac
+cask "iterm2"                    # Terminal emulator
+cask "postman"                   # API testing tool
+cask "insomnia"                  # REST client
+cask "tableplus"                 # Database GUI
+cask "dbeaver-community"         # Database tool
+cask "webtorrent"                # BitTorrent client
 
-# Development Tools
-brew "git"
-brew "zsh"
-brew "python@3.11"
-brew "node"
-brew "go"
-brew "rust"
+# Cloud Development Tools (Mac-specific installers)
+brew "awscli"                    # AWS CLI (prefer Homebrew version on Mac)
+cask "google-cloud-sdk"          # Google Cloud SDK
 
-# Cloud Development Tools
-brew "awscli"
-cask "google-cloud-sdk"
+# Mac-specific tools
+brew "mas"                       # Mac App Store command line interface
 
-# Development Applications
-# cask "visual-studio-code"
-cask "docker"
-cask "iterm2"
-cask "postman"
-cask "insomnia"
-cask "tableplus"
-cask "dbeaver-community"
-
-# Shell Tools
-brew "starship"
-brew "zsh-autosuggestions"
-brew "zsh-syntax-highlighting"
-
-# Version Managers
-brew "nvm"
-brew "pyenv"
-brew "rbenv"
-
-# Utilities
-brew "wget"
-brew "curl"
-brew "jq"
-brew "yq"
-brew "tree"
-brew "htop"
-brew "bat"
-brew "eza"
-brew "fd"
-brew "ripgrep"
-brew "tldr"
-brew "mas"  # Mac App Store command line interface
+# Tools not easily available in Nix or work better via Homebrew on Mac
+brew "aria2"                     # Lightweight download utility
+brew "oven-sh/bun/bun"          # Fast all-in-one JavaScript runtime
 
 # Mac App Store Apps
 mas "Xcode", id: 497799835

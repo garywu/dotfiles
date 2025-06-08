@@ -19,6 +19,7 @@
     git
     python311
     nodejs_20
+    bun
     go
     rustc
     cargo
@@ -34,10 +35,9 @@
     google-cloud-sdk
 
     # Shell tools
+    fish
     starship
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    exa
+    eza          # Modern ls replacement (was exa)
     bat
     fd
     ripgrep
@@ -61,46 +61,63 @@
     wget        # Network downloader
     curl        # Network transfer
     tree        # Directory tree
+
+    # Advanced CLI tools (moved from Homebrew)
+    chezmoi     # Dotfiles management
+    mosh        # Robust remote shell
+    thefuck     # Correct previous command typos
+    delta       # Syntax-highlighting pager for git/diff
+    lazygit     # TUI for git
+    btop        # Resource monitor (modern htop alternative)
+    glow        # Markdown previewer in terminal
+    vifm        # Terminal file manager with preview support
+
+    # Environment Variables & Secrets Management
+    sops        # Secrets management with encryption
+    age         # Simple, modern encryption tool
+    pass        # UNIX password manager
+    gnupg       # GNU Privacy Guard for encryption
+    envsubst    # Environment variable substitution
+    dotenv-cli  # Load .env files from command line
   ];
 
   # Configure programs
   programs = {
-    zsh = {
+    fish = {
       enable = true;
-      enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
       shellAliases = {
-        ls = "exa";
-        ll = "exa -l";
-        la = "exa -la";
+        ls = "eza";
+        ll = "eza -l";
+        la = "eza -la";
         cat = "bat";
         find = "fd";
         grep = "rg";
-        cd = "zoxide";  # Use zoxide for cd
       };
-      initExtra = ''
+      shellInit = ''
         # NVM configuration
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && \. "$(brew --prefix)/opt/nvm/nvm.sh"
-        [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
+        set -x NVM_DIR "$HOME/.nvm"
+        if test -s "(brew --prefix)/opt/nvm/nvm.sh"
+          source "(brew --prefix)/opt/nvm/nvm.sh"
+        end
 
         # Pyenv configuration
-        export PYENV_ROOT="$HOME/.pyenv"
-        command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-        eval "$(pyenv init -)"
-        eval "$(pyenv virtualenv-init -)"
-
-        # Load version managers
-        source ${config.home.homeDirectory}/.config/version-managers.zsh
+        set -x PYENV_ROOT "$HOME/.pyenv"
+        if not type -q pyenv
+          set -x PATH "$PYENV_ROOT/bin" $PATH
+        end
+        status --is-interactive; and source (pyenv init -|psub)
+        status --is-interactive; and source (pyenv virtualenv-init -|psub)
 
         # Initialize zoxide
-        eval "$(zoxide init zsh)"
+        zoxide init fish | source
 
         # Initialize fzf
-        [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+        if test -f ~/.fzf.fish
+          source ~/.fzf.fish
+        end
 
         # Initialize direnv
-        eval "$(direnv hook zsh)"
+        direnv hook fish | source
       '';
     };
 
@@ -140,19 +157,19 @@
     # Configure fzf
     fzf = {
       enable = true;
-      enableZshIntegration = true;
+      enableFishIntegration = true;
     };
 
     # Configure zoxide
     zoxide = {
       enable = true;
-      enableZshIntegration = true;
+      enableFishIntegration = true;
     };
 
     # Configure direnv
     direnv = {
       enable = true;
-      enableZshIntegration = true;
+      enableFishIntegration = true;
       nix-direnv.enable = true;
     };
 

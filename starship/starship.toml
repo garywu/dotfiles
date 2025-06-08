@@ -1,58 +1,130 @@
 # Starship Configuration
 # A modern, functional prompt theme
 
-# Don't add a newline before the prompt
-add_newline = false
+# Add a newline before the prompt
+add_newline = true
 
 # Replace the "❯" symbol in the prompt with "➜"
-character = {
-    success_symbol = "[➜](green)"
-    error_symbol = "[✗](red)"
-}
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[✗](bold red)"
+vicmd_symbol = "[❮](bold blue)"
 
-# Disable the package module, hiding it from the prompt completely
-[package]
-disabled = true
+# Format for the entire prompt
+format = "$directory $character"
 
-# Customize the git status module
+# Username configuration
+[username]
+style_user = "blue bold"
+style_root = "red bold"
+format = "[$user]($style) "
+disabled = false
+show_always = true
+
+# Hostname configuration
+[hostname]
+ssh_only = false
+format = "[@](blue)[$hostname]($style) "
+style = "blue bold"
+disabled = false
+
+# Directory configuration
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "blue bold"
+format = "[$path]($style) "
+read_only = " 🔒"
+read_only_style = "red"
+
+# Git configuration
+[git_branch]
+format = "[$symbol$branch]($style) "
+symbol = "  "
+style = "purple"
+
 [git_status]
+format = "$conflicted$ahead$behind$diverged$untracked$stashed$modified$staged$renamed$deleted"
+style = "yellow"
 conflicted = "="
 ahead = "⇡${count}"
 behind = "⇣${count}"
 diverged = "⇕⇡${ahead_count}⇣${behind_count}"
 untracked = "?"
+stashed = "$"
 modified = "!"
 staged = "+"
 renamed = "»"
 deleted = "✘"
 
-# Customize the command execution time module
+# Command execution time
 [cmd_duration]
 min_time = 2000
 format = "took [$duration]($style) "
+style = "yellow"
 
-# Customize the directory module
-[directory]
-truncation_length = 3
-truncate_to_repo = true
-style = "blue bold"
-
-# Customize the nodejs module
-[nodejs]
-format = "via [⬢ $version](green) "
-
-# Customize the python module
+# Language-specific configurations
 [python]
-format = "via [🐍 $version](green) "
+format = "via [🐍 $version]($style) "
+style = "green"
+detect_extensions = ["py"]
+detect_files = ["requirements.txt", "pyproject.toml", "Pipfile", "__init__.py"]
 
-# Customize the rust module
+[nodejs]
+format = "via [⬢ $version]($style) "
+style = "green"
+detect_extensions = ["js", "mjs", "cjs", "ts", "jsx", "tsx", "json"]
+detect_files = ["package.json", ".node-version", ".nvmrc"]
+
 [rust]
-format = "via [⚙️ $version](red) "
+format = "via [⚙️ $version]($style) "
+style = "red"
+detect_extensions = ["rs"]
+detect_files = ["Cargo.toml"]
 
-# Customize the golang module
 [golang]
-format = "via [Go $version](cyan) "
+format = "via [Go $version]($style) "
+style = "cyan"
+detect_extensions = ["go"]
+detect_files = ["go.mod"]
 
-# Customize the aws module
+# AWS profile
 [aws]
-format = "on [☁️ $profile](yellow) " 
+format = "on [☁️ $profile]($style) "
+style = "yellow"
+symbol = "☁️ "
+
+# Kubernetes context
+[kubernetes]
+format = "on [☸️ $context]($style) "
+style = "blue"
+symbol = "☸️ "
+
+# Docker context
+[docker_context]
+format = "on [🐳 $context]($style) "
+style = "blue"
+symbol = "🐳 "
+
+# Battery status
+[battery]
+full_symbol = "🔋"
+charging_symbol = "⚡️"
+discharging_symbol = "💀"
+format = "[$symbol$percentage]($style) "
+style = "green"
+disabled = true  # Enable this if you want battery status
+
+# Memory usage
+[memory_usage]
+format = "via [🐏 $ram_used]($style) "
+style = "white"
+disabled = true  # Enable this if you want memory usage
+
+# Custom commands
+[custom.time]
+command = "date +%H:%M:%S"
+when = true
+format = "[$output]($style) "
+style = "blue"
+disabled = false 
