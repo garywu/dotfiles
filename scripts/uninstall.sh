@@ -70,14 +70,35 @@ restore_default_shell() {
 
 # Function to stop Nix daemon
 stop_nix_daemon() {
-    print_status "Stopping Nix daemon..."
+    print_status "Stopping Nix daemon and related services..."
     
-    # Try to stop the daemon using launchctl
-    if [ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]; then
-        print_status "Stopping Nix daemon service..."
-        sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist || true
-        sudo launchctl bootout system/org.nixos.nix-daemon || true
+    # Get all Nix-related launchd services
+    print_status "Finding all Nix-related launchd services..."
+    NIX_SERVICES=$(sudo launchctl list | grep -E "(nix|darwin-store)" | awk '{print $3}' | grep -v "^-$")
+    
+    if [ -n "$NIX_SERVICES" ]; then
+        print_status "Found Nix services: $NIX_SERVICES"
+        for service in $NIX_SERVICES; do
+            print_status "Stopping service: $service"
+            sudo launchctl bootout system/$service 2>/dev/null || true
+            sudo launchctl unload /Library/LaunchDaemons/$service.plist 2>/dev/null || true
+        done
     fi
+    
+    # Stop specific known Nix services that might not be caught by the grep
+    NIX_SERVICE_LIST=(
+        "org.nixos.nix-daemon"
+        "org.nixos.darwin-store"
+        "systems.determinate.nix-daemon"
+        "systems.determinate.nix-store"
+        "systems.determinate.nix-installer.nix-hook"
+    )
+    
+    for service in "${NIX_SERVICE_LIST[@]}"; do
+        print_status "Ensuring $service is stopped..."
+        sudo launchctl bootout system/$service 2>/dev/null || true
+        sudo launchctl unload /Library/LaunchDaemons/$service.plist 2>/dev/null || true
+    done
     
     # Kill any running nix-daemon processes
     if pgrep -f "nix-daemon" > /dev/null; then
@@ -98,7 +119,7 @@ stop_nix_daemon() {
     
     # Kill any wait4path processes for Nix
     print_status "Checking for Nix wait4path processes..."
-    NIX_WAIT_PIDS=$(ps aux | grep "wait4path /nix" | grep -v grep | awk '{print $2}')
+    NIX_WAIT_PIDS=$(ps aux | grep "wait4path.*nix" | grep -v grep | awk '{print $2}')
     if [ -n "$NIX_WAIT_PIDS" ]; then
         print_status "Found Nix wait4path processes: $NIX_WAIT_PIDS"
         for pid in $NIX_WAIT_PIDS; do
@@ -107,15 +128,36 @@ stop_nix_daemon() {
         done
     fi
     
+    # Kill any shell scripts trying to start nix-daemon
+    print_status "Checking for shell scripts starting nix-daemon..."
+    NIX_SHELL_PIDS=$(ps aux | grep "/bin/sh.*nix-daemon" | grep -v grep | awk '{print $2}')
+    if [ -n "$NIX_SHELL_PIDS" ]; then
+        print_status "Found shell scripts for nix-daemon: $NIX_SHELL_PIDS"
+        for pid in $NIX_SHELL_PIDS; do
+            print_status "Killing shell script process $pid..."
+            sudo kill -9 "$pid" || true
+        done
+    fi
+    
     # Wait a moment for processes to stop
-    sleep 2
+    sleep 3
     
     # Verify no Nix processes are running
     if pgrep -f "(nix-daemon|nix-installer|wait4path.*nix)" > /dev/null; then
-        print_warning "Some Nix processes are still running. You may need to restart your computer."
+        print_warning "Some Nix processes are still running after cleanup attempt."
+        print_status "Remaining processes:"
+        ps aux | grep -E "(nix-daemon|nix-installer|wait4path.*nix)" | grep -v grep || true
         return 1
     fi
     
+    # Verify no Nix services are still loaded
+    REMAINING_SERVICES=$(sudo launchctl list | grep -E "(nix|darwin-store)" | awk '{print $3}' | grep -v "^-$" || true)
+    if [ -n "$REMAINING_SERVICES" ]; then
+        print_warning "Some Nix services are still loaded: $REMAINING_SERVICES"
+        return 1
+    fi
+    
+    print_status "All Nix processes and services stopped successfully"
     return 0
 }
 
@@ -211,43 +253,48 @@ remove_synthetic_nix() {
 
 # Function to remove Nix
 remove_nix() {
-    echo "==> Removing Nix..."
+    print_status "Removing Nix..."
     
-    # Stop Nix daemon and kill any related processes
-    echo "==> Stopping Nix daemon..."
-    sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
-    sudo pkill -f nix-daemon 2>/dev/null || true
+    # Stop Nix daemon first
+    if ! stop_nix_daemon; then
+        print_warning "Some Nix processes may still be running. Continuing with removal..."
+    fi
     
-    # Check for and kill any Nix installer repair processes
-    echo "==> Checking for Nix installer repair processes..."
-    sudo pkill -f "nix-installer.*repair" 2>/dev/null || true
-    
-    # Check for and kill any Nix wait4path processes
-    echo "==> Checking for Nix wait4path processes..."
-    sudo pkill -f "wait4path.*nix" 2>/dev/null || true
+    # Remove Nix APFS volume first if it exists
+    if ! remove_nix_volume; then
+        print_warning "Nix volume removal may not be complete. Continuing with cleanup..."
+    fi
     
     # Remove Nix configuration files
-    echo "==> Removing Nix configuration files..."
+    print_status "Removing Nix configuration files..."
     sudo rm -rf /etc/nix
     sudo rm -f /etc/profile.d/nix.sh
     sudo rm -f /etc/profile.d/nix-daemon.sh
     
+    # Remove Nix daemon service files
+    print_status "Removing Nix daemon service files..."
+    sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+    sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist
+    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-daemon.plist
+    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-store.plist
+    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-installer.nix-hook.plist
+    
     # Restore Nix installer backup files
-    echo "==> Restoring Nix installer backup files..."
+    print_status "Restoring Nix installer backup files..."
     if [ -f /etc/bashrc.backup-before-nix ]; then
-        echo "Found backup of /etc/bashrc, restoring..."
+        print_status "Found backup of /etc/bashrc, restoring..."
         sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
     fi
     if [ -f /etc/bash.bashrc.backup-before-nix ]; then
-        echo "Found backup of /etc/bash.bashrc, restoring..."
+        print_status "Found backup of /etc/bash.bashrc, restoring..."
         sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc
     fi
     if [ -f /etc/zshrc.backup-before-nix ]; then
-        echo "Found backup of /etc/zshrc, restoring..."
+        print_status "Found backup of /etc/zshrc, restoring..."
         sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
     fi
     if [ -f /etc/profile.backup-before-nix ]; then
-        echo "Found backup of /etc/profile, restoring..."
+        print_status "Found backup of /etc/profile, restoring..."
         sudo mv /etc/profile.backup-before-nix /etc/profile
     fi
     
@@ -261,75 +308,63 @@ remove_nix() {
         fi
     done
     
-    # Remove Nix directories
-    echo "==> Removing Nix directories..."
-
-    # Attempt to remove synthetic mount entry first (may require reboot)
+    # Handle synthetic mount entry
     remove_synthetic_nix
-
-    # First try to unmount /nix if it's mounted
-    if mount | grep -q "on /nix"; then
-        echo "Found mounted Nix directory, attempting to unmount..."
-        sudo umount -f /nix 2>/dev/null || true
-    fi
     
-    # Check if Nix is on root filesystem (single-user installation)
-    if df -h /nix | grep -q "/dev/disk"; then
-        echo "Warning: Nix is installed in single-user mode on root filesystem"
-        echo "This is not recommended for macOS. After removal, please reinstall using:"
-        echo "sh <(curl -L https://nixos.org/nix/install) --daemon"
-        echo ""
-        
-        # Try to remove with diskutil first
-        echo "Attempting to remove with diskutil..."
-        NIX_DEVICE=$(df -h /nix | grep "/dev/disk" | awk '{print $1}')
-        if [ -n "$NIX_DEVICE" ]; then
-            echo "Found Nix device: $NIX_DEVICE"
-            sudo diskutil unmountDisk force "$NIX_DEVICE" 2>/dev/null || true
-            sudo diskutil eraseVolume "Free Space" "$NIX_DEVICE" 2>/dev/null || true
+    # Remove user-specific Nix directories
+    print_status "Removing user-specific Nix directories..."
+    rm -rf "$HOME/.nix-profile"
+    rm -rf "$HOME/.nix-defexpr"
+    rm -rf "$HOME/.nix-channels"
+    
+    # Final cleanup of /nix directory
+    print_status "Final cleanup of /nix directory..."
+    if [ -d "/nix" ]; then
+        # First check if it's mounted
+        if mount | grep -q " on /nix"; then
+            print_status "Unmounting /nix..."
+            sudo umount -f /nix 2>/dev/null || true
         fi
         
-        # If diskutil fails, try direct removal
-        if [ -d "/nix" ]; then
-            echo "Attempting direct removal..."
-            sudo chflags -R nouchg,noschg /nix 2>/dev/null || true
-            sudo chmod -R 777 /nix 2>/dev/null || true
-            sudo rm -rf /nix
+        # Remove flags and permissions restrictions
+        print_status "Removing file flags and permissions restrictions..."
+        sudo chflags -R nouchg /nix 2>/dev/null || true
+        sudo chflags -R noschg /nix 2>/dev/null || true
+        sudo chmod -R 755 /nix 2>/dev/null || true
+        
+        # Try to remove the directory
+        print_status "Removing /nix directory..."
+        if [ -n "$(ls -A /nix 2>/dev/null)" ]; then
+            # Directory has contents, remove them first
+            sudo rm -rf /nix/* 2>/dev/null || true
+            sudo rm -rf /nix/.* 2>/dev/null || true
+        fi
+        
+        # Remove the directory itself
+        sudo rmdir /nix 2>/dev/null || sudo rm -rf /nix 2>/dev/null || {
+            print_warning "Could not remove /nix directory. Checking for system protection..."
             
-            if [ -d "/nix" ]; then
-                echo "Error: Could not remove Nix directory"
-                echo "Please try the following steps:"
-                echo "1. Restart your computer"
-                echo "2. Run this script again"
-                echo "3. If it still fails, you may need to boot into Recovery Mode"
-                echo "   and disable SIP temporarily to remove the directory"
-                return 1
+            # Check if SIP is enabled and protecting the directory
+            if csrutil status 2>/dev/null | grep -q "enabled"; then
+                print_warning "System Integrity Protection (SIP) is enabled and may be protecting /nix"
+                print_warning "If the directory persists after restart, you may need to:"
+                print_warning "1. Boot into Recovery Mode (hold Command+R during startup)"
+                print_warning "2. Open Terminal and run: csrutil disable"
+                print_warning "3. Restart and run this script again"
+                print_warning "4. Boot into Recovery Mode again and run: csrutil enable"
             fi
-        fi
-    else
-        # Handle APFS volume case (multi-user installation)
-        if [ -d "/nix" ]; then
-            sudo rm -rf /nix
-        fi
-        
-        # Try to unmount and remove the Nix volume
-        if diskutil list | grep -q "Nix Store"; then
-            echo "Found Nix APFS volume, attempting to remove..."
-            sudo diskutil unmountDisk /dev/disk3 2>/dev/null || true
-            sudo diskutil eraseVolume "Free Space" /dev/disk3 2>/dev/null || true
-        fi
+            
+            # Set flag to require reboot
+            NEEDS_REBOOT=1
+        }
     fi
     
-    # Verify cleanup
-    if [ -d "/nix" ] || [ -d "$HOME/.nix-profile" ] || [ -d "$HOME/.nix-defexpr" ]; then
-        echo "Warning: Some Nix directories still exist. Attempting to remove..."
-        sudo rm -rf /nix "$HOME/.nix-profile" "$HOME/.nix-defexpr"
-        
-        if [ -d "/nix" ] || [ -d "$HOME/.nix-profile" ] || [ -d "$HOME/.nix-defexpr" ]; then
-            echo "Warning: Could not remove all Nix directories"
-            echo "Some components may require a system restart to be fully removed"
-            echo "Please restart your computer and run this script again to complete the cleanup"
-        fi
+    # Verify final cleanup
+    if [ ! -d "/nix" ]; then
+        print_status "Nix directory successfully removed"
+    else
+        print_warning "Nix directory still exists - this may require a system restart"
+        NEEDS_REBOOT=1
     fi
 }
 
@@ -422,51 +457,20 @@ verify_cleanup() {
     print_status "Verifying cleanup..."
     local failed=0
     
-    # Check for Nix directories
+    # Check for /nix directory
     if [ -d "/nix" ]; then
-        print_warning "Nix directories still exist. Attempting to remove..."
-        if mount | grep -q "/nix"; then
-            print_warning "Nix directory is still mounted. A system restart may be required."
-            failed=1
-        else
-            # Check if it's on root filesystem
-            if df -h /nix | grep -q "/dev/disk"; then
-                print_warning "Nix directory is on root filesystem and may be protected by SIP"
-                print_warning "Attempting to remove with elevated privileges..."
-                
-                # Try to remove with elevated privileges
-                sudo chflags -R nouchg /nix
-                sudo chflags -R noschg /nix
-                sudo chmod -R 777 /nix
-                sudo rm -rf /nix/* || true
-                sudo rm -rf /nix || true
-                
-                if [ -d "/nix" ]; then
-                    print_warning "Could not remove Nix directory. This is likely due to System Integrity Protection (SIP)"
-                    print_warning "You may need to boot into Recovery Mode and disable SIP to remove the directory"
-                    print_warning "See: https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection"
-                    failed=1
-                fi
-            else
-                sudo rm -rf /nix || {
-                    print_warning "Could not remove Nix directories. A system restart may be required."
-                    failed=1
-                }
-            fi
-        fi
+        print_warning "/nix directory still exists"
+        failed=1
     fi
     
     # Check for Nix configuration files
-    if [ -f "/etc/nix/nix.conf" ] || [ -d "/etc/nix" ]; then
-        print_warning "Nix configuration files still exist. Attempting to remove..."
-        sudo rm -rf /etc/nix || {
-            print_warning "Could not remove Nix configuration files. A system restart may be required."
-            failed=1
-        }
+    if [ -d "/etc/nix" ]; then
+        print_warning "Nix configuration files still exist in /etc/nix"
+        failed=1
     fi
     
     # Scan for residual Nix APFS volumes
-    NIX_VOLUMES=$(diskutil list | grep "Nix Store" || true)
+    NIX_VOLUMES=$(diskutil list | grep "Nix Store" 2>/dev/null || true)
     if [ -n "$NIX_VOLUMES" ]; then
         print_warning "Nix APFS volume(s) still present:"
         echo "$NIX_VOLUMES"
@@ -475,41 +479,54 @@ verify_cleanup() {
 
     # Scan for synthetic mount entry
     if [ -f /etc/synthetic.conf ] && grep -q '^nix$' /etc/synthetic.conf; then
-        print_warning "synthetic.conf still contains an entry for /nix. A reboot may be pending or the entry was not removed."
+        print_warning "synthetic.conf still contains an entry for /nix"
         failed=1
     fi
 
     # Scan for active mounts using /nix (should be none)
     if mount | grep -q " on /nix"; then
-        print_warning "/nix is still mounted. A reboot may be required to unmount it."
+        print_warning "/nix is still mounted"
+        failed=1
+    fi
+    
+    # Check for Nix daemon service files
+    if [ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]; then
+        print_warning "Nix daemon service file still exists"
+        failed=1
+    fi
+    
+    # Check for user Nix directories
+    if [ -d "$HOME/.nix-profile" ] || [ -d "$HOME/.nix-defexpr" ] || [ -d "$HOME/.nix-channels" ]; then
+        print_warning "User Nix directories still exist"
         failed=1
     fi
     
     # Check for Nix in fstab
     if grep -q "nix" /etc/fstab 2>/dev/null; then
-        print_warning "Nix entries found in fstab. Attempting to remove..."
-        sudo sed -i '' '/nix/d' /etc/fstab || {
-            print_warning "Could not remove Nix entries from fstab. A system restart may be required."
-            failed=1
-        }
+        print_warning "Nix entries found in fstab"
+        failed=1
     fi
     
     # Check for Nix in shell configuration
-    if grep -q "nix" ~/.zshrc 2>/dev/null || grep -q "nix" ~/.bashrc 2>/dev/null; then
-        print_warning "Nix entries found in shell configuration. Attempting to remove..."
-        sed -i '' '/nix/d' ~/.zshrc 2>/dev/null
-        sed -i '' '/nix/d' ~/.bashrc 2>/dev/null
-    fi
+    for file in ~/.zshrc ~/.bashrc ~/.bash_profile ~/.profile; do
+        if [ -f "$file" ] && grep -q "nix" "$file" 2>/dev/null; then
+            print_warning "Nix entries found in $file"
+            failed=1
+        fi
+    done
     
     # Check for Nix in environment
     if echo "$PATH" | grep -q "nix"; then
-        print_warning "Nix found in PATH. A shell restart may be required."
+        print_warning "Nix found in PATH environment variable"
         failed=1
     fi
     
     if [ $failed -eq 1 ]; then
-        print_warning "Some components require a system restart to be fully removed"
-        print_warning "Please restart your computer and run this script again to complete the cleanup"
+        print_warning "Some components were not fully removed"
+        if [ "$NEEDS_REBOOT" -eq 1 ]; then
+            print_warning "A system restart is required to complete the cleanup"
+            print_warning "Please restart your computer and run this script again"
+        fi
         return 1
     fi
     
