@@ -8,10 +8,8 @@
   home.username = "admin";
   home.homeDirectory = "/Users/admin";
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  home.stateVersion = "23.11";
+  # This value determines the Home Manager release that your configuration is compatible with.
+  home.stateVersion = "24.05";
 
   # Define packages to be installed
   home.packages = with pkgs; [
@@ -37,6 +35,7 @@
     # Shell tools
     fish
     starship
+    bash         # Modern Bash (macOS ships with 3.2 from 2007)
     eza          # Modern ls replacement (was exa)
     bat
     fd
@@ -62,7 +61,7 @@
     curl        # Network transfer
     tree        # Directory tree
 
-    # Advanced CLI tools (moved from Homebrew)
+    # Advanced CLI tools
     chezmoi     # Dotfiles management
     mosh        # Robust remote shell
     thefuck     # Correct previous command typos
@@ -81,62 +80,9 @@
     dotenv-cli  # Load .env files from command line
   ];
 
-  # Configure programs
+  # Configure basic programs
   programs = {
-    fish = {
-      enable = true;
-      shellAliases = {
-        ls = "eza";
-        ll = "eza -l";
-        la = "eza -la";
-        cat = "bat";
-        find = "fd";
-        grep = "rg";
-      };
-      shellInit = ''
-        # NVM configuration
-        set -x NVM_DIR "$HOME/.nvm"
-        if test -s "(brew --prefix)/opt/nvm/nvm.sh"
-          source "(brew --prefix)/opt/nvm/nvm.sh"
-        end
-
-        # Pyenv configuration
-        set -x PYENV_ROOT "$HOME/.pyenv"
-        if not type -q pyenv
-          set -x PATH "$PYENV_ROOT/bin" $PATH
-        end
-        status --is-interactive; and source (pyenv init -|psub)
-        status --is-interactive; and source (pyenv virtualenv-init -|psub)
-
-        # Initialize zoxide
-        zoxide init fish | source
-
-        # Initialize fzf
-        if test -f ~/.fzf.fish
-          source ~/.fzf.fish
-        end
-
-        # Initialize direnv
-        direnv hook fish | source
-      '';
-    };
-
-    starship = {
-      enable = true;
-      settings = {
-        add_newline = false;
-        character = {
-          success_symbol = "[➜](green)";
-          error_symbol = "[✗](red)";
-        };
-        directory = {
-          truncation_length = 3;
-          truncate_to_repo = true;
-          style = "blue bold";
-        };
-      };
-    };
-
+    # Configure git
     git = {
       enable = true;
       userName = "Your Name";
@@ -154,66 +100,34 @@
       };
     };
 
-    # Configure fzf
-    fzf = {
+    # Configure fish shell
+    fish = {
       enable = true;
-      enableFishIntegration = true;
+      shellAliases = {
+        ls = "eza";
+        ll = "eza -l";
+        la = "eza -la";
+        cat = "bat";
+        find = "fd";
+        grep = "rg";
+      };
     };
 
-    # Configure zoxide
-    zoxide = {
+    # Configure starship prompt
+    starship = {
       enable = true;
-      enableFishIntegration = true;
-    };
-
-    # Configure direnv
-    direnv = {
-      enable = true;
-      enableFishIntegration = true;
-      nix-direnv.enable = true;
-    };
-
-    # Configure neovim
-    neovim = {
-      enable = true;
-      viAlias = true;
-      vimAlias = true;
-    };
-
-    # Configure tmux
-    tmux = {
-      enable = true;
-      shortcut = "Space";
-      baseIndex = 1;
-      escapeTime = 0;
-      terminal = "screen-256color";
-      plugins = with pkgs.tmuxPlugins; [
-        sensible
-        yank
-        vim-tmux-navigator
-        {
-          plugin = resurrect;
-          extraConfig = "set -g @resurrect-strategy-nvim 'session'";
-        }
-      ];
-      extraConfig = ''
-        # Enable mouse mode
-        set -g mouse on
-
-        # Increase scrollback buffer size
-        set -g history-limit 50000
-
-        # Start window numbering at 1
-        set -g base-index 1
-
-        # Start pane numbering at 1
-        setw -g pane-base-index 1
-
-        # Automatically set window title
-        setw -g automatic-rename on
-        set -g set-titles on
-        set -g set-titles-string "#T"
-      '';
+      settings = {
+        add_newline = false;
+        character = {
+          success_symbol = "[➜](green)";
+          error_symbol = "[✗](red)";
+        };
+        directory = {
+          truncation_length = 3;
+          truncate_to_repo = true;
+          style = "blue bold";
+        };
+      };
     };
   };
 } 

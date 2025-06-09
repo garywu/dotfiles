@@ -1,20 +1,34 @@
 #!/bin/sh
 
+# Check for old Bash and handle compatibility
+if [ -n "$BASH_VERSION" ]; then
+    BASH_MAJOR_VERSION=$(echo $BASH_VERSION | cut -d. -f1)
+    if [ "$BASH_MAJOR_VERSION" -lt 4 ]; then
+        echo "⚠️  Detected old Bash version: $BASH_VERSION"
+        echo "   macOS ships with Bash 3.2 (2007) due to licensing."
+        echo "   Modern features may not work properly."
+        echo ""
+        echo "🔧 Installing modern Bash via Nix (will be available after bootstrap)..."
+        echo ""
+    fi
+fi
+
 # Setup logging
 BOOTSTRAP_LOG="$HOME/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
 mkdir -p "$(dirname "$BOOTSTRAP_LOG")"
 
-# Redirect all output to both terminal and log file
-exec > >(tee -a "$BOOTSTRAP_LOG")
-exec 2>&1
+# Function to log and display
+log_and_echo() {
+    echo "$1" | tee -a "$BOOTSTRAP_LOG"
+}
 
-echo "Bootstrap started at $(date)"
-echo "System: $(uname -a)"
-echo "User: $(whoami)"
-echo "PWD: $(pwd)"
-echo "PATH: $PATH"
-echo "Log file: $BOOTSTRAP_LOG"
-echo "---"
+echo "Bootstrap started at $(date)" | tee "$BOOTSTRAP_LOG"
+echo "System: $(uname -a)" | tee -a "$BOOTSTRAP_LOG"
+echo "User: $(whoami)" | tee -a "$BOOTSTRAP_LOG"
+echo "PWD: $(pwd)" | tee -a "$BOOTSTRAP_LOG"
+echo "PATH: $PATH" | tee -a "$BOOTSTRAP_LOG"
+echo "Log file: $BOOTSTRAP_LOG" | tee -a "$BOOTSTRAP_LOG"
+echo "---" | tee -a "$BOOTSTRAP_LOG"
 
 # Colors for output
 RED='\033[0;31m'
@@ -52,20 +66,23 @@ if ! command_exists nix; then
     exit 0
 fi
 
-# Check if Home Manager is installed and packages are available
-if ! command_exists home-manager || ! command_exists fish; then
-    print_status "Installing/updating Home Manager..."
+# Check if Home Manager is installed
+if ! command_exists home-manager; then
+    print_status "Installing Home Manager..."
     nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
     nix-channel --update
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
     
-    # Install Home Manager if command doesn't exist
-    if ! command_exists home-manager; then
-        nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
-    fi
+    # Install Home Manager
+    nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
     
-    print_status "Home Manager ready! Please restart your terminal and run this script again."
+    print_status "Home Manager installed! Please restart your terminal and run this script again."
     exit 0
+fi
+
+# Set NIX_PATH if not set (needed for home-manager to work properly)
+if [ -z "$NIX_PATH" ]; then
+    export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 fi
 
 # Install chezmoi if not present
