@@ -55,8 +55,109 @@ command_exists() {
     command -v "$1" &> /dev/null
 }
 
+# Function to handle previous Nix installation remnants following official documentation
+handle_nix_remnants() {
+    print_status "Checking for previous Nix installation remnants..."
+    
+    local found_backups=false
+    
+    # Official backup files that the Nix installer creates (per official docs)
+    local official_backups=(
+        "/etc/zshrc.backup-before-nix"
+        "/etc/zsh/zshrc.backup-before-nix"
+        "/etc/bashrc.backup-before-nix" 
+        "/etc/bash.bashrc.backup-before-nix"
+    )
+    
+    # Check for backup files that block installation
+    for backup_file in "${official_backups[@]}"; do
+        if [ -f "$backup_file" ]; then
+            found_backups=true
+            print_warning "Found Nix backup file: $backup_file"
+        fi
+    done
+    
+    if [ "$found_backups" = true ]; then
+        echo ""
+        echo "According to the official Nix documentation, these backup files contain"
+        echo "your original system configuration and should be restored."
+        echo ""
+        echo "The Nix installer cannot proceed with these backup files present."
+        echo "Following official documentation, the recommended action is to restore"
+        echo "the backup files to their original locations."
+        echo ""
+        printf "Restore backup files as recommended by official Nix docs? [Y/n]: "
+        read -r response
+        
+        case "$response" in
+            [nN]|[nN][oO])
+                print_warning "Moving backup files to /tmp (you can restore them later)"
+                local timestamp=$(date +%s)
+                for backup_file in "${official_backups[@]}"; do
+                    if [ -f "$backup_file" ]; then
+                        local basename=$(basename "$backup_file")
+                        sudo mv "$backup_file" "/tmp/${basename}.${timestamp}" 2>/dev/null && \
+                            echo "  → Moved $backup_file to /tmp/${basename}.${timestamp}"
+                    fi
+                done
+                ;;
+            *)
+                print_status "Restoring backup files (following official Nix documentation)..."
+                
+                # Follow exact commands from official docs
+                if [ -f "/etc/zshrc.backup-before-nix" ]; then
+                    sudo mv /etc/zshrc.backup-before-nix /etc/zshrc && \
+                        print_status "  → Restored /etc/zshrc"
+                fi
+                
+                if [ -f "/etc/zsh/zshrc.backup-before-nix" ]; then
+                    sudo mv /etc/zsh/zshrc.backup-before-nix /etc/zsh/zshrc && \
+                        print_status "  → Restored /etc/zsh/zshrc"
+                fi
+                
+                if [ -f "/etc/bashrc.backup-before-nix" ]; then
+                    sudo mv /etc/bashrc.backup-before-nix /etc/bashrc && \
+                        print_status "  → Restored /etc/bashrc"
+                fi
+                
+                if [ -f "/etc/bash.bashrc.backup-before-nix" ]; then
+                    sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc && \
+                        print_status "  → Restored /etc/bash.bashrc"
+                fi
+                
+                print_status "Backup files restored per official documentation."
+                print_status "System is now clean for a fresh Nix installation."
+                ;;
+        esac
+    fi
+    
+    # Clean up other remnants (also from official docs)
+    if [ -f "/etc/nix/nix.conf" ]; then
+        print_warning "Removing leftover Nix configuration..."
+        sudo rm -rf /etc/nix 2>/dev/null || print_warning "Could not remove /etc/nix"
+    fi
+    
+    if [ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]; then
+        print_warning "Removing leftover Nix daemon service..."
+        sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
+        sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || \
+            print_warning "Could not remove daemon plist"
+    fi
+    
+    if [ -f "/Library/LaunchDaemons/org.nixos.darwin-store.plist" ]; then
+        print_warning "Removing leftover Darwin store service..."
+        sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || true
+        sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || \
+            print_warning "Could not remove darwin-store plist"
+    fi
+    
+    print_status "Cleanup completed following official documentation"
+}
+
 # Check if we're in a fresh shell with Nix environment
 if ! command_exists nix; then
+    handle_nix_remnants
+    
     print_status "Installing Nix..."
     curl -L https://nixos.org/nix/install > /tmp/nix-install.sh
     sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
@@ -85,9 +186,9 @@ if [ -z "$NIX_PATH" ]; then
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 fi
 
-# Install chezmoi if not present
+# Install chezmoi temporarily to get dotfiles, then Home Manager will manage it
 if ! command_exists chezmoi; then
-    print_status "Installing chezmoi..."
+    print_status "Installing chezmoi temporarily..."
     nix-env -iA nixpkgs.chezmoi || print_error "Failed to install chezmoi"
 fi
 
@@ -104,9 +205,18 @@ print_status "Using repository: $REPO_URL"
 print_status "Initializing chezmoi and applying dotfiles..."
 chezmoi init --apply "$REPO_URL" || print_error "Failed to initialize chezmoi"
 
+# Copy Home Manager configuration to the correct location
+print_status "Setting up Home Manager configuration..."
+mkdir -p "$HOME/.config/home-manager"
+cp "$HOME/.dotfiles/nix/home.nix" "$HOME/.config/home-manager/home.nix" || print_error "Failed to copy home.nix"
+
+# Remove temporary chezmoi to avoid conflicts with Home Manager
+print_status "Removing temporary chezmoi installation..."
+nix-env -e chezmoi || print_warning "Could not remove temporary chezmoi"
+
 # Activate Home-Manager configuration
 print_status "Activating Home-Manager configuration..."
-(cd "$HOME/.dotfiles/nix" && home-manager switch) || print_warning "home-manager switch failed"
+home-manager switch || print_warning "home-manager switch failed"
 
 # On macOS, install Homebrew if not present and then install GUI apps
 if [ "$(uname)" = "Darwin" ]; then

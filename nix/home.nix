@@ -23,10 +23,10 @@
     cargo
 
     # Version managers
-    nvm
-    pyenv
-    rbenv
-    asdf-vm
+    # nvm           # Not available in nixpkgs, use installer instead
+    # pyenv         # Commenting out for now, needs testing
+    # rbenv         # Commenting out for now, needs testing  
+    # asdf-vm       # Commenting out for now, needs testing
 
     # Cloud tools
     awscli2
@@ -64,7 +64,7 @@
     # Advanced CLI tools
     chezmoi     # Dotfiles management
     mosh        # Robust remote shell
-    thefuck     # Correct previous command typos
+    # thefuck   # Removed due to Python 3.12+ incompatibility
     delta       # Syntax-highlighting pager for git/diff
     lazygit     # TUI for git
     btop        # Resource monitor (modern htop alternative)
