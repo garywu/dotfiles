@@ -536,7 +536,19 @@ verify_cleanup() {
 
 # Main uninstallation function
 uninstall() {
-    print_warning "This will remove all installed components. Are you sure? (y/N) "
+    echo ""
+    print_error "⚠️  WARNING: This will completely remove your development environment!"
+    echo ""
+    echo "This will remove:"
+    echo "  • All Nix packages and the Nix package manager"
+    echo "  • All Homebrew packages and Homebrew itself" 
+    echo "  • All version managers (nvm, pyenv, rbenv, asdf)"
+    echo "  • Dotfiles configurations (starship, etc.)"
+    echo "  • Shell configurations and PATH modifications"
+    echo ""
+    print_error "This action cannot be easily undone!"
+    echo ""
+    print_warning "Are you absolutely sure you want to continue? (y/N) "
     read -r response
     if [[ ! "$response" =~ ^[Yy]$ ]]; then
         print_status "Uninstallation cancelled"

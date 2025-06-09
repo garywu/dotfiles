@@ -106,27 +106,29 @@ This approach ensures that your **development workflow** (CLI tools, languages, 
 
 ```
 ~/.dotfiles/
-├── bootstrap.sh              # Main installation script
+├── bootstrap.sh              # 🚀 Main installation script
+├── unbootstrap.sh            # 🗑️  Complete removal/rollback script  
 ├── nix/
 │   ├── home.nix             # Home Manager configuration
 │   └── flake.nix            # Nix flake configuration
 ├── brew/
 │   └── Brewfile             # Homebrew packages (macOS GUI apps)
 ├── scripts/
-│   ├── unbootstrap.sh       # Complete removal/rollback script
-│   └── install.sh           # Additional installation utilities
+│   └── uninstall.sh         # Core uninstallation logic (unbootstrap.sh → this)
 ├── logs/                    # Bootstrap execution logs
 │   ├── README.md
 │   └── *.log               # Timestamped log files
 └── README.md               # This file
 ```
 
+**Symmetric Design**: Setup with `./bootstrap.sh`, teardown with `./unbootstrap.sh` - both in the root for easy discovery.
+
 ## 🔄 Complete Removal/Rollback
 
 To completely remove all installed tools and restore your system:
 
 ```bash
-~/.dotfiles/scripts/unbootstrap.sh
+./unbootstrap.sh
 ```
 
 This will:
@@ -242,7 +244,7 @@ brew update && brew upgrade
 ### Reset and Retry
 ```bash
 # Complete reset
-./scripts/unbootstrap.sh
+./unbootstrap.sh
 
 # Fresh start
 ./bootstrap.sh
