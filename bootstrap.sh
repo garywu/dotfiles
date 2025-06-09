@@ -237,6 +237,36 @@ for shell_config in "$HOME/.zprofile" "$HOME/.bash_profile" "$HOME/.profile"; do
     fi
 done
 
+# Configure fish shell specifically for Nix environment
+print_status "Configuring fish shell for Nix environment..."
+FISH_CONFIG_DIR="$HOME/.config/fish"
+FISH_CONFIG_FILE="$FISH_CONFIG_DIR/config.fish"
+
+if [ -f "$FISH_CONFIG_FILE" ]; then
+    # Check if Nix environment is already configured to avoid duplicates
+    if ! grep -q "nix.fish" "$FISH_CONFIG_FILE" && ! grep -q "NIX_PROFILES" "$FISH_CONFIG_FILE"; then
+        # Remove any existing Nix configurations to avoid duplicates
+        # Remove simple PATH additions and any references to nix profile
+        grep -v -E "(\.nix-profile/bin|NIX_PROFILES|nix\.fish)" "$FISH_CONFIG_FILE" > "$FISH_CONFIG_FILE.tmp" && mv "$FISH_CONFIG_FILE.tmp" "$FISH_CONFIG_FILE"
+        
+        # Add Nix environment setup at the beginning of fish config
+        {
+            echo "# Nix environment setup"
+            echo "if test -e /nix/var/nix/profiles/default/etc/profile.d/nix.fish"
+            echo "    source /nix/var/nix/profiles/default/etc/profile.d/nix.fish"
+            echo "end"
+            echo ""
+            cat "$FISH_CONFIG_FILE"
+        } > "$FISH_CONFIG_FILE.tmp" && mv "$FISH_CONFIG_FILE.tmp" "$FISH_CONFIG_FILE"
+        
+        print_status "  → Updated fish configuration for Nix environment"
+    else
+        print_status "  → Fish configuration already includes Nix environment setup"
+    fi
+else
+    print_warning "Fish config file not found at $FISH_CONFIG_FILE"
+fi
+
 print_status "Modern bash and other Nix tools will now take precedence in new shells"
 print_status "Verify with: /usr/bin/env bash --version (should show 5.2.x)"
 
