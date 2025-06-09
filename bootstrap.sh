@@ -73,7 +73,15 @@ print_status "Activating Home-Manager configuration..."
 
 # On macOS, install Homebrew if not present and then install GUI apps
 if [ "$(uname)" = "Darwin" ]; then
-    if ! command_exists brew || ! brew --version >/dev/null 2>&1; then
+    # Check if Homebrew is installed and working
+    if [ -f "/opt/homebrew/bin/brew" ] || [ -f "/usr/local/bin/brew" ]; then
+        print_status "Homebrew is already installed"
+        # Source Homebrew environment
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        # Install GUI apps via Brewfile
+        print_status "Installing GUI apps via Brewfile..."
+        brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
+    else
         print_status "Installing Homebrew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         
@@ -85,9 +93,6 @@ if [ "$(uname)" = "Darwin" ]; then
         print_status "Homebrew installed! Please restart your terminal and run this script again."
         exit 0
     fi
-    
-    print_status "Installing GUI apps via Brewfile..."
-    brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
 fi
 
 print_status "Bootstrap completed!"

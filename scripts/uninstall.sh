@@ -232,6 +232,25 @@ remove_nix() {
     sudo rm -f /etc/profile.d/nix.sh
     sudo rm -f /etc/profile.d/nix-daemon.sh
     
+    # Restore Nix installer backup files
+    echo "==> Restoring Nix installer backup files..."
+    if [ -f /etc/bashrc.backup-before-nix ]; then
+        echo "Found backup of /etc/bashrc, restoring..."
+        sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
+    fi
+    if [ -f /etc/bash.bashrc.backup-before-nix ]; then
+        echo "Found backup of /etc/bash.bashrc, restoring..."
+        sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc
+    fi
+    if [ -f /etc/zshrc.backup-before-nix ]; then
+        echo "Found backup of /etc/zshrc, restoring..."
+        sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
+    fi
+    if [ -f /etc/profile.backup-before-nix ]; then
+        echo "Found backup of /etc/profile, restoring..."
+        sudo mv /etc/profile.backup-before-nix /etc/profile
+    fi
+    
     # Remove Nix from fstab
     sudo sed -i '' '/nix/d' /etc/fstab 2>/dev/null || true
     
