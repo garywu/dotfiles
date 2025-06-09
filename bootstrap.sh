@@ -1,5 +1,21 @@
 #!/bin/sh
 
+# Setup logging
+BOOTSTRAP_LOG="$HOME/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+mkdir -p "$(dirname "$BOOTSTRAP_LOG")"
+
+# Redirect all output to both terminal and log file
+exec > >(tee -a "$BOOTSTRAP_LOG")
+exec 2>&1
+
+echo "Bootstrap started at $(date)"
+echo "System: $(uname -a)"
+echo "User: $(whoami)"
+echo "PWD: $(pwd)"
+echo "PATH: $PATH"
+echo "Log file: $BOOTSTRAP_LOG"
+echo "---"
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -36,15 +52,19 @@ if ! command_exists nix; then
     exit 0
 fi
 
-# Check if Home Manager is installed
-if ! command_exists home-manager; then
-    print_status "Installing Home Manager..."
+# Check if Home Manager is installed and packages are available
+if ! command_exists home-manager || ! command_exists fish; then
+    print_status "Installing/updating Home Manager..."
     nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
     nix-channel --update
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
-    nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
     
-    print_status "Home Manager installed! Please restart your terminal and run this script again."
+    # Install Home Manager if command doesn't exist
+    if ! command_exists home-manager; then
+        nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
+    fi
+    
+    print_status "Home Manager ready! Please restart your terminal and run this script again."
     exit 0
 fi
 
@@ -96,4 +116,6 @@ if [ "$(uname)" = "Darwin" ]; then
 fi
 
 print_status "Bootstrap completed!"
-print_status "Your system is now fully configured. Enjoy!" 
+print_status "Your system is now fully configured. Enjoy!"
+echo "Bootstrap completed at $(date)"
+echo "Log saved to: $BOOTSTRAP_LOG" 

@@ -1,355 +1,264 @@
-# Development Environment Setup
+# Modern Development Environment Setup
 
-This repository contains configurations and scripts for setting up a modern development environment. It supports multiple development approaches and tools, allowing you to choose the best fit for your needs.
+This repository contains a complete, automated setup for a modern development environment using **Nix**, **Home Manager**, **Chezmoi**, and **Homebrew** (macOS). It provides a single-command bootstrap process that sets up everything you need for development.
 
-## Uninstall / Rollback
+## 🚀 Quick Start
 
-To completely remove all installed tools, dotfiles, and restore your environment, run:
+**One-Command Setup** - Run this on any fresh machine:
 
-```sh
+```bash
+git clone https://github.com/garywu/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles
+./bootstrap.sh
+```
+
+The bootstrap script will:
+1. Install Nix (cross-platform package manager)
+2. Install Home Manager (declarative user environment)
+3. Install Chezmoi (dotfiles management)
+4. Apply your dotfiles configuration
+5. Install development tools via Nix
+6. Install GUI apps via Homebrew (macOS only)
+7. Log everything to timestamped files
+
+**After each major installation step, restart your terminal and run `./bootstrap.sh` again to continue.**
+
+## 🎯 Philosophy & Approach
+
+### Why This Architecture?
+
+This setup is built on a **"Nix-first, platform-specific supplements"** philosophy that prioritizes **reproducibility** and **cross-platform compatibility** while acknowledging platform-specific needs.
+
+### 🔧 Nix + Home Manager (The Foundation)
+**Handles**: All CLI tools, development languages, shell configuration, and core utilities
+
+**Why Nix?**
+- ✅ **Reproducible**: Exact same versions across all machines and platforms
+- ✅ **Declarative**: Your entire environment is defined in configuration files
+- ✅ **Cross-platform**: Works identically on macOS, Linux, and WSL
+- ✅ **Atomic**: Upgrades and rollbacks are safe and instant
+- ✅ **No conflicts**: Multiple versions can coexist peacefully
+
+**Examples**: Python, Node.js, Git, fish shell, CLI tools like `bat`, `fd`, `ripgrep`
+
+### 🍺 Homebrew (Platform-Specific Supplements)
+**Handles**: GUI applications and macOS-specific tools only
+
+**Why Homebrew for GUI apps?**
+- ✅ **Native integration**: Apps integrate properly with macOS
+- ✅ **System optimization**: Built for Mac hardware and features
+- ✅ **App Store access**: Can install Mac App Store apps via `mas`
+- ✅ **Cask ecosystem**: Largest collection of Mac GUI apps
+
+**Examples**: Docker Desktop, iTerm2, Postman, TablePlus, Xcode
+
+### 🏗️ The Result: Best of Both Worlds
+
+```
+┌─────────────────────────────────────────────────────┐
+│                 Your Development Environment        │
+├─────────────────────────────────────────────────────┤
+│  🖥️  GUI Apps (Homebrew)                           │
+│      • Docker Desktop, iTerm2, IDEs               │
+│      • Platform-optimized, native integration     │
+├─────────────────────────────────────────────────────┤
+│  🛠️  CLI Tools & Languages (Nix + Home Manager)   │
+│      • Python, Node.js, Git, shell tools          │
+│      • Reproducible across all platforms          │
+│      • Declarative configuration                  │
+└─────────────────────────────────────────────────────┘
+```
+
+### 🎯 Core Benefits
+
+1. **Maximum Portability**: Your CLI environment is identical on any platform
+2. **Zero Conflicts**: Nix prevents dependency hell and version conflicts  
+3. **Instant Recovery**: New machine? Clone repo, run bootstrap, get exact environment
+4. **Safe Experimentation**: Try new tools without breaking your setup
+5. **Team Consistency**: Everyone gets exactly the same development tools
+
+This approach ensures that your **development workflow** (CLI tools, languages, shell) is consistent everywhere, while your **platform experience** (GUI apps, system integration) remains optimized for your specific OS.
+
+## ✨ What Gets Installed
+
+### 🛠️ Development Tools (via Nix)
+- **Languages**: Python 3.11, Node.js 20, Bun, Go, Rust
+- **Version Managers**: nvm, pyenv, rbenv, asdf-vm
+- **Cloud Tools**: AWS CLI, Google Cloud SDK
+- **Shell**: Fish shell with Starship prompt
+- **Modern CLI Tools**: eza, bat, fd, ripgrep, fzf, zoxide, delta, lazygit, btop
+- **Development**: Neovim, tmux, Git, GitHub CLI, htop, jq, yq
+- **Security**: sops, age, pass, gnupg
+
+### 🖥️ GUI Applications (via Homebrew - macOS only)
+- **Development**: Docker Desktop, iTerm2, Postman, Insomnia
+- **Databases**: TablePlus, DBeaver Community
+- **Utilities**: WebTorrent, aria2
+- **Mac App Store**: Xcode, Slack
+
+### 🏠 Environment Management
+- **Home Manager**: Declarative configuration for packages and dotfiles
+- **Chezmoi**: Dotfiles management and templating
+- **Fish Shell**: User-friendly shell with aliases and integrations
+- **Starship**: Fast, customizable prompt with Git integration
+
+## 📁 Project Structure
+
+```
+~/.dotfiles/
+├── bootstrap.sh              # Main installation script
+├── nix/
+│   ├── home.nix             # Home Manager configuration
+│   └── flake.nix            # Nix flake configuration
+├── brew/
+│   └── Brewfile             # Homebrew packages (macOS GUI apps)
+├── scripts/
+│   ├── unbootstrap.sh       # Complete removal/rollback script
+│   └── install.sh           # Additional installation utilities
+├── logs/                    # Bootstrap execution logs
+│   ├── README.md
+│   └── *.log               # Timestamped log files
+└── README.md               # This file
+```
+
+## 🔄 Complete Removal/Rollback
+
+To completely remove all installed tools and restore your system:
+
+```bash
 ~/.dotfiles/scripts/unbootstrap.sh
 ```
 
 This will:
-- Remove Homebrew and all installed packages
-- Remove Nix, Home Manager, and related configs
+- Remove Nix and all packages
+- Remove Home Manager configuration
 - Remove Chezmoi and dotfiles
-- Restore your default shell to bash
-- Clean up environment variables
+- Remove Homebrew and packages (macOS)
+- Restore backup files created during installation
+- Clean up environment variables and shell configurations
 
 **You will be prompted for confirmation before anything is removed.**
 
-## Quick Start
+## 📊 Logging
 
-To set up your development environment on a new machine:
+Every bootstrap run creates a timestamped log file in `~/.dotfiles/logs/` capturing:
+- All command outputs and errors
+- System information and environment
+- Installation progress and results
+- Complete audit trail for debugging
 
-### One-Command Setup
-```sh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/yourusername/dotfiles/main/minimal_install.sh)"
-```
+Example log: `~/.dotfiles/logs/bootstrap-20231208-143022.log`
 
-### Manual Setup
-1. **Install Nix** (if not present):
-   ```sh
+## 🐚 Shell Configuration
+
+### Fish Shell
+- Modern, user-friendly shell with excellent defaults
+- Smart autocompletions and syntax highlighting
+- Configured aliases for modern CLI tools (ls → eza, cat → bat, etc.)
+- Integration with zoxide, fzf, and direnv
+
+### Starship Prompt
+- Fast, customizable prompt with Git status
+- Shows current directory, Git branch, and command status
+- Language-specific indicators for development projects
+
+**Note**: To see all prompt icons properly, set your terminal font to a Nerd Font (e.g., "FiraCode Nerd Font") in your terminal preferences.
+
+## 🎯 Package Management Philosophy
+
+This setup follows a **Nix-first approach** for maximum cross-platform compatibility:
+
+- **Nix + Home Manager**: All CLI tools, development languages, and shell configuration
+- **Homebrew** (macOS only): GUI applications and Mac-specific tools only
+
+This ensures your development environment is reproducible across macOS, Linux, and WSL.
+
+## 🛠️ Manual Setup (Alternative)
+
+If you prefer to understand each step:
+
+1. **Install Nix**:
+   ```bash
    sh <(curl -L https://nixos.org/nix/install) --daemon
    ```
 
-2. **Install and apply dotfiles**:
-   ```sh
-   nix profile install nixpkgs#chezmoi
-   chezmoi init --apply https://github.com/yourusername/dotfiles.git
+2. **Install Home Manager**:
+   ```bash
+   nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+   nix-channel --update
+   nix-shell '<home-manager>' -A install
    ```
 
-3. **Activate your environment**:
-   ```sh
+3. **Install Chezmoi and apply dotfiles**:
+   ```bash
+   nix-env -iA nixpkgs.chezmoi
+   chezmoi init --apply https://github.com/garywu/dotfiles.git
+   ```
+
+4. **Activate Home Manager**:
+   ```bash
    cd ~/.dotfiles/nix && home-manager switch
    ```
 
-4. **On Mac, install GUI apps**:
-   ```sh
+5. **Install GUI apps** (macOS only):
+   ```bash
    brew bundle --file=~/.dotfiles/brew/Brewfile
    ```
 
-5. **Restart your terminal** to apply all changes.
+## 🔄 Maintenance
 
-### What Gets Installed
-
-- **Nix**: Manages all CLI tools and development languages (cross-platform)
-- **chezmoi**: Manages your dotfiles and configuration files
-- **Homebrew** (Mac only): GUI applications and Mac-specific tools
-- **Fish shell** with **Starship prompt** and modern CLI tools
-
-## OS-Specific Setup Templates
-
-For detailed, step-by-step instructions tailored to your operating system:
-
-### 🚀 Smart Setup (Recommended)
-Automatically detects your OS and runs the appropriate setup:
+### Update Everything
 ```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/setup.sh | bash
-```
-
-### 📱 macOS
-Complete setup for macOS using Nix + Homebrew:
-```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/macos.md
-```
-**Includes**: Xcode tools, Homebrew GUI apps, system tweaks, performance optimizations
-
-### 🐧 Ubuntu/Debian
-Ubuntu/Debian setup using Nix + apt:
-```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/ubuntu.md
-```
-**Includes**: System packages, development dependencies, GUI apps, security configurations
-
-### 🪟 WSL2
-Windows Subsystem for Linux setup with optimizations:
-```bash
-curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/templates/wsl2.md
-```
-**Includes**: WSL2 optimizations, X11 forwarding, Windows integration, performance tuning
-
-Each template provides:
-- **Prerequisites** and system requirements
-- **Step-by-step** installation instructions
-- **OS-specific** configurations and optimizations
-- **Troubleshooting** guides for common issues
-- **Performance** tuning recommendations
-
-## Development Environment Options
-
-### 1. Local Development (Recommended for most cases)
-
-Uses modern tools without containers for better performance and simplicity.
-
-**Features**:
-- Language-specific project templates (Python, Node.js, Go, Rust)
-- Modern package managers (uv, npm, cargo, go)
-- Development tools (linters, formatters, test runners)
-- Documentation generators
-- Pre-commit hooks
-
-**Setup**:
-```bash
-# Create a new project
-./scripts/create-project.sh my-project [python|node|go|rust|ai]
-```
-
-### 2. Dev Containers (VS Code)
-
-For isolated, reproducible development environments using VS Code.
-
-**Features**:
-- Isolated development environment
-- Consistent tools across team
-- Multiple language support
-- Database (PostgreSQL)
-- Cache (Redis)
-- Object storage (MinIO)
-
-**Setup**:
-1. Install VS Code and "Remote - Containers" extension
-2. Open project in VS Code
-3. Press F1 and select "Remote-Containers: Reopen in Container"
-
-### 3. GitPod (Cloud Development)
-
-For cloud-based development environments.
-
-**Features**:
-- Instant development environments
-- Pre-built environments
-- Team collaboration
-- Persistent workspaces
-- Browser-based VS Code
-
-**Setup**:
-1. Push code to GitHub
-2. Install GitPod browser extension
-3. Click GitPod button on repository
-
-### 4. Advanced Options
-
-#### Container Runtimes
-- **containerd**: Industry standard, Kubernetes-native
-- **CRI-O**: Lightweight, security-focused
-- **Podman**: Daemonless, rootless alternative to Docker
-
-#### Build Systems
-- **BuildKit**: Faster builds, better caching
-- **Buildah**: No daemon, security-focused
-- **Nix**: Reproducible builds
-
-#### Security-focused
-- **gVisor**: Strong isolation
-- **Kata Containers**: VM-like security
-
-## Project Structure
-
-```
-dotfiles/
-├── .devcontainer/          # Dev Container configuration
-├── .gitpod/               # GitPod configuration
-├── brew/                  # Homebrew packages (macOS GUI apps)
-├── nix/                   # Nix configuration (cross-platform CLI tools)
-├── scripts/              # Setup and utility scripts
-│   ├── bootstrap.sh      # Main setup script
-│   ├── create-project.sh # Project template generator
-│   └── setup-*.sh        # Various setup scripts
-├── templates/            # OS-specific setup templates
-│   ├── setup.sh          # Smart setup script (auto-detects OS)
-│   ├── macos.md          # macOS setup guide
-│   ├── ubuntu.md         # Ubuntu/Debian setup guide
-│   └── wsl2.md           # WSL2 setup guide
-├── starship/             # Shell prompt configuration
-├── fish/                 # Fish shell configuration
-└── chezmoi/              # Dotfile management
-```
-
-## Language Support
-
-### Python
-- Package manager: uv (faster than pip)
-- Linting: flake8, mypy
-- Formatting: black, isort
-- Testing: pytest
-- Documentation: Sphinx
-
-### Node.js
-- Package manager: npm
-- Linting: ESLint
-- Formatting: Prettier
-- Testing: Jest
-- Documentation: TypeDoc
-
-### Go
-- Package manager: go mod
-- Linting: golangci-lint
-- Formatting: gofmt
-- Testing: go test
-- Documentation: godoc
-
-### Rust
-- Package manager: cargo
-- Linting: clippy
-- Formatting: rustfmt
-- Testing: cargo test
-- Documentation: rustdoc, mdbook
-
-## Development Tools
-
-### Version Control
-- Git with pre-commit hooks
-- GitHub CLI
-- GitLens
-
-### IDE Integration
-- VS Code with extensions
-- Language servers
-- Debug configurations
-
-### Documentation
-- Markdown support
-- API documentation generators
-- Project documentation tools
-
-### Testing
-- Unit testing frameworks
-- Coverage tools
-- Benchmarking tools
-
-### Security
-- Dependency scanning
-- Code analysis
-- Security linters
-
-## Choosing Your Setup
-
-### For Local Development
-- Use project templates for new projects
-- Install language-specific tools
-- Use pre-commit hooks
-
-### For Team Development
-- Use Dev Containers for consistency
-- Share VS Code settings
-- Use GitPod for quick starts
-
-### For Production
-- Use containerd or CRI-O
-- Implement security measures
-- Use BuildKit for builds
-
-### For Security
-- Use Podman or Kata Containers
-- Implement gVisor for isolation
-- Use security scanning tools
-
-## Terminal Font Setup for Starship Prompt
-
-To see all icons and symbols (like the green arrow ➜) in your Starship prompt, you must use a Nerd Font in your terminal.
-
-1. **Install a Nerd Font:**
-   - The bootstrap script will install FiraCode Nerd Font automatically.
-   - Or you can download from [Nerd Fonts](https://www.nerdfonts.com/font-downloads)
-
-2. **Set the Font in Terminal:**
-   - Open Terminal → Settings → Profiles → Text → Change Font
-   - Select your installed Nerd Font (e.g., "FiraCode Nerd Font")
-   - Restart Terminal
-
-> **Note:** This step cannot be automated by a script. You must set the font manually in your terminal's preferences.
-
-## Maintenance
-
-### Updating Tools
-```bash
-# Update Homebrew packages
-brew update && brew upgrade
-
 # Update Nix packages
 nix-channel --update
-nix-env -u '*'
+home-manager switch
 
-# Update project dependencies
-./scripts/update-dependencies.sh
+# Update Homebrew packages (macOS)
+brew update && brew upgrade
 ```
 
-### Adding New Tools
-1. Add to appropriate configuration file
-2. Update bootstrap script
-3. Test in clean environment
+### Add New Tools
+1. **CLI tools**: Add to `nix/home.nix` in the `home.packages` list
+2. **GUI apps**: Add to `brew/Brewfile`
+3. **Run**: `home-manager switch` or `brew bundle`
 
-## Contributing
+## 🚨 Troubleshooting
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
+### Common Issues
+
+**"command not found" after installation**:
+- Restart your terminal to load new environment
+- Check logs in `~/.dotfiles/logs/` for errors
+
+**Homebrew installation fails**:
+- Ensure you have admin privileges
+- Check internet connection
+- Review bootstrap logs for specific errors
+
+**Home Manager switch fails**:
+- Check `nix/home.nix` syntax
+- Run `home-manager switch --show-trace` for detailed errors
+
+### Reset and Retry
+```bash
+# Complete reset
+./scripts/unbootstrap.sh
+
+# Fresh start
+./bootstrap.sh
+```
+
+## 🤝 Contributing
+
+1. Fork this repository
+2. Make your changes
+3. Test with `./bootstrap.sh` on a clean system
 4. Submit a pull request
 
-## License
+## 📄 License
 
 MIT License - see LICENSE file for details
 
-## Advanced CLI Tools & Features
+---
 
-This setup uses a **Nix-first approach** for cross-platform reproducibility:
-
-### Managed by Nix (Cross-Platform)
-All CLI tools and development languages are managed by Nix for reproducibility across macOS, Linux, and WSL:
-
-- **chezmoi**: Dotfiles management and reproducible setup
-- **tmux**: Terminal multiplexer for persistent, multi-pane sessions
-- **mosh**: Robust remote shell that survives network drops
-- **fzf**: Fuzzy finder for files, history, and more
-- **zoxide**: Smarter directory jumping
-- **fish**: User-friendly shell
-- **starship**: Fast, customizable prompt
-- **thefuck**: Instantly correct previous command typos
-- **eza**: Modern replacement for ls
-- **bat**: Modern cat with syntax highlighting
-- **fd**: Fast, user-friendly find alternative
-- **rg (ripgrep)**: Fast recursive search
-- **delta**: Syntax-highlighting pager for git/diff
-- **lazygit**: TUI for git
-- **btop**: Resource monitor (modern htop alternative)
-- **neovim**: Modern Vim-based text editor
-- **glow**: Markdown previewer in the terminal
-- **vifm**: Terminal file manager with preview support for text and binary files
-
-### Managed by Homebrew (Mac-Only)
-Only GUI applications and Mac-specific tools are managed by Homebrew:
-
-- **Docker Desktop**: Container platform for Mac
-- **iTerm2**: Advanced terminal emulator
-- **Postman/Insomnia**: API testing tools
-- **TablePlus/DBeaver**: Database management tools
-- **Xcode**: Apple development tools (Mac App Store)
-- **Slack**: Team communication (Mac App Store)
-
-This separation ensures maximum **cross-platform compatibility** while keeping Mac-specific apps where they belong.
-
-## Neovim
-
-Neovim is a modern, extensible Vim-based text editor. It is included in this setup and installed automatically by the bootstrap script. 
+**Ready to get started? Just run `./bootstrap.sh` and let the automation handle the rest!** 🚀 
