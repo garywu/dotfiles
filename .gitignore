@@ -160,4 +160,4 @@ public
 .pnp.*
 
 # Local Netlify folder
-.netlify 
+.netlify .shell_backup

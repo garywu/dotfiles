@@ -240,6 +240,33 @@ done
 print_status "Modern bash and other Nix tools will now take precedence in new shells"
 print_status "Verify with: /usr/bin/env bash --version (should show 5.2.x)"
 
+# Change default shell to fish
+print_status "Setting up fish as default shell..."
+
+# Store current shell for restoration (used by uninstall script)
+CURRENT_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
+echo "ORIGINAL_SHELL=$CURRENT_SHELL" > "$HOME/.dotfiles/.shell_backup"
+
+# Add Nix fish to /etc/shells if not already there
+FISH_PATH="$HOME/.nix-profile/bin/fish"
+if ! grep -q "$FISH_PATH" /etc/shells; then
+    print_status "Adding fish to /etc/shells..."
+    echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
+fi
+
+# Change default shell to fish
+print_status "Changing default shell to fish..."
+chsh -s "$FISH_PATH" || print_warning "Failed to change default shell to fish"
+
+# Verify the change
+NEW_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
+if [ "$NEW_SHELL" = "$FISH_PATH" ]; then
+    print_status "✅ Default shell changed to fish successfully"
+    print_status "New terminals will use fish with starship prompt"
+else
+    print_warning "Shell change may not have taken effect immediately"
+fi
+
 # On macOS, install Homebrew if not present and then install GUI apps
 if [ "$(uname)" = "Darwin" ]; then
     # Check if Homebrew is installed and working

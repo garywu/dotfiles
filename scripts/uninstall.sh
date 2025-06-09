@@ -57,7 +57,24 @@ verify_shell_change() {
 restore_default_shell() {
     print_status "Restoring default shell..."
     
-    # First, check if we're using fish
+    # Check if we have a stored original shell
+    SHELL_BACKUP_FILE="$HOME/.dotfiles/.shell_backup"
+    if [ -f "$SHELL_BACKUP_FILE" ]; then
+        ORIGINAL_SHELL=$(grep "ORIGINAL_SHELL=" "$SHELL_BACKUP_FILE" | cut -d'=' -f2)
+        if [ -n "$ORIGINAL_SHELL" ] && [ -f "$ORIGINAL_SHELL" ]; then
+            print_status "Restoring original shell: $ORIGINAL_SHELL"
+            chsh -s "$ORIGINAL_SHELL"
+            if verify_shell_change "$ORIGINAL_SHELL"; then
+                print_status "✅ Restored original shell successfully"
+                rm -f "$SHELL_BACKUP_FILE"
+                return 0
+            else
+                print_warning "Failed to restore original shell"
+            fi
+        fi
+    fi
+    
+    # Fallback: check if we're using fish and change to zsh
     if [[ "$SHELL" == *"fish"* ]]; then
         print_status "Changing from fish to zsh..."
         chsh -s /bin/zsh
