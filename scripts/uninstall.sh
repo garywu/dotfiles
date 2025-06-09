@@ -351,7 +351,7 @@ cleanup_nix_files() {
     sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-store.plist
     sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-installer.nix-hook.plist
     
-    # Restore Nix installer backup files
+    # Restore Nix installer backup files (following official documentation)
     if [ -f /etc/bashrc.backup-before-nix ]; then
         print_status "Restoring /etc/bashrc backup..."
         sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
@@ -363,6 +363,10 @@ cleanup_nix_files() {
     if [ -f /etc/zshrc.backup-before-nix ]; then
         print_status "Restoring /etc/zshrc backup..."
         sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
+    fi
+    if [ -f /etc/zsh/zshrc.backup-before-nix ]; then
+        print_status "Restoring /etc/zsh/zshrc backup..."
+        sudo mv /etc/zsh/zshrc.backup-before-nix /etc/zsh/zshrc
     fi
     if [ -f /etc/profile.backup-before-nix ]; then
         print_status "Restoring /etc/profile backup..."

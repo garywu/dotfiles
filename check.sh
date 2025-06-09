@@ -228,6 +228,27 @@ else
     print_clean "No Nix installation found"
 fi
 
+# Check for Nix backup files (these can block fresh installations)
+BACKUP_FILES_FOUND=0
+NIX_BACKUP_FILES=(
+    "/etc/zshrc.backup-before-nix"
+    "/etc/zsh/zshrc.backup-before-nix"
+    "/etc/bashrc.backup-before-nix"
+    "/etc/bash.bashrc.backup-before-nix"
+    "/etc/profile.backup-before-nix"
+)
+
+for backup_file in "${NIX_BACKUP_FILES[@]}"; do
+    if [ -f "$backup_file" ]; then
+        print_found "Nix backup file exists: $backup_file"
+        BACKUP_FILES_FOUND=1
+    fi
+done
+
+if [ "$BACKUP_FILES_FOUND" -eq 0 ] && [ ! -d "/nix" ]; then
+    print_clean "No Nix backup files found"
+fi
+
 # Check Home Manager
 print_section "Home Manager"
 if command -v home-manager &> /dev/null; then
