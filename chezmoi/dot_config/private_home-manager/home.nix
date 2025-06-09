@@ -65,8 +65,8 @@
     ollama          # Local LLM inference server (CLI)
     chatblade       # CLI Swiss Army Knife for ChatGPT
     chatgpt-cli     # Interactive CLI for ChatGPT
-    claude-code     # Agentic coding tool for terminal
-    huggingface-hub # Hugging Face model hub CLI
+    # claude-code     # Agentic coding tool for terminal (unfree license)
+    # python312Packages.huggingface-hub # Hugging Face model hub CLI (python package)
     litellm         # Use any LLM as drop-in replacement for GPT-3.5-turbo
 
     # Advanced CLI tools
