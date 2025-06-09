@@ -264,3 +264,12 @@ MIT License - see LICENSE file for details
 ---
 
 **Ready to get started? Just run `./bootstrap.sh` and let the automation handle the rest!** 🚀 
+## 🔍 System State Check
+
+Before running bootstrap, you can check your system's current state to avoid conflicts:
+
+```bash
+./check.sh
+```
+
+The check script provides comprehensive system auditing and cleanup capabilities.

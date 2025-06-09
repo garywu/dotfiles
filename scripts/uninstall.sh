@@ -198,14 +198,30 @@ remove_nix_volume() {
         
         # First try to unmount the volume
         print_status "Unmounting Nix volume..."
-        sudo diskutil unmountDisk force "/dev/$NIX_VOLUME" || true
+        if ! sudo diskutil unmountDisk force "/dev/$NIX_VOLUME"; then
+            print_warning "Failed to unmount Nix volume. Checking if it's safe to proceed..."
+            
+            # Check what process is using it
+            BLOCKING_PROCS=$(lsof "/dev/$NIX_VOLUME" 2>/dev/null | grep -v "COMMAND" || true)
+            if [ -n "$BLOCKING_PROCS" ]; then
+                print_warning "Processes still using the volume:"
+                echo "$BLOCKING_PROCS"
+                print_error "Cannot safely remove volume while in use. Please restart and run this script again."
+                return 1
+            else
+                print_warning "Unmount failed but no processes detected. Proceeding cautiously..."
+            fi
+        fi
         
         # Wait a moment for unmount to complete
         sleep 2
         
         # Then try to remove the volume
         print_status "Removing Nix volume..."
-        sudo diskutil apfs deleteVolume "/dev/$NIX_VOLUME" || true
+        if ! sudo diskutil apfs deleteVolume "/dev/$NIX_VOLUME"; then
+            print_warning "Failed to remove Nix volume. A system restart may be required."
+            return 1
+        fi
         
         # Wait a moment for removal to complete
         sleep 2
@@ -251,79 +267,25 @@ remove_synthetic_nix() {
     return 0
 }
 
-# Function to remove Nix
-remove_nix() {
-    print_status "Removing Nix..."
-    
-    # Stop Nix daemon first
-    if ! stop_nix_daemon; then
-        print_warning "Some Nix processes may still be running. Continuing with removal..."
-    fi
-    
-    # Remove Nix APFS volume first if it exists
-    if ! remove_nix_volume; then
-        print_warning "Nix volume removal may not be complete. Continuing with cleanup..."
-    fi
-    
-    # Remove Nix configuration files
-    print_status "Removing Nix configuration files..."
-    sudo rm -rf /etc/nix
-    sudo rm -f /etc/profile.d/nix.sh
-    sudo rm -f /etc/profile.d/nix-daemon.sh
-    
-    # Remove Nix daemon service files
-    print_status "Removing Nix daemon service files..."
-    sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist
-    sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist
-    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-daemon.plist
-    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-store.plist
-    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-installer.nix-hook.plist
-    
-    # Restore Nix installer backup files
-    print_status "Restoring Nix installer backup files..."
-    if [ -f /etc/bashrc.backup-before-nix ]; then
-        print_status "Found backup of /etc/bashrc, restoring..."
-        sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
-    fi
-    if [ -f /etc/bash.bashrc.backup-before-nix ]; then
-        print_status "Found backup of /etc/bash.bashrc, restoring..."
-        sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc
-    fi
-    if [ -f /etc/zshrc.backup-before-nix ]; then
-        print_status "Found backup of /etc/zshrc, restoring..."
-        sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
-    fi
-    if [ -f /etc/profile.backup-before-nix ]; then
-        print_status "Found backup of /etc/profile, restoring..."
-        sudo mv /etc/profile.backup-before-nix /etc/profile
-    fi
-    
-    # Remove Nix from fstab
-    sudo sed -i '' '/nix/d' /etc/fstab 2>/dev/null || true
-    
-    # Remove Nix from shell configurations
-    for file in ~/.bash_profile ~/.bashrc ~/.zshrc ~/.profile; do
-        if [ -f "$file" ]; then
-            sed -i '' '/nix/d' "$file" 2>/dev/null || true
-        fi
-    done
-    
-    # Handle synthetic mount entry
-    remove_synthetic_nix
-    
-    # Remove user-specific Nix directories
-    print_status "Removing user-specific Nix directories..."
-    rm -rf "$HOME/.nix-profile"
-    rm -rf "$HOME/.nix-defexpr"
-    rm -rf "$HOME/.nix-channels"
-    
-    # Final cleanup of /nix directory
-    print_status "Final cleanup of /nix directory..."
+# Function to remove /nix directory
+remove_nix_directory() {
+    print_status "Removing /nix directory..."
     if [ -d "/nix" ]; then
         # First check if it's mounted
         if mount | grep -q " on /nix"; then
             print_status "Unmounting /nix..."
-            sudo umount -f /nix 2>/dev/null || true
+            if ! sudo umount -f /nix; then
+                print_warning "Failed to unmount /nix. Checking for blocking processes..."
+                BLOCKING_PROCS=$(lsof +D /nix 2>/dev/null | grep -v "COMMAND" || true)
+                if [ -n "$BLOCKING_PROCS" ]; then
+                    print_warning "Processes still using /nix:"
+                    echo "$BLOCKING_PROCS"
+                    print_error "Cannot safely remove /nix while in use. Please restart and run this script again."
+                    return 1
+                else
+                    print_warning "Unmount failed but no processes detected. Proceeding cautiously..."
+                fi
+            fi
         fi
         
         # Remove flags and permissions restrictions
@@ -336,8 +298,13 @@ remove_nix() {
         print_status "Removing /nix directory..."
         if [ -n "$(ls -A /nix 2>/dev/null)" ]; then
             # Directory has contents, remove them first
-            sudo rm -rf /nix/* 2>/dev/null || true
-            sudo rm -rf /nix/.* 2>/dev/null || true
+            print_status "Removing directory contents..."
+            if ! sudo rm -rf /nix/* 2>/dev/null; then
+                print_warning "Some files in /nix could not be removed (may be in use)"
+            fi
+            if ! sudo rm -rf /nix/.* 2>/dev/null; then
+                print_warning "Some hidden files in /nix could not be removed"
+            fi
         fi
         
         # Remove the directory itself
@@ -368,42 +335,152 @@ remove_nix() {
     fi
 }
 
-# Function to remove Homebrew packages
-remove_homebrew() {
-    print_status "Removing Homebrew packages..."
+# Function to clean up remaining Nix files
+cleanup_nix_files() {
+    print_status "Cleaning up remaining Nix configuration files..."
     
-    # Check if Homebrew is installed
-    if ! command -v brew &> /dev/null; then
-        print_status "Homebrew is not installed, skipping package removal"
-        return 0
+    # Remove Nix configuration files
+    sudo rm -rf /etc/nix
+    sudo rm -f /etc/profile.d/nix.sh
+    sudo rm -f /etc/profile.d/nix-daemon.sh
+    
+    # Remove Nix daemon service files
+    sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+    sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist
+    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-daemon.plist
+    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-store.plist
+    sudo rm -f /Library/LaunchDaemons/systems.determinate.nix-installer.nix-hook.plist
+    
+    # Restore Nix installer backup files
+    if [ -f /etc/bashrc.backup-before-nix ]; then
+        print_status "Restoring /etc/bashrc backup..."
+        sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
+    fi
+    if [ -f /etc/bash.bashrc.backup-before-nix ]; then
+        print_status "Restoring /etc/bash.bashrc backup..."
+        sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc
+    fi
+    if [ -f /etc/zshrc.backup-before-nix ]; then
+        print_status "Restoring /etc/zshrc backup..."
+        sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
+    fi
+    if [ -f /etc/profile.backup-before-nix ]; then
+        print_status "Restoring /etc/profile backup..."
+        sudo mv /etc/profile.backup-before-nix /etc/profile
     fi
     
-    # Uninstall all packages from Brewfile
-    if [ -f "$DOTFILES_DIR/brew/Brewfile" ]; then
-        cd "$DOTFILES_DIR/brew" && brew bundle cleanup --force
+    # Remove Nix from fstab
+    if [ -f /etc/fstab ] && grep -q "nix" /etc/fstab 2>/dev/null; then
+        print_status "Removing Nix entries from /etc/fstab..."
+        sudo sed -i '' '/nix/d' /etc/fstab 2>/dev/null || true
     fi
     
-    # Remove Homebrew itself
-    print_status "Removing Homebrew..."
-    if [ -f "/opt/homebrew/bin/brew" ]; then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+    # Remove Nix from shell configurations
+    for file in ~/.bash_profile ~/.bashrc ~/.zshrc ~/.profile; do
+        if [ -f "$file" ]; then
+            sed -i '' '/nix/d' "$file" 2>/dev/null || true
+        fi
+    done
+    
+    # Handle synthetic mount entry
+    remove_synthetic_nix
+    
+    # Remove user-specific Nix directories
+    print_status "Removing user-specific Nix directories..."
+    rm -rf "$HOME/.nix-profile"
+    rm -rf "$HOME/.nix-defexpr"
+    rm -rf "$HOME/.nix-channels"
+    
+    # Remove Home Manager state directories (often missed)
+    print_status "Removing Home Manager state directories..."
+    rm -rf "$HOME/.local/state/nix"
+    rm -rf "$HOME/.local/state/home-manager"
+    rm -rf "$HOME/.local/share/home-manager"
+    rm -rf "$HOME/.cache/nix"
+    rm -rf "$HOME/.config/home-manager"
+    
+    # Remove broken symlinks that point to /nix/store
+    print_status "Finding and removing broken symlinks..."
+    find "$HOME" -maxdepth 3 -type l -exec sh -c 'test ! -e "$1" && file "$1" | grep -q "nix"' sh {} \; -delete 2>/dev/null || true
+}
+
+# Function to remove Nix and Home Manager using official uninstall
+remove_nix() {
+    print_status "Removing Nix and Home Manager using official uninstall methods..."
+    
+    # First, use Home Manager's official uninstall if available
+    if command -v nix &> /dev/null; then
+        print_status "Using Home Manager official uninstall..."
+        if nix --extra-experimental-features "nix-command flakes" run home-manager/release-24.05 -- uninstall 2>/dev/null || true; then
+            print_status "Home Manager uninstalled successfully"
+        else
+            print_warning "Home Manager uninstall command failed or not applicable"
+        fi
+    fi
+    
+    # Stop Nix daemon and services
+    stop_nix_daemon || print_warning "Some Nix services may still be running"
+    
+    # Remove Nix APFS volumes if they exist
+    remove_nix_volume || print_warning "Manual volume cleanup may be required"
+    
+    # Remove /nix directory (the main challenge)
+    remove_nix_directory
+    
+    # Clean up remaining Nix files
+    cleanup_nix_files
+}
+
+# Function to remove chezmoi using official purge command
+remove_chezmoi() {
+    print_status "Removing chezmoi using official purge command..."
+    
+    if command -v chezmoi &> /dev/null; then
+        print_status "Using chezmoi purge to remove all traces..."
+        chezmoi purge --binary --force || {
+            print_warning "chezmoi purge failed, falling back to manual cleanup"
+            # Manual fallback
+            rm -rf ~/.config/chezmoi
+            rm -rf ~/.local/share/chezmoi
+            rm -f ~/.local/bin/chezmoi
+        }
+        print_status "Chezmoi removed successfully"
     else
-        print_status "Homebrew not found in standard location, skipping removal"
+        print_status "Chezmoi not found, skipping removal"
     fi
 }
 
-# Function to remove chezmoi
-remove_chezmoi() {
-    print_status "Removing chezmoi..."
+# Function to remove Homebrew
+remove_homebrew() {
+    print_status "Removing Homebrew..."
     
-    if command -v chezmoi &> /dev/null; then
-        # Remove chezmoi configuration
-        rm -rf ~/.config/chezmoi
-        rm -rf ~/.local/share/chezmoi
-        
-        # Remove chezmoi binary
-        rm -f ~/.local/bin/chezmoi
+    # Check if Homebrew is installed
+    if ! command -v brew &> /dev/null && [ ! -d "/opt/homebrew" ]; then
+        print_status "Homebrew is not installed, skipping removal"
+        return 0
     fi
+    
+    # If brew command exists, clean up packages first
+    if command -v brew &> /dev/null; then
+        # Uninstall all packages from Brewfile if it exists
+        if [ -f "$DOTFILES_DIR/brew/Brewfile" ]; then
+            print_status "Cleaning up Homebrew packages from Brewfile..."
+            cd "$DOTFILES_DIR/brew" && brew bundle cleanup --force 2>/dev/null || true
+        fi
+        
+        # Use official Homebrew uninstall script
+        print_status "Using official Homebrew uninstall script..."
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)" || {
+            print_warning "Official Homebrew uninstall failed, trying manual removal"
+            sudo rm -rf /opt/homebrew
+        }
+    else
+        # Manual removal if brew command doesn't exist but directory does
+        print_status "Manually removing Homebrew directory..."
+        sudo rm -rf /opt/homebrew
+    fi
+    
+    print_status "Homebrew removal completed"
 }
 
 # Function to remove dotfiles
