@@ -119,6 +119,12 @@
         find = "fd";
         grep = "rg";
       };
+      shellInit = ''
+        # Load Nix environment
+        if test -e /nix/var/nix/profiles/default/etc/profile.d/nix.fish
+          source /nix/var/nix/profiles/default/etc/profile.d/nix.fish
+        end
+      '';
     };
 
     # Configure starship prompt
