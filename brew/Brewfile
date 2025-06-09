@@ -16,7 +16,6 @@ brew "mas"                       # Mac App Store command line interface
 
 # Tools not easily available in Nix or work better via Homebrew on Mac
 brew "aria2"                     # Lightweight download utility
-brew "oven-sh/bun/bun"          # Fast all-in-one JavaScript runtime
 
 # Mac App Store Apps
 mas "Xcode", id: 497799835
