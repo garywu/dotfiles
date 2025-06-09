@@ -218,6 +218,28 @@ nix-env -e chezmoi || print_warning "Could not remove temporary chezmoi"
 print_status "Activating Home-Manager configuration..."
 home-manager switch || print_warning "home-manager switch failed"
 
+# Ensure Nix tools (including modern bash) take precedence in PATH
+print_status "Configuring shell environment for Nix tools..."
+NIX_PROFILE_PATH="$HOME/.nix-profile/bin"
+
+# Add to shell configuration files to ensure proper PATH ordering
+for shell_config in "$HOME/.zprofile" "$HOME/.bash_profile" "$HOME/.profile"; do
+    if [ -f "$shell_config" ] || [ "$shell_config" = "$HOME/.zprofile" ]; then
+        # Remove any existing nix profile path entries to avoid duplicates
+        if [ -f "$shell_config" ]; then
+            grep -v "/.nix-profile/bin" "$shell_config" > "$shell_config.tmp" && mv "$shell_config.tmp" "$shell_config"
+        fi
+        
+        # Add nix profile path at the beginning (prepend to PATH)
+        echo "# Nix package manager - ensure modern tools take precedence" >> "$shell_config"
+        echo "export PATH=\"$NIX_PROFILE_PATH:\$PATH\"" >> "$shell_config"
+        print_status "  → Updated $shell_config"
+    fi
+done
+
+print_status "Modern bash and other Nix tools will now take precedence in new shells"
+print_status "Verify with: /usr/bin/env bash --version (should show 5.2.x)"
+
 # On macOS, install Homebrew if not present and then install GUI apps
 if [ "$(uname)" = "Darwin" ]; then
     # Check if Homebrew is installed and working
