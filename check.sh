@@ -331,6 +331,8 @@ print_section "Development Tools"
 SYSTEM_TOOLS=("git" "python3" "ruby")
 # Tools that would be installed by our bootstrap
 BOOTSTRAP_TOOLS=("node" "npm" "go" "rust" "cargo" "gh" "bun")
+# AI/ML tools installed by bootstrap
+AI_TOOLS=("ollama" "chatblade" "chatgpt" "litellm")
 
 echo "System tools (built into macOS):"
 for tool in "${SYSTEM_TOOLS[@]}"; do
@@ -352,6 +354,20 @@ done
 
 if [ "$BOOTSTRAP_TOOLS_FOUND" -eq 0 ]; then
     print_clean "No bootstrap-managed tools found"
+fi
+
+echo "AI/ML tools:"
+AI_TOOLS_FOUND=0
+for tool in "${AI_TOOLS[@]}"; do
+    if command -v "$tool" &> /dev/null; then
+        VERSION=$($tool --version 2>/dev/null | head -1 || echo "installed")
+        print_found "$tool: $VERSION"
+        AI_TOOLS_FOUND=1
+    fi
+done
+
+if [ "$AI_TOOLS_FOUND" -eq 0 ]; then
+    print_clean "No AI/ML tools found"
 fi
 
 # Check Version Managers
