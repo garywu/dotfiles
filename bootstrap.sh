@@ -205,10 +205,8 @@ print_status "Using repository: $REPO_URL"
 print_status "Initializing chezmoi and applying dotfiles..."
 chezmoi init --apply "$REPO_URL" || print_error "Failed to initialize chezmoi"
 
-# Copy Home Manager configuration to the correct location
-print_status "Setting up Home Manager configuration..."
-mkdir -p "$HOME/.config/home-manager"
-cp "$HOME/.dotfiles/nix/home.nix" "$HOME/.config/home-manager/home.nix" || print_error "Failed to copy home.nix"
+# Home Manager configuration is managed by chezmoi
+print_status "Home Manager configuration will be applied by chezmoi..."
 
 # Remove temporary chezmoi to avoid conflicts with Home Manager
 print_status "Removing temporary chezmoi installation..."

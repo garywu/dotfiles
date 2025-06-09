@@ -61,6 +61,14 @@
     curl        # Network transfer
     tree        # Directory tree
 
+    # AI/ML Tools
+    ollama          # Local LLM inference server (CLI)
+    chatblade       # CLI Swiss Army Knife for ChatGPT
+    chatgpt-cli     # Interactive CLI for ChatGPT
+    claude-code     # Agentic coding tool for terminal
+    huggingface-hub # Hugging Face model hub CLI
+    litellm         # Use any LLM as drop-in replacement for GPT-3.5-turbo
+
     # Advanced CLI tools
     chezmoi     # Dotfiles management
     mosh        # Robust remote shell

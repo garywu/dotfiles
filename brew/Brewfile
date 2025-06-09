@@ -7,6 +7,13 @@ cask "tableplus"                 # Database GUI
 cask "dbeaver-community"         # Database tool
 cask "webtorrent"                # BitTorrent client
 
+# AI/ML GUI Applications
+cask "chatgpt"                   # Desktop application for ChatGPT
+cask "cherry-studio"             # Desktop client for multiple LLM providers
+cask "lm-studio"                 # GUI for running local LLMs
+cask "jan"                       # Open-source ChatGPT alternative
+cask "gpt4all"                   # Run LLMs locally with GPU support
+
 # Cloud Development Tools (Mac-specific installers)
 brew "awscli"                    # AWS CLI (prefer Homebrew version on Mac)
 cask "google-cloud-sdk"          # Google Cloud SDK
