@@ -272,8 +272,10 @@ print_status "Verify with: /usr/bin/env bash --version (should show 5.2.x)"
 print_status "Setting up fish as default shell..."
 
 # Store current shell for restoration (used by uninstall script)
-CURRENT_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
-echo "ORIGINAL_SHELL=$CURRENT_SHELL" > "$HOME/.dotfiles/.shell_backup"
+if [ ! -f "$HOME/.dotfiles/.shell_backup" ]; then
+  CURRENT_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
+  echo "ORIGINAL_SHELL=$CURRENT_SHELL" > "$HOME/.dotfiles/.shell_backup"
+fi
 
 # Add Nix fish to /etc/shells if not already there
 FISH_PATH="$HOME/.nix-profile/bin/fish"

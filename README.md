@@ -90,6 +90,12 @@ This approach ensures that your **development workflow** (CLI tools, languages, 
 - **Development**: Neovim, tmux, Git, GitHub CLI, htop, jq, yq
 - **Security**: sops, age, pass, gnupg
 
+### 🤖 AI/ML Tools (via Nix)
+- **ollama**: Local LLM inference server (CLI)
+- **chatblade**: CLI Swiss Army Knife for ChatGPT
+- **chatgpt-cli**: Interactive CLI for ChatGPT
+- **litellm**: Use any LLM as drop-in replacement for GPT-3.5-turbo
+
 ### 🖥️ GUI Applications (via Homebrew - macOS only)
 - **Development**: Docker Desktop, iTerm2, Postman, Insomnia
 - **Databases**: TablePlus, DBeaver Community
@@ -108,9 +114,10 @@ This approach ensures that your **development workflow** (CLI tools, languages, 
 ~/.dotfiles/
 ├── bootstrap.sh              # 🚀 Main installation script
 ├── unbootstrap.sh            # 🗑️  Complete removal/rollback script  
-├── nix/
-│   ├── home.nix             # Home Manager configuration
-│   └── flake.nix            # Nix flake configuration
+├── chezmoi/
+│   └── dot_config/
+│       └── private_home-manager/
+│           └── home.nix      # 📦 Home Manager configuration (single source of truth)
 ├── brew/
 │   └── Brewfile             # Homebrew packages (macOS GUI apps)
 ├── scripts/
@@ -122,6 +129,23 @@ This approach ensures that your **development workflow** (CLI tools, languages, 
 ```
 
 **Symmetric Design**: Setup with `./bootstrap.sh`, teardown with `./unbootstrap.sh` - both in the root for easy discovery.
+
+### 🏗️ Architecture Principles
+
+This setup follows three core principles:
+
+1. **Everything under git control** - All configurations are version controlled
+2. **Whole system must be consistent** - No conflicting package managers or configs  
+3. **Single source of truth** - One canonical location for each configuration
+
+**Configuration Flow**:
+```
+Source: chezmoi/dot_config/private_home-manager/home.nix
+   ↓ (chezmoi apply)
+Deploy: ~/.config/home-manager/home.nix  
+   ↓ (home-manager switch)
+Result: Installed packages in ~/.nix-profile/
+```
 
 ## 🔄 Complete Removal/Rollback
 
@@ -199,7 +223,7 @@ If you prefer to understand each step:
 
 4. **Activate Home Manager**:
    ```bash
-   cd ~/.dotfiles/nix && home-manager switch
+   home-manager switch
    ```
 
 5. **Install GUI apps** (macOS only):
@@ -220,9 +244,28 @@ brew update && brew upgrade
 ```
 
 ### Add New Tools
-1. **CLI tools**: Add to `nix/home.nix` in the `home.packages` list
+1. **CLI tools**: Add to `chezmoi/dot_config/private_home-manager/home.nix` in the `home.packages` list
 2. **GUI apps**: Add to `brew/Brewfile`
-3. **Run**: `home-manager switch` or `brew bundle`
+3. **Deploy changes**: `chezmoi apply && home-manager switch`
+4. **Commit**: `git add . && git commit -m "Add new tools"`
+
+### Making Configuration Changes
+
+Follow the **principled workflow**:
+
+```bash
+# 1. Edit source configuration
+vim chezmoi/dot_config/private_home-manager/home.nix
+
+# 2. Deploy via chezmoi  
+chezmoi apply
+
+# 3. Apply via Home Manager
+home-manager switch
+
+# 4. Commit changes
+git add . && git commit -m "Update configuration"
+```
 
 ## 🚨 Troubleshooting
 
@@ -238,8 +281,12 @@ brew update && brew upgrade
 - Review bootstrap logs for specific errors
 
 **Home Manager switch fails**:
-- Check `nix/home.nix` syntax
+- Check `chezmoi/dot_config/private_home-manager/home.nix` syntax
 - Run `home-manager switch --show-trace` for detailed errors
+
+**Chezmoi conflicts during apply**:
+- Press `O` (capital O) to "Overwrite all" when prompted
+- Or use `chezmoi apply --force` to skip prompts
 
 ### Reset and Retry
 ```bash
@@ -248,6 +295,15 @@ brew update && brew upgrade
 
 # Fresh start
 ./bootstrap.sh
+```
+
+### Check Home Manager Generations
+```bash
+# View configuration history
+home-manager generations
+
+# Rollback to previous generation if needed
+home-manager switch --switch-generation 2
 ```
 
 ## 🤝 Contributing
@@ -264,12 +320,3 @@ MIT License - see LICENSE file for details
 ---
 
 **Ready to get started? Just run `./bootstrap.sh` and let the automation handle the rest!** 🚀 
-## 🔍 System State Check
-
-Before running bootstrap, you can check your system's current state to avoid conflicts:
-
-```bash
-./check.sh
-```
-
-The check script provides comprehensive system auditing and cleanup capabilities.

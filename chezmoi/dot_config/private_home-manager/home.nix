@@ -8,6 +8,12 @@
   home.username = "admin";
   home.homeDirectory = "/Users/admin";
 
+  # Add npm and pipx bin directories to PATH
+  home.sessionPath = [
+    "$HOME/.npm-global/bin"
+    "$HOME/.local/bin"
+  ];
+
   # This value determines the Home Manager release that your configuration is compatible with.
   home.stateVersion = "24.05";
 
@@ -62,12 +68,10 @@
     tree        # Directory tree
 
     # AI/ML Tools
-    ollama          # Local LLM inference server (CLI)
-    chatblade       # CLI Swiss Army Knife for ChatGPT
-    chatgpt-cli     # Interactive CLI for ChatGPT
-    # claude-code     # Agentic coding tool for terminal (unfree license)
-    # python312Packages.huggingface-hub # Hugging Face model hub CLI (python package)
-    litellm         # Use any LLM as drop-in replacement for GPT-3.5-turbo
+    # ollama is installed via Homebrew on macOS (see bootstrap.sh)
+    # Note: chatblade, chatgpt-cli, litellm not available in nixpkgs
+    # Install manually with: pip install chatblade litellm chatgpt-cli
+    # Or use pipx: pipx install chatblade && pipx install litellm
 
     # Advanced CLI tools
     chezmoi     # Dotfiles management
@@ -86,6 +90,13 @@
     gnupg       # GNU Privacy Guard for encryption
     envsubst    # Environment variable substitution
     dotenv-cli  # Load .env files from command line
+
+    # KeePass-compatible tools
+    keepassxc   # KeePassXC GUI and CLI (keepassxc-cli)
+    git-credential-keepassxc  # Git credential helper for KeePassXC
+
+    # Documentation tools
+    # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
   ];
 
   # Configure basic programs
@@ -124,6 +135,11 @@
         if test -e /nix/var/nix/profiles/default/etc/profile.d/nix.fish
           source /nix/var/nix/profiles/default/etc/profile.d/nix.fish
         end
+
+        # Add pipx and npm paths
+        set -gx PIPX_BIN_DIR $HOME/.local/bin
+        set -gx NPM_PREFIX $HOME/.npm-global
+        set -gx PATH $PIPX_BIN_DIR $NPM_PREFIX/bin $PATH
       '';
     };
 
@@ -144,4 +160,6 @@
       };
     };
   };
+
+  home-manager.backupFileExtension = "backup";
 } 
