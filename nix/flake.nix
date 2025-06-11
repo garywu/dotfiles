@@ -2,9 +2,9 @@
   description = "Cross-platform development environment";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -70,6 +70,22 @@
       homeConfigurations."admin" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [ ./home.nix ];
+      };
+
+      devShells.${system}.python = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          python311Full
+          python311Packages.pip
+          python311Packages.black
+          python311Packages.flake8
+          python311Packages.pytest
+          python311Packages.ipython
+          pipx
+        ];
+        shellHook = ''
+          echo "🐍 Python development environment loaded!"
+          echo "Available: python, pip, black, flake8, pytest, ipython, pipx"
+        '';
       };
     };
 } 

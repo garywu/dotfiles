@@ -383,6 +383,15 @@ if [ "$STATE_DIRS_FOUND" -eq 0 ]; then
     print_clean "No leftover state directories found"
 fi
 
+# Check for extra files/folders in home directory that should not be there
+print_section "Extra files/folders in home directory"
+EXTRA_ITEMS=(bin brew scripts starship templates README.md unbootstrap.sh bootstrap.sh check.sh fish nix docs notes logs mint.json favicon.svg warp)
+for item in "${EXTRA_ITEMS[@]}"; do
+    if [ -e "$HOME/$item" ]; then
+        print_found "Extra item in home directory: $HOME/$item"
+    fi
+done
+
 # Summary
 print_section "Summary"
 if [ ${#FOUND_ITEMS[@]} -eq 0 ]; then

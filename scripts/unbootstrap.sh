@@ -663,6 +663,32 @@ uninstall() {
     
     print_status "Uninstallation completed successfully!"
     print_status "Please restart your terminal to apply all changes"
+
+    # Remove extra files/folders in home directory that should not be there
+    EXTRA_ITEMS=(bin brew scripts starship templates README.md unbootstrap.sh bootstrap.sh check.sh fish nix docs notes logs mint.json favicon.svg warp)
+    EXTRA_TO_REMOVE=()
+    for item in "${EXTRA_ITEMS[@]}"; do
+        if [ -e "$HOME/$item" ]; then
+            EXTRA_TO_REMOVE+=("$HOME/$item")
+        fi
+    done
+
+    if [ ${#EXTRA_TO_REMOVE[@]} -gt 0 ]; then
+        print_warning "The following extra files/folders will be removed from your home directory:"
+        for item in "${EXTRA_TO_REMOVE[@]}"; do
+            echo "  $item"
+        done
+        echo -n "Are you sure you want to delete these items? (yes/no): "
+        read confirm
+        if [[ "$confirm" == "yes" ]]; then
+            for item in "${EXTRA_TO_REMOVE[@]}"; do
+                rm -rf "$item"
+                print_status "Removed $item"
+            done
+        else
+            print_status "No files were deleted."
+        fi
+    fi
 }
 
 # Run the uninstallation

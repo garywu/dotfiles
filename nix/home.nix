@@ -86,8 +86,8 @@
     # Environment Variables & Secrets Management
     sops        # Secrets management with encryption
     age         # Simple, modern encryption tool
-    # pass        # UNIX password manager (commented out: broken dependency)
-    # gnupg       # GNU Privacy Guard for encryption (commented out: broken dependency)
+    pass        # UNIX password manager
+    gnupg       # GNU Privacy Guard for encryption
     envsubst    # Environment variable substitution
     dotenv-cli  # Load .env files from command line
 

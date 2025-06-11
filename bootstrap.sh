@@ -201,9 +201,11 @@ fi
 
 print_status "Using repository: $REPO_URL"
 
-# Initialize chezmoi and apply your dotfiles
-print_status "Initializing chezmoi and applying dotfiles..."
-chezmoi init --apply "$REPO_URL" || print_error "Failed to initialize chezmoi"
+# Sync chezmoi-managed files from repo to Chezmoi's source directory
+rsync -a --delete "$HOME/.dotfiles/chezmoi/" "$HOME/.local/share/chezmoi/"
+
+# Apply dotfiles
+chezmoi apply
 
 # Home Manager configuration is managed by chezmoi
 print_status "Home Manager configuration will be applied by chezmoi..."
