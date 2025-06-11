@@ -1,7 +1,34 @@
-#!/bin/bash
+#!/bin/sh
 
-# Exit on any error
-set -e
+# Check for old Bash and handle compatibility
+if [ -n "$BASH_VERSION" ]; then
+    BASH_MAJOR_VERSION=$(echo $BASH_VERSION | cut -d. -f1)
+    if [ "$BASH_MAJOR_VERSION" -lt 4 ]; then
+        echo "⚠️  Detected old Bash version: $BASH_VERSION"
+        echo "   macOS ships with Bash 3.2 (2007) due to licensing."
+        echo "   Modern features may not work properly."
+        echo ""
+        echo "🔧 Installing modern Bash via Nix (will be available after bootstrap)..."
+        echo ""
+    fi
+fi
+
+# Setup logging
+BOOTSTRAP_LOG="$HOME/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+mkdir -p "$(dirname "$BOOTSTRAP_LOG")"
+
+# Function to log and display
+log_and_echo() {
+    echo "$1" | tee -a "$BOOTSTRAP_LOG"
+}
+
+echo "Bootstrap started at $(date)" | tee "$BOOTSTRAP_LOG"
+echo "System: $(uname -a)" | tee -a "$BOOTSTRAP_LOG"
+echo "User: $(whoami)" | tee -a "$BOOTSTRAP_LOG"
+echo "PWD: $(pwd)" | tee -a "$BOOTSTRAP_LOG"
+echo "PATH: $PATH" | tee -a "$BOOTSTRAP_LOG"
+echo "Log file: $BOOTSTRAP_LOG" | tee -a "$BOOTSTRAP_LOG"
+echo "---" | tee -a "$BOOTSTRAP_LOG"
 
 # Colors for output
 RED='\033[0;31m'
@@ -16,144 +43,96 @@ print_status() {
 
 print_error() {
     echo -e "${RED}Error:${NC} $1"
+    exit 1
 }
 
 print_warning() {
     echo -e "${YELLOW}Warning:${NC} $1"
 }
 
-# Check if running on macOS
-if [[ "$(uname)" != "Darwin" ]]; then
-    print_error "This script is designed for macOS only"
-    exit 1
-fi
-
-# Check if running as root
-if [[ $EUID -eq 0 ]]; then
-    print_error "This script should not be run as root"
-    exit 1
-fi
-
-# Get the directory where the script is located
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
-
-# Function to check if a command exists
+# Check if a command exists
 command_exists() {
     command -v "$1" &> /dev/null
 }
 
-# Function to install Homebrew
-install_homebrew() {
-    if ! command_exists brew; then
+# Check if we're in a fresh shell with Nix environment
+if ! command_exists nix; then
+    print_status "Installing Nix..."
+    curl -L https://nixos.org/nix/install > /tmp/nix-install.sh
+    sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
+    rm /tmp/nix-install.sh
+    
+    print_status "Nix installed! Please restart your terminal and run this script again."
+    exit 0
+fi
+
+# Check if Home Manager is installed
+if ! command_exists home-manager; then
+    print_status "Installing Home Manager..."
+    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+    nix-channel --update
+    export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
+    
+    # Install Home Manager
+    nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
+    
+    print_status "Home Manager installed! Please restart your terminal and run this script again."
+    exit 0
+fi
+
+# Set NIX_PATH if not set (needed for home-manager to work properly)
+if [ -z "$NIX_PATH" ]; then
+    export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
+fi
+
+# Install chezmoi if not present
+if ! command_exists chezmoi; then
+    print_status "Installing chezmoi..."
+    nix-env -iA nixpkgs.chezmoi || print_error "Failed to install chezmoi"
+fi
+
+# Get the repository URL
+if [ -d .git ]; then
+    REPO_URL=$(git remote get-url origin 2>/dev/null) || print_error "Not a git repository or no remote 'origin' found"
+else
+    print_error "Not a git repository"
+fi
+
+print_status "Using repository: $REPO_URL"
+
+# Initialize chezmoi and apply your dotfiles
+print_status "Initializing chezmoi and applying dotfiles..."
+chezmoi init --apply "$REPO_URL" || print_error "Failed to initialize chezmoi"
+
+# Activate Home-Manager configuration
+print_status "Activating Home-Manager configuration..."
+(cd "$HOME/.dotfiles/nix" && home-manager switch) || print_warning "home-manager switch failed"
+
+# On macOS, install Homebrew if not present and then install GUI apps
+if [ "$(uname)" = "Darwin" ]; then
+    # Check if Homebrew is installed and working
+    if [ -f "/opt/homebrew/bin/brew" ] || [ -f "/usr/local/bin/brew" ]; then
+        print_status "Homebrew is already installed"
+        # Source Homebrew environment
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        # Install GUI apps via Brewfile
+        print_status "Installing GUI apps via Brewfile..."
+        brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
+    else
         print_status "Installing Homebrew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         
-        # Add Homebrew to PATH if needed
-        if [[ -f /opt/homebrew/bin/brew ]]; then
-            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
-    else
-        print_status "Homebrew is already installed"
+        # Add Homebrew to PATH
+        print_status "Configuring Homebrew in PATH..."
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        
+        print_status "Homebrew installed! Please restart your terminal and run this script again."
+        exit 0
     fi
-}
+fi
 
-# Function to install Nix using Determinate Nix Installer (more reliable)
-install_nix() {
-    if ! command_exists nix; then
-        print_status "Installing Nix using Determinate Nix Installer..."
-        if curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install; then
-            print_status "Nix installed successfully"
-            # Source Nix environment - try multiple possible locations
-            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-                . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-            elif [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
-                . ~/.nix-profile/etc/profile.d/nix.sh
-            fi
-        else
-            print_error "Failed to install Nix"
-            exit 1
-        fi
-    else
-        print_status "Nix is already installed"
-    fi
-}
-
-# Function to install Home Manager
-install_home_manager() {
-    if ! command_exists home-manager; then
-        print_status "Installing Home Manager..."
-        if nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager && \
-           nix-channel --update && \
-           nix-shell '<home-manager>' -A install; then
-            print_status "Home Manager installed successfully"
-        else
-            print_error "Failed to install Home Manager"
-            exit 1
-        fi
-    else
-        print_status "Home Manager is already installed"
-    fi
-}
-
-# Function to check if running on Apple Silicon
-is_apple_silicon() {
-    [[ "$(uname -m)" == "arm64" ]]
-}
-
-# Function to check for and remove existing Nix APFS volume
-check_nix_volume() {
-    if is_apple_silicon; then
-        print_status "Checking for existing Nix APFS volume..."
-        NIX_VOLUME=$(diskutil list | grep "Nix Store" | awk '{print $NF}')
-        if [ -n "$NIX_VOLUME" ]; then
-            print_warning "Found existing Nix volume: $NIX_VOLUME"
-            print_warning "This volume needs to be removed before installing Nix"
-            print_warning "Please run the unbootstrap script first to remove it"
-            exit 1
-        fi
-    fi
-}
-
-# Main installation function
-install_requirements() {
-    print_status "Starting clean installation process..."
-    
-    # Check for existing Nix volume on Apple Silicon
-    check_nix_volume
-    
-    # Install Homebrew first
-    install_homebrew
-    
-    # Install packages from Brewfile (GUI apps and Mac-specific tools only)
-    print_status "Installing packages from Brewfile..."
-    cd "$DOTFILES_DIR/brew" && brew bundle
-    
-    # Install Nix (more reliable installer)
-    install_nix
-    
-    # Install Home Manager
-    install_home_manager
-    
-    # Apply Nix configuration (this will install bun and other dev tools)
-    print_status "Applying Nix configuration..."
-    if cd "$DOTFILES_DIR/nix" && home-manager switch; then
-        print_status "Nix configuration applied successfully"
-    else
-        print_error "Failed to apply Nix configuration"
-        exit 1
-    fi
-    
-    # Set Fish as default shell
-    if [ "$SHELL" != "$(which fish)" ]; then
-        print_status "Setting Fish as default shell..."
-        chsh -s "$(which fish)"
-    fi
-    
-    print_status "Installation completed successfully!"
-    print_status "Please restart your terminal to apply all changes"
-}
-
-# Run the installation
-install_requirements 
+print_status "Bootstrap completed!"
+print_status "Your system is now fully configured. Enjoy!"
+echo "Bootstrap completed at $(date)"
+echo "Log saved to: $BOOTSTRAP_LOG" 

@@ -131,15 +131,20 @@
         grep = "rg";
       };
       shellInit = ''
-        # Load Nix environment
+        # Load Nix environment if available
         if test -e /nix/var/nix/profiles/default/etc/profile.d/nix.fish
           source /nix/var/nix/profiles/default/etc/profile.d/nix.fish
         end
-
-        # Add pipx and npm paths
-        set -gx PIPX_BIN_DIR $HOME/.local/bin
-        set -gx NPM_PREFIX $HOME/.npm-global
-        set -gx PATH $PIPX_BIN_DIR $NPM_PREFIX/bin $PATH
+        # Ensure all user-level bins are in PATH
+        set -gx PATH $HOME/.nix-profile/bin $HOME/.npm-global/bin $HOME/.local/bin $PATH
+        # Add Homebrew to PATH if available (Apple Silicon default path)
+        if test -d /opt/homebrew/bin
+          eval (/opt/homebrew/bin/brew shellenv)
+        end
+        # Add Homebrew to PATH if installed in /usr/local (Intel Macs)
+        if test -d /usr/local/bin
+          eval (/usr/local/bin/brew shellenv)
+        end
       '';
     };
 
