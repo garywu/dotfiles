@@ -326,6 +326,21 @@ if [ "$(uname)" = "Darwin" ]; then
     fi
 fi
 
+# Ensure Nix experimental features are enabled for flakes and nix-command
+mkdir -p "$HOME/.config/nix"
+if ! grep -q 'experimental-features = nix-command flakes' "$HOME/.config/nix/nix.conf" 2>/dev/null; then
+  echo 'experimental-features = nix-command flakes' >> "$HOME/.config/nix/nix.conf"
+  print_status "Enabled Nix experimental features: nix-command flakes in ~/.config/nix/nix.conf"
+fi
+
+# Ensure pnpm is available (workaround for broken Nix package)
+if ! command -v pnpm >/dev/null 2>&1; then
+    print_status "pnpm not found via Nix; installing globally with npm as a workaround..."
+    npm install -g pnpm
+else
+    print_status "pnpm is already installed."
+fi
+
 print_status "Bootstrap completed!"
 print_status "Your system is now fully configured. Enjoy!"
 echo "Bootstrap completed at $(date)"

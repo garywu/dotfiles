@@ -97,6 +97,7 @@
 
     # Documentation tools
     # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
+    pnpm
   ];
 
   # Configure basic programs
