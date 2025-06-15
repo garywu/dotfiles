@@ -31,7 +31,7 @@
     # Version managers
     # nvm           # Not available in nixpkgs, use installer instead
     # pyenv         # Commenting out for now, needs testing
-    # rbenv         # Commenting out for now, needs testing  
+    # rbenv         # Commenting out for now, needs testing
     # asdf-vm       # Commenting out for now, needs testing
 
     # Cloud tools
@@ -137,10 +137,12 @@
         end
         # Ensure all user-level bins are in PATH
         set -gx PATH $HOME/.nix-profile/bin $HOME/.npm-global/bin $HOME/.local/bin $PATH
-        # Add Homebrew to PATH (checking Apple Silicon path first)
-        if test -d /opt/homebrew/bin
+        # Add Homebrew to PATH if available
+        if test -d /opt/homebrew
+          set -gx PATH /opt/homebrew/bin $PATH
           eval (/opt/homebrew/bin/brew shellenv)
-        else if test -d /usr/local/bin
+        else if test -d /usr/local
+          set -gx PATH /usr/local/bin $PATH
           eval (/usr/local/bin/brew shellenv)
         end
       '';
@@ -163,4 +165,4 @@
       };
     };
   };
-} 
+}
