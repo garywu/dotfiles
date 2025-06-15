@@ -137,12 +137,10 @@
         end
         # Ensure all user-level bins are in PATH
         set -gx PATH $HOME/.nix-profile/bin $HOME/.npm-global/bin $HOME/.local/bin $PATH
-        # Add Homebrew to PATH if available (Apple Silicon default path)
+        # Add Homebrew to PATH (checking Apple Silicon path first)
         if test -d /opt/homebrew/bin
           eval (/opt/homebrew/bin/brew shellenv)
-        end
-        # Add Homebrew to PATH if installed in /usr/local (Intel Macs)
-        if test -d /usr/local/bin
+        else if test -d /usr/local/bin
           eval (/usr/local/bin/brew shellenv)
         end
       '';
