@@ -8,14 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial changelog setup
-- Pre-commit hook for changelog maintenance
+- Pre-commit hooks configuration with automatic code formatting
+- Architecture documentation (ARCHITECTURE.md) explaining tool separation
+- Example Chezmoi templates for secrets management (SSH config, git config)
+
+### Changed
+- **BREAKING**: Separated Nix/Home Manager from Chezmoi management
+  - Moved home.nix from chezmoi/ to nix/ directory
+  - Home Manager config now directly managed, not through Chezmoi
+  - Chezmoi now only handles secrets and machine-specific templates
+- Updated bootstrap.sh to create proper Home Manager symlink
+- Simplified workflow: edit nix/home.nix directly, no more double-management
 
 ### Fixed
-- Improved Homebrew path detection in fish configuration
-  - Now explicitly checks for /opt/homebrew and /usr/local directories
-  - Adds Homebrew bin directory to PATH before evaluating shellenv
-  - Handles both Apple Silicon and Intel Mac paths correctly
+- Removed blocking changelog pre-commit hook that prevented commits
+- Fixed Fish shell Homebrew path detection for Apple Silicon Macs
+  - Now checks /opt/homebrew/bin/brew first (Apple Silicon)
+  - Falls back to /usr/local/bin/brew (Intel)
+  - Uses test -e instead of test -d for more reliable detection
 
 ## [0.1.0] - 2024-03-19
 

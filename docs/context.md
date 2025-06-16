@@ -28,4 +28,4 @@
 
 ## Next Steps
 - Reboot the Mac.
-- Return to this session and continue troubleshooting or resume the bootstrap process. 
+- Return to this session and continue troubleshooting or resume the bootstrap process.

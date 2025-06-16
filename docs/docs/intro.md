@@ -83,4 +83,4 @@ Your machine specs: **M4 24GB RAM, 500GB Storage**
 
 ---
 
-**💡 Pro Tip**: Start with the [Quick Reference](quick-reference/) section for immediate productivity gains, then dive deeper into specific tool documentation as needed. 
+**💡 Pro Tip**: Start with the [Quick Reference](quick-reference/) section for immediate productivity gains, then dive deeper into specific tool documentation as needed.

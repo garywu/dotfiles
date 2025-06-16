@@ -4,7 +4,7 @@
 When starting a new Fish shell session, the following error appears:
 ```fish
 fish: Unknown command: /usr/local/bin/brew
-~/.config/fish/config.fish (line 1): 
+~/.config/fish/config.fish (line 1):
 /usr/local/bin/brew shellenv
 ^~~~~~~~~~~~~~~~~~^
 in command substitution
@@ -88,4 +88,4 @@ To prevent similar issues:
 ## References
 - [Home Manager Fish Module](https://nix-community.github.io/home-manager/options.html#opt-programs.fish.enable)
 - [Fish Shell Documentation](https://fishshell.com/docs/current/index.html)
-- [Homebrew Installation](https://docs.brew.sh/Installation) 
+- [Homebrew Installation](https://docs.brew.sh/Installation)

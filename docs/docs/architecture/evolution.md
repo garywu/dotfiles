@@ -39,4 +39,4 @@ Below is the chronological evolution of the bootstrap.sh script, extracted from 
 
 ## Conclusion
 
-The evolution of the bootstrap script and architectural decisions reflects a commitment to reproducibility, cross-platform compatibility, and simplicity. By leveraging Nix and Home Manager, the project achieves a robust and maintainable development environment. 
+The evolution of the bootstrap script and architectural decisions reflects a commitment to reproducibility, cross-platform compatibility, and simplicity. By leveraging Nix and Home Manager, the project achieves a robust and maintainable development environment.

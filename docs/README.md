@@ -72,7 +72,7 @@ This setup is built on a **"Nix-first, platform-specific supplements"** philosop
 ### 🎯 Core Benefits
 
 1. **Maximum Portability**: Your CLI environment is identical on any platform
-2. **Zero Conflicts**: Nix prevents dependency hell and version conflicts  
+2. **Zero Conflicts**: Nix prevents dependency hell and version conflicts
 3. **Instant Recovery**: New machine? Clone repo, run bootstrap, get exact environment
 4. **Safe Experimentation**: Try new tools without breaking your setup
 5. **Team Consistency**: Everyone gets exactly the same development tools
@@ -107,7 +107,7 @@ This approach ensures that your **development workflow** (CLI tools, languages, 
 ```
 ~/.dotfiles/
 ├── bootstrap.sh              # 🚀 Main installation script
-├── unbootstrap.sh            # 🗑️  Complete removal/rollback script  
+├── unbootstrap.sh            # 🗑️  Complete removal/rollback script
 ├── nix/
 │   ├── home.nix             # Home Manager configuration
 │   └── flake.nix            # Nix flake configuration
@@ -263,7 +263,7 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Ready to get started? Just run `./bootstrap.sh` and let the automation handle the rest!** 🚀 
+**Ready to get started? Just run `./bootstrap.sh` and let the automation handle the rest!** 🚀
 ## 🔍 System State Check
 
 Before running bootstrap, you can check your system's current state to avoid conflicts:

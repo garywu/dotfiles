@@ -483,4 +483,4 @@ echo "function cached_ai() { ... }" >> ~/.config/fish/config.fish
 
 ---
 
-**💡 Pro Tip**: Combine ChatBlade with KeePassXC for secure API key management and use it alongside Ollama for a complete AI development workflow - online for complex tasks, local for privacy-sensitive queries! 
+**💡 Pro Tip**: Combine ChatBlade with KeePassXC for secure API key management and use it alongside Ollama for a complete AI development workflow - online for complex tasks, local for privacy-sensitive queries!

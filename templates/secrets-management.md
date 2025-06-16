@@ -315,14 +315,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       # Install SOPS
       - name: Install SOPS
         run: |
           wget https://github.com/mozilla/sops/releases/download/v3.7.3/sops-v3.7.3.linux
           chmod +x sops-v3.7.3.linux
           sudo mv sops-v3.7.3.linux /usr/local/bin/sops
-      
+
       # Decrypt secrets
       - name: Decrypt secrets
         run: |
@@ -382,4 +382,4 @@ echo "API URL: ${API_URL:-http://localhost:3000}"
 - [SOPS Documentation](https://github.com/mozilla/sops)
 - [direnv Documentation](https://direnv.net/)
 - [12-Factor App Config](https://12factor.net/config)
-- [OWASP Secrets Management](https://owasp.org/www-community/vulnerabilities/Password_Plaintext_Storage) 
+- [OWASP Secrets Management](https://owasp.org/www-community/vulnerabilities/Password_Plaintext_Storage)

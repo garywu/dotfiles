@@ -34,7 +34,7 @@ fi
 # Function to set up Prometheus
 setup_prometheus() {
     print_status "Setting up Prometheus..."
-    
+
     # Create Prometheus configuration
     mkdir -p ~/monitoring/prometheus
     cat > ~/monitoring/prometheus/prometheus.yml << 'EOL'
@@ -46,11 +46,11 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
-  
+
   - job_name: 'node'
     static_configs:
       - targets: ['localhost:9100']
-  
+
   - job_name: 'cadvisor'
     static_configs:
       - targets: ['localhost:8080']
@@ -63,7 +63,7 @@ EOL
 # Function to set up Grafana
 setup_grafana() {
     print_status "Setting up Grafana..."
-    
+
     # Create Grafana configuration
     mkdir -p ~/monitoring/grafana
     cat > ~/monitoring/grafana/grafana.ini << 'EOL'
@@ -87,7 +87,7 @@ EOL
 # Function to set up Loki
 setup_loki() {
     print_status "Setting up Loki..."
-    
+
     # Create Loki configuration
     mkdir -p ~/monitoring/loki
     cat > ~/monitoring/loki/loki-config.yml << 'EOL'
@@ -137,7 +137,7 @@ EOL
 # Function to set up Promtail
 setup_promtail() {
     print_status "Setting up Promtail..."
-    
+
     # Create Promtail configuration
     mkdir -p ~/monitoring/promtail
     cat > ~/monitoring/promtail/promtail-config.yml << 'EOL'
@@ -177,7 +177,7 @@ EOL
 # Function to set up Elasticsearch
 setup_elasticsearch() {
     print_status "Setting up Elasticsearch..."
-    
+
     # Create Elasticsearch configuration
     mkdir -p ~/monitoring/elasticsearch
     cat > ~/monitoring/elasticsearch/elasticsearch.yml << 'EOL'
@@ -195,7 +195,7 @@ EOL
 # Function to set up Kibana
 setup_kibana() {
     print_status "Setting up Kibana..."
-    
+
     # Create Kibana configuration
     mkdir -p ~/monitoring/kibana
     cat > ~/monitoring/kibana/kibana.yml << 'EOL'
@@ -210,7 +210,7 @@ EOL
 # Function to set up InfluxDB
 setup_influxdb() {
     print_status "Setting up InfluxDB..."
-    
+
     # Create InfluxDB configuration
     mkdir -p ~/monitoring/influxdb
     cat > ~/monitoring/influxdb/influxdb.conf << 'EOL'
@@ -234,7 +234,7 @@ EOL
 # Function to set up Chronograf
 setup_chronograf() {
     print_status "Setting up Chronograf..."
-    
+
     # Start Chronograf
     chronograf --host localhost --port 8888 &
 }
@@ -242,7 +242,7 @@ setup_chronograf() {
 # Function to set up Node Exporter
 setup_node_exporter() {
     print_status "Setting up Node Exporter..."
-    
+
     # Start Node Exporter
     node_exporter &
 }
@@ -250,7 +250,7 @@ setup_node_exporter() {
 # Function to set up cAdvisor
 setup_cadvisor() {
     print_status "Setting up cAdvisor..."
-    
+
     # Start cAdvisor
     cadvisor -port 8080 &
 }
@@ -258,7 +258,7 @@ setup_cadvisor() {
 # Function to set up Netdata
 setup_netdata() {
     print_status "Setting up Netdata..."
-    
+
     # Start Netdata
     netdata -D &
 }
@@ -266,7 +266,7 @@ setup_netdata() {
 # Function to create monitoring dashboard
 create_dashboard() {
     print_status "Creating monitoring dashboard..."
-    
+
     # Create a simple HTML dashboard
     mkdir -p ~/monitoring/dashboard
     cat > ~/monitoring/dashboard/index.html << 'EOL'
@@ -309,7 +309,7 @@ EOL
 # Main function
 main() {
     print_status "Starting monitoring setup..."
-    
+
     # Set up monitoring tools
     setup_prometheus
     setup_grafana
@@ -322,10 +322,10 @@ main() {
     setup_node_exporter
     setup_cadvisor
     setup_netdata
-    
+
     # Create dashboard
     create_dashboard
-    
+
     print_status "Monitoring setup completed!"
     print_status "Access the monitoring dashboard at: ~/monitoring/dashboard/index.html"
     print_status "Grafana: http://localhost:3000"
@@ -335,4 +335,4 @@ main() {
 }
 
 # Run the main function
-main 
+main

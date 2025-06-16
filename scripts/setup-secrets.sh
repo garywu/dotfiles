@@ -32,19 +32,19 @@ log_error() {
 # Check if required tools are installed
 check_dependencies() {
     local missing_tools=()
-    
+
     if ! command -v age-keygen &> /dev/null; then
         missing_tools+=("age")
     fi
-    
+
     if ! command -v sops &> /dev/null; then
         missing_tools+=("sops")
     fi
-    
+
     if ! command -v yq &> /dev/null; then
         missing_tools+=("yq")
     fi
-    
+
     if [ ${#missing_tools[@]} -ne 0 ]; then
         log_error "Missing required tools: ${missing_tools[*]}"
         log_info "Please install via: nix-env -iA nixpkgs.age nixpkgs.sops nixpkgs.yq"
@@ -57,22 +57,22 @@ check_dependencies() {
 setup_age_key() {
     local age_key_dir="$HOME/.config/sops/age"
     local age_key_file="$age_key_dir/keys.txt"
-    
+
     if [[ -f "$age_key_file" ]]; then
         log_success "Age key already exists at $age_key_file"
         return 0
     fi
-    
+
     log_info "Creating age key directory..."
     mkdir -p "$age_key_dir"
-    
+
     log_info "Generating new age key..."
     age-keygen -o "$age_key_file"
     chmod 600 "$age_key_file"
-    
+
     log_success "Age key generated at $age_key_file"
     log_warning "IMPORTANT: Back up this key file! You won't be able to decrypt secrets without it."
-    
+
     # Display public key for sharing
     local public_key=$(grep "public key:" "$age_key_file" | cut -d: -f2 | tr -d ' ')
     log_info "Your public key (share with team): $public_key"
@@ -83,7 +83,7 @@ create_sops_config() {
     local project_dir=${1:-$(pwd)}
     local sops_config="$project_dir/.sops.yaml"
     local age_key_file="$HOME/.config/sops/age/keys.txt"
-    
+
     if [[ -f "$sops_config" ]]; then
         log_warning "SOPS configuration already exists at $sops_config"
         read -p "Overwrite? [y/N]: " -n 1 -r
@@ -92,16 +92,16 @@ create_sops_config() {
             return 0
         fi
     fi
-    
+
     if [[ ! -f "$age_key_file" ]]; then
         log_error "Age key not found. Run setup_age_key first."
         return 1
     fi
-    
+
     local public_key=$(grep "public key:" "$age_key_file" | cut -d: -f2 | tr -d ' ')
-    
+
     log_info "Creating SOPS configuration..."
-    
+
     cat > "$sops_config" << EOF
 keys:
   - &user_key $public_key
@@ -113,19 +113,19 @@ creation_rules:
   - path_regex: \.env\.secrets$
     age: *user_key
 EOF
-    
+
     log_success "SOPS configuration created at $sops_config"
 }
 
 # Create example secrets structure
 create_secrets_structure() {
     local project_dir=${1:-$(pwd)}
-    
+
     log_info "Creating secrets directory structure..."
-    
+
     # Create secrets directory
     mkdir -p "$project_dir/secrets"
-    
+
     # Create example .env.example file
     if [[ ! -f "$project_dir/.env.example" ]]; then
         cat > "$project_dir/.env.example" << EOF
@@ -151,7 +151,7 @@ DATABASE_URL=postgresql://localhost/myapp_development
 EOF
         log_success "Created .env.example template"
     fi
-    
+
     # Create example encrypted secrets file
     if [[ ! -f "$project_dir/secrets/dev.yaml" ]]; then
         # Create temporary unencrypted file
@@ -160,26 +160,26 @@ EOF
 api:
   key: "dev-api-key-placeholder"
   secret: "dev-api-secret-placeholder"
-  
+
 database:
   password: "dev-db-password"
-  
+
 jwt:
   secret: "dev-jwt-secret-super-long-random-string"
-  
+
 external_services:
   stripe_secret_key: "sk_test_placeholder"
   sendgrid_api_key: "SG.placeholder"
 EOF
-        
+
         # Encrypt the file
         sops -e "/tmp/dev_secrets.yaml" > "$project_dir/secrets/dev.yaml"
         rm "/tmp/dev_secrets.yaml"
-        
+
         log_success "Created encrypted development secrets at secrets/dev.yaml"
         log_info "Edit with: sops secrets/dev.yaml"
     fi
-    
+
     # Create .envrc for direnv integration
     if [[ ! -f "$project_dir/.envrc" ]]; then
         cat > "$project_dir/.envrc" << 'EOF'
@@ -198,7 +198,7 @@ if [[ -f secrets/dev.yaml ]]; then
         eval "$(sops -d secrets/dev.yaml | yq eval '.api | to_entries | .[] | "export API_" + (.key | upcase) + "=" + .value' -)"
         eval "$(sops -d secrets/dev.yaml | yq eval '.database | to_entries | .[] | "export DB_" + (.key | upcase) + "=" + .value' -)"
         eval "$(sops -d secrets/dev.yaml | yq eval '.jwt | to_entries | .[] | "export JWT_" + (.key | upcase) + "=" + .value' -)"
-        
+
         echo "✅ Secrets loaded from secrets/dev.yaml"
     else
         echo "❌ Cannot decrypt secrets/dev.yaml - check your age key"
@@ -213,7 +213,7 @@ EOF
         log_success "Created .envrc with secrets integration"
         log_info "Run 'direnv allow' to enable automatic secret loading"
     fi
-    
+
     # Update .gitignore
     local gitignore="$project_dir/.gitignore"
     if [[ -f "$gitignore" ]]; then
@@ -249,9 +249,9 @@ EOF
 create_helper_scripts() {
     local project_dir=${1:-$(pwd)}
     local scripts_dir="$project_dir/scripts"
-    
+
     mkdir -p "$scripts_dir"
-    
+
     # Secret loading script
     cat > "$scripts_dir/load-secrets.sh" << 'EOF'
 #!/bin/bash
@@ -279,10 +279,10 @@ eval "$(sops -d "$SECRETS_FILE" | yq eval '.jwt | to_entries | .[] | "export JWT
 
 echo "✅ Secrets loaded from $SECRETS_FILE"
 EOF
-    
+
     chmod +x "$scripts_dir/load-secrets.sh"
     log_success "Created secrets loading script at scripts/load-secrets.sh"
-    
+
     # Secret rotation script
     cat > "$scripts_dir/rotate-secrets.sh" << 'EOF'
 #!/bin/bash
@@ -323,7 +323,7 @@ esac
 
 echo "🚀 Don't forget to restart your application!"
 EOF
-    
+
     chmod +x "$scripts_dir/rotate-secrets.sh"
     log_success "Created secrets rotation script at scripts/rotate-secrets.sh"
 }
@@ -365,31 +365,31 @@ show_usage_examples() {
 # Main execution
 main() {
     local project_dir=${1:-$(pwd)}
-    
+
     echo "🔐 Secrets Management Setup"
     echo "==========================="
     echo ""
     log_info "Setting up secrets management for: $project_dir"
     echo ""
-    
+
     # Check dependencies
     check_dependencies
-    
+
     # Setup age key
     setup_age_key
-    
+
     # Create SOPS configuration
     create_sops_config "$project_dir"
-    
+
     # Create secrets structure
     create_secrets_structure "$project_dir"
-    
+
     # Create helper scripts
     create_helper_scripts "$project_dir"
-    
+
     # Show usage examples
     show_usage_examples
 }
 
 # Run main function
-main "$@" 
+main "$@"

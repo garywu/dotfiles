@@ -171,7 +171,7 @@ git-credential-keepassxc
 # Add GitHub credentials
 keepassxc-cli add MyPasswords.kdbx -u yourusername -p "your_token" github.com
 
-# Add GitLab credentials  
+# Add GitLab credentials
 keepassxc-cli add MyPasswords.kdbx -u yourusername -p "your_token" gitlab.com
 
 # Add self-hosted Git
@@ -460,4 +460,4 @@ http GET api.example.com/data Authorization:"Bearer $API_TOKEN"
 
 ---
 
-**💡 Pro Tip**: Start with `keepassxc-cli` for full KeePass compatibility, then add `git-credential-keepassxc` for seamless Git integration. The combination provides a complete CLI password management solution! 
+**💡 Pro Tip**: Start with `keepassxc-cli` for full KeePass compatibility, then add `git-credential-keepassxc` for seamless Git integration. The combination provides a complete CLI password management solution!

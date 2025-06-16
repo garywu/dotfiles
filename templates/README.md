@@ -40,4 +40,4 @@ When adding new templates or updating existing ones:
 1. Follow the established format
 2. Test on the target OS
 3. Include common troubleshooting scenarios
-4. Update this README with new templates 
+4. Update this README with new templates

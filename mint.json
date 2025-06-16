@@ -30,7 +30,7 @@
       "url": "cli-tools"
     },
     {
-      "name": "AI Tools", 
+      "name": "AI Tools",
       "url": "ai-tools"
     },
     {
@@ -97,4 +97,4 @@
     "github": "https://github.com/mintlify",
     "linkedin": "https://www.linkedin.com/company/mintsearch"
   }
-} 
+}

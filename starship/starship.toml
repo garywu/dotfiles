@@ -127,4 +127,4 @@ command = "date +%H:%M:%S"
 when = true
 format = "[$output]($style) "
 style = "blue"
-disabled = false 
+disabled = false

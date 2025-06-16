@@ -46,11 +46,11 @@ check_gpu() {
 # Function to set up Python environment
 setup_python_env() {
     print_status "Setting up Python environment..."
-    
+
     # Create a new conda environment
     conda create -n ai-dev python=3.11 -y
     conda activate ai-dev
-    
+
     # Install common AI packages
     pip install --upgrade pip
     pip install torch torchvision torchaudio
@@ -76,10 +76,10 @@ setup_python_env() {
 # Function to set up Ollama
 setup_ollama() {
     print_status "Setting up Ollama..."
-    
+
     # Start Ollama service
     ollama serve &
-    
+
     # Pull common models
     print_status "Pulling common models (this may take a while)..."
     ollama pull llama2
@@ -91,7 +91,7 @@ setup_ollama() {
 # Function to set up vector databases
 setup_vector_dbs() {
     print_status "Setting up vector databases..."
-    
+
     # Create Docker Compose file for vector databases
     cat > docker-compose.yml << 'EOL'
 version: '3.8'
@@ -138,10 +138,10 @@ EOL
 # Function to create example AI project
 create_example_project() {
     print_status "Creating example AI project..."
-    
+
     mkdir -p ~/ai-projects/example
     cd ~/ai-projects/example
-    
+
     # Create requirements.txt
     cat > requirements.txt << 'EOL'
 torch
@@ -156,7 +156,7 @@ fastapi
 uvicorn
 pydantic
 EOL
-    
+
     # Create example script
     cat > example.py << 'EOL'
 from transformers import pipeline
@@ -170,13 +170,13 @@ def main():
     generator = pipeline('text-generation', model='gpt2')
     result = generator('Hello, I am a', max_length=30, num_return_sequences=1)
     print("Generated text:", result[0]['generated_text'])
-    
+
     # Example: Text embeddings with sentence-transformers
     model = SentenceTransformer('all-MiniLM-L6-v2')
     sentences = ["This is an example sentence", "Each sentence is converted"]
     embeddings = model.encode(sentences)
     print("Embeddings shape:", embeddings.shape)
-    
+
     # Example: Vector database with Chroma
     client = chromadb.Client()
     collection = client.create_collection(name="my_collection")
@@ -194,7 +194,7 @@ def main():
 if __name__ == "__main__":
     main()
 EOL
-    
+
     # Create README
     cat > README.md << 'EOL'
 # AI Development Example
@@ -238,22 +238,22 @@ EOL
 # Main function
 main() {
     print_status "Starting AI development environment setup..."
-    
+
     # Check GPU support
     check_gpu
-    
+
     # Set up Python environment
     setup_python_env
-    
+
     # Set up Ollama
     setup_ollama
-    
+
     # Set up vector databases
     setup_vector_dbs
-    
+
     # Create example project
     create_example_project
-    
+
     print_status "AI development environment setup completed!"
     print_status "Example project created at ~/ai-projects/example"
     print_status "To start using the environment:"
@@ -263,4 +263,4 @@ main() {
 }
 
 # Run the main function
-main 
+main

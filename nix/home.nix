@@ -17,6 +17,9 @@
   # This value determines the Home Manager release that your configuration is compatible with.
   home.stateVersion = "24.05";
 
+  # Force rebuild
+  home.extraOutputsToInstall = [ "info" "man" ];
+
   # Define packages to be installed
   home.packages = with pkgs; [
     # Development tools
@@ -31,7 +34,7 @@
     # Version managers
     # nvm           # Not available in nixpkgs, use installer instead
     # pyenv         # Commenting out for now, needs testing
-    # rbenv         # Commenting out for now, needs testing  
+    # rbenv         # Commenting out for now, needs testing
     # asdf-vm       # Commenting out for now, needs testing
 
     # Cloud tools
@@ -86,8 +89,8 @@
     # Environment Variables & Secrets Management
     sops        # Secrets management with encryption
     age         # Simple, modern encryption tool
-    pass        # UNIX password manager
-    gnupg       # GNU Privacy Guard for encryption
+    # pass        # UNIX password manager (commented out: broken dependency)
+    # gnupg       # GNU Privacy Guard for encryption (commented out: broken dependency)
     envsubst    # Environment variable substitution
     dotenv-cli  # Load .env files from command line
 
@@ -97,7 +100,6 @@
 
     # Documentation tools
     # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
-    pnpm
   ];
 
   # Configure basic programs
@@ -138,13 +140,13 @@
         end
         # Ensure all user-level bins are in PATH
         set -gx PATH $HOME/.nix-profile/bin $HOME/.npm-global/bin $HOME/.local/bin $PATH
-        # Add Homebrew to PATH if available (Apple Silicon default path)
-        if test -d /opt/homebrew/bin
+        # Add Homebrew to PATH if available (Apple Silicon first, then Intel)
+        if test -e /opt/homebrew/bin/brew
           eval (/opt/homebrew/bin/brew shellenv)
-        end
-        # Add Homebrew to PATH if installed in /usr/local (Intel Macs)
-        if test -d /usr/local/bin
+        else if test -e /usr/local/bin/brew
           eval (/usr/local/bin/brew shellenv)
+        else if command -v brew >/dev/null 2>&1
+          eval (brew shellenv)
         end
       '';
     };
@@ -166,4 +168,4 @@
       };
     };
   };
-} 
+}

@@ -60,11 +60,11 @@ check_privileges() {
 # Show OS-specific setup information
 show_setup_info() {
     local os=$1
-    
+
     echo ""
     log_info "=== OS-Specific Setup Information ==="
     echo ""
-    
+
     case $os in
         "macos")
             echo "📱 Detected: macOS"
@@ -118,9 +118,9 @@ show_setup_info() {
 # Install prerequisites based on OS
 install_prerequisites() {
     local os=$1
-    
+
     log_info "Installing prerequisites for $os..."
-    
+
     case $os in
         "macos")
             # Check if Xcode Command Line Tools are installed
@@ -134,7 +134,7 @@ install_prerequisites() {
         "ubuntu")
             log_info "Updating system packages..."
             sudo apt update && sudo apt upgrade -y
-            
+
             log_info "Installing essential dependencies..."
             sudo apt install -y \
                 curl \
@@ -150,7 +150,7 @@ install_prerequisites() {
         "wsl2")
             log_info "Updating WSL system packages..."
             sudo apt update && sudo apt upgrade -y
-            
+
             log_info "Installing WSL-specific dependencies..."
             sudo apt install -y \
                 curl \
@@ -174,13 +174,13 @@ install_nix() {
         log_success "Nix is already installed"
         return 0
     fi
-    
+
     log_info "Installing Nix package manager..."
-    
+
     if [[ $(detect_os) == "macos" ]]; then
         # Multi-user installation for macOS
         curl -L https://nixos.org/nix/install | sh -s -- --daemon
-        
+
         # Source Nix profile
         if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
             source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -188,20 +188,20 @@ install_nix() {
     else
         # Single-user installation for Linux/WSL
         curl -L https://nixos.org/nix/install | sh
-        
+
         # Source Nix profile
         if [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
             source ~/.nix-profile/etc/profile.d/nix.sh
         fi
     fi
-    
+
     log_success "Nix installed successfully"
 }
 
 # Run the minimal installer
 run_minimal_installer() {
     log_info "Running minimal installer..."
-    
+
     if [[ -f "./minimal_install.sh" ]]; then
         bash ./minimal_install.sh
     else
@@ -212,7 +212,7 @@ run_minimal_installer() {
 # Run OS-specific bootstrap
 run_bootstrap() {
     local os=$1
-    
+
     case $os in
         "macos")
             if [[ -f "./scripts/bootstrap.sh" ]]; then
@@ -231,7 +231,7 @@ run_bootstrap() {
 # Show next steps
 show_next_steps() {
     local os=$1
-    
+
     echo ""
     log_success "=== Setup Complete! ==="
     echo ""
@@ -245,7 +245,7 @@ show_next_steps() {
     echo "   • Edit ~/.config/fish/config.fish for shell aliases"
     echo "   • Run 'chezmoi edit' to modify dotfiles"
     echo ""
-    
+
     case $os in
         "macos")
             echo "📱 macOS specific:"
@@ -267,7 +267,7 @@ show_next_steps() {
             echo "   • Configure Git credential manager"
             ;;
     esac
-    
+
     echo ""
     log_info "📚 Documentation:"
     echo "   • Main README: README.md"
@@ -281,48 +281,48 @@ show_next_steps() {
 main() {
     echo "🚀 Dotfiles Setup Script"
     echo "======================="
-    
+
     # Check privileges
     check_privileges
-    
+
     # Detect OS
     local os=$(detect_os)
-    
+
     # Show setup information
     show_setup_info $os
-    
+
     # Check if OS is supported
     if [[ $os == "unknown" ]] || [[ $os == "redhat" ]] || [[ $os == "linux" ]]; then
         log_error "Unsupported operating system detected: $os"
         log_info "Please check the templates directory for available setups."
         exit 1
     fi
-    
+
     # Confirm before proceeding
     echo ""
     read -p "$(echo -e ${BLUE}Do you want to proceed with the setup? [y/N]:${NC} )" -n 1 -r
     echo ""
-    
+
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         log_info "Setup cancelled by user."
         exit 0
     fi
-    
+
     # Install prerequisites
     install_prerequisites $os
-    
+
     # Install Nix
     install_nix
-    
+
     # Run minimal installer
     run_minimal_installer
-    
+
     # Run OS-specific bootstrap
     run_bootstrap $os
-    
+
     # Show next steps
     show_next_steps $os
 }
 
 # Run main function
-main "$@" 
+main "$@"

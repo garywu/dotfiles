@@ -354,7 +354,7 @@ end
 
 ---
 
-**💡 Pro Tip**: Start by memorizing the most common aliases (ls, cat, grep), then gradually add custom aliases for your specific workflows. Use `alias` command to see all current aliases! 
+**💡 Pro Tip**: Start by memorizing the most common aliases (ls, cat, grep), then gradually add custom aliases for your specific workflows. Use `alias` command to see all current aliases!
 
 ## 🟢 Best Practices: Python venv & direnv Workflow
 
@@ -405,4 +405,4 @@ end
 - Always open a new terminal window after running `home-manager switch` to ensure the new config is loaded.
 - Do **not** activate a venv globally in your shell config or bootstrap—let direnv handle it per project.
 
---- 
+---

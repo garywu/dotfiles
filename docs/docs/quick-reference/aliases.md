@@ -354,4 +354,4 @@ end
 
 ---
 
-**💡 Pro Tip**: Start by memorizing the most common aliases (ls, cat, grep), then gradually add custom aliases for your specific workflows. Use `alias` command to see all current aliases! 
+**💡 Pro Tip**: Start by memorizing the most common aliases (ls, cat, grep), then gradually add custom aliases for your specific workflows. Use `alias` command to see all current aliases!

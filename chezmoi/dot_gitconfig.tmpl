@@ -1,0 +1,25 @@
+# Git configuration template - Managed by Chezmoi
+# User-specific values come from chezmoi.toml
+
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
+
+[core]
+    editor = {{ .editor }}
+
+[init]
+    defaultBranch = main
+
+{{ if .work_git -}}
+# Work-specific git configuration
+[includeIf "gitdir:~/work/"]
+    path = ~/.gitconfig-work
+{{- end }}
+
+{{ if .gpg_signing_key -}}
+[commit]
+    gpgsign = true
+[user]
+    signingkey = {{ .gpg_signing_key }}
+{{- end }}

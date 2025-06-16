@@ -227,4 +227,4 @@ See also:
 
 ---
 
-**💡 Pro Tip**: Start with `qwen2.5-coder:7b-instruct` and `llama3.2:8b` - they provide the best balance of performance and capability for your 24GB setup. 
+**💡 Pro Tip**: Start with `qwen2.5-coder:7b-instruct` and `llama3.2:8b` - they provide the best balance of performance and capability for your 24GB setup.

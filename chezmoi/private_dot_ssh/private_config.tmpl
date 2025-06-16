@@ -1,0 +1,22 @@
+# SSH Config Template - Managed by Chezmoi
+# This demonstrates how Chezmoi can manage secrets while Home Manager manages packages
+
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519
+
+{{ if .work_ssh_key -}}
+Host work-github
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/{{ .work_ssh_key }}
+{{- end }}
+
+{{ if .personal_server -}}
+Host personal-server
+    HostName {{ .personal_server.hostname }}
+    User {{ .personal_server.user }}
+    Port {{ .personal_server.port | default "22" }}
+    IdentityFile ~/.ssh/{{ .personal_server.key | default "id_ed25519" }}
+{{- end }}

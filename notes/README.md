@@ -17,4 +17,4 @@ The notes are intended to provide detailed information, rationale, and best prac
 
 ## Contributing
 
-Feel free to add or modify notes as needed. Ensure that all changes are documented and follow the project's style and organization. 
+Feel free to add or modify notes as needed. Ensure that all changes are documented and follow the project's style and organization.

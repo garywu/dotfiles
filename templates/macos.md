@@ -261,4 +261,4 @@ defaults write com.apple.screensaver askForPasswordDelay -int 0
 - [Homebrew Documentation](https://brew.sh/)
 - [Nix Package Manager Guide](https://nixos.org/manual/nix/stable/)
 - [Fish Shell Tutorial](https://fishshell.com/docs/current/tutorial.html)
-- [Starship Prompt Configuration](https://starship.rs/config/) 
+- [Starship Prompt Configuration](https://starship.rs/config/)

@@ -25,7 +25,7 @@ const sidebars: SidebarsConfig = {
       ],
     },
     {
-      type: 'category', 
+      type: 'category',
       label: 'AI Tools',
       items: [
         'ai-tools/ollama',
@@ -34,7 +34,7 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: 'Terminal Workflow', 
+      label: 'Terminal Workflow',
       items: [
         'terminal-workflow/tmux',
       ],

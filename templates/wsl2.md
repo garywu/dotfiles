@@ -440,4 +440,4 @@ sudo ufw enable
 - [WSL2 Official Documentation](https://docs.microsoft.com/en-us/windows/wsl/)
 - [Windows Terminal Documentation](https://docs.microsoft.com/en-us/windows/terminal/)
 - [VS Code WSL Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl)
-- [WSL Tips and Tricks](https://github.com/microsoft/WSL/blob/master/README.md) 
+- [WSL Tips and Tricks](https://github.com/microsoft/WSL/blob/master/README.md)

@@ -410,4 +410,4 @@ sudo ufw default allow outgoing
 - [Ubuntu Documentation](https://help.ubuntu.com/)
 - [Nix Package Search](https://search.nixos.org/packages)
 - [Fish Shell Documentation](https://fishshell.com/docs/current/)
-- [Tmux Guide](https://github.com/tmux/tmux/wiki) 
+- [Tmux Guide](https://github.com/tmux/tmux/wiki)

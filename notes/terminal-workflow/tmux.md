@@ -448,4 +448,4 @@ ps aux | grep tmux
 
 ---
 
-**💡 Pro Tip**: Start with basic session and window management, then gradually add pane splitting and customization. Create project-specific session templates for consistent workflows! 
+**💡 Pro Tip**: Start with basic session and window management, then gradually add pane splitting and customization. Create project-specific session templates for consistent workflows!

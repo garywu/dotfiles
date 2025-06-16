@@ -339,4 +339,4 @@ Create `~/.ripgreprc`:
 
 ---
 
-**💡 Pro Tip**: These tools work great together! Use `fd` to find files, `rg` to search content, `fzf` to select interactively, and `bat` to preview - all in one workflow! 
+**💡 Pro Tip**: These tools work great together! Use `fd` to find files, `rg` to search content, `fzf` to select interactively, and `bat` to preview - all in one workflow!

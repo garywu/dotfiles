@@ -40,7 +40,7 @@ if ! command_exists nix; then
     curl -L https://nixos.org/nix/install > /tmp/nix-install.sh
     sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
     rm /tmp/nix-install.sh
-    
+
     # Source Nix environment
     if [ -f ~/.nix-profile/etc/profile.d/nix.sh ]; then
         . ~/.nix-profile/etc/profile.d/nix.sh
@@ -71,4 +71,4 @@ print_status "Minimal installation completed!"
 print_status "Next steps:"
 print_status "1. Activate your Nix environment: cd ~/.dotfiles/nix && home-manager switch"
 print_status "2. On Mac, install GUI apps: brew bundle --file=~/.dotfiles/brew/Brewfile"
-print_status "3. Restart your terminal to apply all changes" 
+print_status "3. Restart your terminal to apply all changes"

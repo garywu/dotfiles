@@ -61,7 +61,7 @@ if ! command_exists nix; then
     curl -L https://nixos.org/nix/install > /tmp/nix-install.sh
     sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
     rm /tmp/nix-install.sh
-    
+
     print_status "Nix installed! Please restart your terminal and run this script again."
     exit 0
 fi
@@ -72,10 +72,10 @@ if ! command_exists home-manager; then
     nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
     nix-channel --update
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
-    
+
     # Install Home Manager
     nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
-    
+
     print_status "Home Manager installed! Please restart your terminal and run this script again."
     exit 0
 fi
@@ -121,12 +121,12 @@ if [ "$(uname)" = "Darwin" ]; then
     else
         print_status "Installing Homebrew..."
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        
+
         # Add Homebrew to PATH
         print_status "Configuring Homebrew in PATH..."
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
         eval "$(/opt/homebrew/bin/brew shellenv)"
-        
+
         print_status "Homebrew installed! Please restart your terminal and run this script again."
         exit 0
     fi
@@ -135,4 +135,4 @@ fi
 print_status "Bootstrap completed!"
 print_status "Your system is now fully configured. Enjoy!"
 echo "Bootstrap completed at $(date)"
-echo "Log saved to: $BOOTSTRAP_LOG" 
+echo "Log saved to: $BOOTSTRAP_LOG"

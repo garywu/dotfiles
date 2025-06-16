@@ -1,35 +1,24 @@
 [data]
-    # Personal information
+    # Personal information (REQUIRED - update these!)
     name = "Your Name"
     email = "your.email@example.com"
-    
+
     # Development preferences
     editor = "code"
     browser = "firefox"
-    
-    # Shell configuration
-    shell = "zsh"
-    shell_framework = "none"  # or "oh-my-zsh" if you prefer
-    
-    # Git configuration
-    git_config = {
-        core = {
-            editor = "code --wait"
-            autocrlf = "input"
-        }
-        init = {
-            defaultBranch = "main"
-        }
-    }
-    
-    # Node.js configuration
-    node_version = "20"
-    
-    # Python configuration
-    python_version = "3.11"
-    
-    # Go configuration
-    go_version = "1.21"
-    
-    # Rust configuration
-    rust_version = "stable" 
+
+    # Optional: Work-specific configurations
+    # Uncomment and configure if needed:
+    # work_ssh_key = "id_ed25519_work"
+    # work_git = true
+
+    # Optional: Personal server configuration
+    # Uncomment and configure if needed:
+    # [data.personal_server]
+    # hostname = "example.com"
+    # user = "myuser"
+    # port = 22
+    # key = "id_ed25519"
+
+    # Optional: GPG signing key for git commits
+    # gpg_signing_key = "YOUR_GPG_KEY_ID"

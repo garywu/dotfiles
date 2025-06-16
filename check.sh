@@ -76,7 +76,7 @@ create_full_backup() {
     echo ""
     echo -e "${BLUE}Creating full backup at: $BACKUP_DIR${NC}"
     mkdir -p "$BACKUP_DIR"
-    
+
     # Backup shell configs
     for config in ~/.zshrc ~/.bashrc ~/.bash_profile ~/.profile; do
         if [ -f "$config" ]; then
@@ -84,7 +84,7 @@ create_full_backup() {
             echo "✓ Backed up $(basename $config)"
         fi
     done
-    
+
     # Backup config directories
     for dir in ~/.config/fish ~/.config/zsh ~/.config/starship ~/.config/git; do
         if [ -d "$dir" ]; then
@@ -92,16 +92,16 @@ create_full_backup() {
             echo "✓ Backed up $dir"
         fi
     done
-    
+
     # Backup Homebrew package list
     if command -v brew &> /dev/null; then
         brew bundle dump --file="$BACKUP_DIR/Brewfile.backup" --force
         echo "✓ Backed up Homebrew package list"
     fi
-    
+
     # Create restoration script
     create_restore_script
-    
+
     echo ""
     echo -e "${GREEN}✅ Backup created successfully!${NC}"
     echo "Backup location: $BACKUP_DIR"
@@ -123,41 +123,41 @@ cleanup_found_items() {
     echo -e "${RED}⚠️  WARNING: This will delete existing configurations!${NC}"
     echo "This action cannot be undone. The following will be removed:"
     echo ""
-    
+
     # Show what will be deleted
     if [ -d "$HOME/.config/fish" ]; then
         echo "• Fish shell configuration directory"
     fi
-    
+
     # Check for broken symlinks
     BROKEN_COUNT=$(find ~ -maxdepth 3 -type l -exec file {} \; 2>/dev/null | grep "broken" | wc -l | tr -d ' ')
     if [ "$BROKEN_COUNT" -gt 0 ]; then
         echo "• $BROKEN_COUNT broken symlinks"
     fi
-    
+
     # Check for leftover state directories
     for dir in ~/.local/state/nix ~/.local/state/home-manager ~/.cache/nix ~/.config/home-manager; do
         if [ -d "$dir" ]; then
             echo "• $(echo $dir | sed "s|$HOME|~|")"
         fi
     done
-    
+
     echo ""
     echo -e "${RED}Are you absolutely sure you want to delete these items? (yes/no)${NC}"
     read -p "> " confirm
-    
+
     if [[ "$confirm" != "yes" ]]; then
         echo "Cleanup cancelled."
         return 0
     fi
-    
+
     echo ""
     echo -e "${BLUE}Cleaning up found items...${NC}"
-    
+
     # Remove broken symlinks
     echo "Removing broken symlinks..."
     find ~ -maxdepth 3 -type l -exec sh -c 'test ! -e "$1" && echo "Removing: $1" && rm "$1"' sh {} \; 2>/dev/null || true
-    
+
     # Remove leftover Nix/Home Manager directories
     for dir in ~/.local/state/nix ~/.local/state/home-manager ~/.local/share/home-manager ~/.cache/nix ~/.config/home-manager; do
         if [ -d "$dir" ]; then
@@ -165,7 +165,7 @@ cleanup_found_items() {
             rm -rf "$dir"
         fi
     done
-    
+
     # Remove empty Fish config directory if it exists but is empty or only has broken symlinks
     if [ -d "$HOME/.config/fish" ]; then
         FISH_FILES=$(find "$HOME/.config/fish" -type f 2>/dev/null | wc -l | tr -d ' ')
@@ -185,13 +185,13 @@ cleanup_found_items() {
             rm -rf "$HOME/.config/fish"
         fi
     fi
-    
+
     echo ""
     echo -e "${GREEN}✅ Cleanup completed!${NC}"
     echo ""
     echo -e "${BLUE}Re-running check to verify cleanup...${NC}"
     echo ""
-    
+
     # Clear the found items array and re-run the check
     FOUND_ITEMS=()
     exec "$0"
@@ -272,7 +272,7 @@ if [ -d "/opt/homebrew" ]; then
     if command -v brew &> /dev/null; then
         BREW_VERSION=$(brew --version 2>/dev/null | head -1)
         print_found "Homebrew command available: $BREW_VERSION"
-        
+
         # Count packages
         BREW_PACKAGES=$(brew list --formula 2>/dev/null | wc -l | tr -d ' ')
         BREW_CASKS=$(brew list --cask 2>/dev/null | wc -l | tr -d ' ')
@@ -445,13 +445,13 @@ if [ ${#FOUND_ITEMS[@]} -gt 0 ]; then
     echo "What would you like to do with the existing items?"
     echo ""
     echo "1) Create full backup (recommended for valuable configs)"
-    echo "2) Create selective backup (choose what to backup)"  
+    echo "2) Create selective backup (choose what to backup)"
     echo "3) Clean up/delete found items (⚠️  destructive)"
     echo "4) Skip and continue as-is"
     echo "5) Exit without making changes"
     echo ""
     read -p "Enter your choice (1-5): " choice
-    
+
     case $choice in
         1)
             create_full_backup
@@ -474,4 +474,4 @@ if [ ${#FOUND_ITEMS[@]} -gt 0 ]; then
             exit 1
             ;;
     esac
-fi 
+fi

@@ -43,38 +43,38 @@ check_warp() {
 # Function to install JetBrains Mono font
 install_font() {
     print_status "Installing JetBrains Mono font..."
-    
+
     # Create fonts directory if it doesn't exist
     mkdir -p ~/Library/Fonts
-    
+
     # Download and install JetBrains Mono
     curl -L https://github.com/JetBrains/JetBrainsMono/releases/download/v2.304/JetBrainsMono-2.304.zip -o /tmp/jetbrains-mono.zip
     unzip -j /tmp/jetbrains-mono.zip "fonts/ttf/*" -d ~/Library/Fonts/
     rm /tmp/jetbrains-mono.zip
-    
+
     print_status "JetBrains Mono font installed"
 }
 
 # Function to set up Warp configuration
 setup_warp_config() {
     print_status "Setting up Warp configuration..."
-    
+
     # Create Warp config directory if it doesn't exist
     mkdir -p ~/.warp
-    
+
     # Copy our settings file
     cp "$(dirname "$0")/../warp/settings.json" ~/.warp/settings.json
-    
+
     print_status "Warp configuration installed"
 }
 
 # Function to set up Warp workflows
 setup_workflows() {
     print_status "Setting up Warp workflows..."
-    
+
     # Create workflows directory if it doesn't exist
     mkdir -p ~/.warp/workflows
-    
+
     # Example workflow for development
     cat > ~/.warp/workflows/dev.json << EOF
 {
@@ -87,29 +87,29 @@ setup_workflows() {
   ]
 }
 EOF
-    
+
     print_status "Warp workflows installed"
 }
 
 # Main function
 main() {
     print_status "Starting Warp setup..."
-    
+
     # Check if Warp is installed
     check_warp || exit 1
-    
+
     # Install font
     install_font
-    
+
     # Set up configuration
     setup_warp_config
-    
+
     # Set up workflows
     setup_workflows
-    
+
     print_status "Warp setup completed!"
     print_status "Please restart Warp to apply the changes"
 }
 
 # Run the main function
-main 
+main
