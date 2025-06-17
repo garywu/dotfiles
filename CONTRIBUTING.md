@@ -67,27 +67,48 @@ home-manager switch
 ## Style Guidelines
 
 ### Shell Scripts
-- Use `shellcheck` for linting
-- Use `shfmt` for formatting
+- Use `shellcheck` for linting (`make lint-shell`)
+- Use `shfmt` for formatting (`make format-shell`)
 - Follow POSIX standards where possible
 - Add error handling and set appropriate flags (`set -euo pipefail`)
+- Configuration: `.shellcheckrc`
 
 ### Nix Files
-- Use `nixpkgs-fmt` for formatting
-- Use `statix` for linting
+- Use `nixpkgs-fmt` for formatting (`make format-nix`)
+- Use `statix` for linting when available (`make lint-nix`)
 - Keep expressions simple and readable
 - Add comments for complex logic
 
 ### Fish Scripts
-- Use `fish_indent` for formatting
+- Use `fish_indent` for formatting (`make format-fish`)
+- Check syntax with `fish -n` (`make lint-fish`)
 - Follow Fish scripting best practices
 - Use descriptive function names
 
+### YAML Files
+- Use `yamllint` for linting (`make lint-yaml`)
+- Configuration: `.yamllint.yml`
+- 2-space indentation
+- No trailing spaces
+
+### Markdown Files
+- Use `markdownlint` for linting (`make lint-markdown`)
+- Configuration: `.markdownlint.json`
+- Line length: 120 characters
+- ATX-style headers
+
+### TOML Files
+- Use `taplo` for formatting (`make format-toml`)
+- Use `taplo` for linting (`make lint-toml`)
+
 ### General Guidelines
+- Run `make lint` before committing
+- Run `make format` to auto-fix formatting issues
 - Keep files focused and modular
 - Document complex logic
 - Use meaningful variable names
 - Avoid hardcoding values
+- Follow `.editorconfig` settings
 
 ## Commit Messages
 

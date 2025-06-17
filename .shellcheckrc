@@ -1,0 +1,18 @@
+# ShellCheck configuration file
+# https://www.shellcheck.net/wiki/Ignore
+
+# Set shell dialect (bash, sh, dash, ksh)
+shell=bash
+
+# Enable all optional checks
+enable=all
+
+# Disable specific checks if needed
+# disable=SC2034  # Example: Disable "appears unused" warning
+
+# Exclude certain file patterns
+# exclude=SC1090,SC1091  # Can't follow sourced files
+
+# Source paths for following sourced files
+# source-path=SCRIPTDIR
+# source-path=./lib

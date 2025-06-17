@@ -1,0 +1,38 @@
+# YAML Lint configuration
+# https://yamllint.readthedocs.io/en/stable/configuration.html
+
+extends: default
+
+rules:
+  # Line length
+  line-length:
+    max: 120
+    level: warning
+
+  # Indentation
+  indentation:
+    spaces: 2
+    indent-sequences: true
+
+  # Brackets
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+
+  # Comments
+  comments:
+    min-spaces-from-content: 2
+
+  # Document start/end
+  document-start: disable
+  document-end: disable
+
+  # Truthy values
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']
+
+# Ignore specific files
+ignore: |
+  .github/
+  node_modules/
+  vendor/

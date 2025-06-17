@@ -41,6 +41,11 @@
     awscli2
     google-cloud-sdk
 
+    # Cloudflare tools
+    cloudflared     # Cloudflare Tunnel daemon and toolkit
+    # wrangler        # Cloudflare Workers CLI (temporarily disabled - large download)
+    flarectl        # Cloudflare CLI for account management
+
     # Shell tools
     fish
     starship
@@ -95,11 +100,21 @@
     dotenv-cli  # Load .env files from command line
 
     # KeePass-compatible tools
-    keepassxc   # KeePassXC GUI and CLI (keepassxc-cli)
-    git-credential-keepassxc  # Git credential helper for KeePassXC
+    # keepassxc   # KeePassXC GUI and CLI (keepassxc-cli) (temporarily disabled due to gpgme dependency issue)
+    # git-credential-keepassxc  # Git credential helper for KeePassXC (temporarily disabled due to gpgme dependency issue)
 
     # Documentation tools
     # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
+
+    # Linting and Formatting Tools
+    shellcheck      # Shell script analysis tool
+    shfmt           # Shell script formatter
+    nixpkgs-fmt     # Nix code formatter
+    # statix          # Nix static analysis tool (temporarily disabled due to gpgme dependency issue)
+    yamllint        # YAML linter
+    nodePackages.markdownlint-cli  # Markdown linter
+    taplo           # TOML formatter and linter
+    # Note: fish_indent is included with fish package
   ];
 
   # Configure basic programs

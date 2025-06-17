@@ -350,6 +350,15 @@ else
     print_status "pnpm is already installed."
 fi
 
+# Install Cloudflare Wrangler via npm (Nix package has large downloads)
+print_status "Installing Cloudflare Wrangler..."
+if ! command -v wrangler >/dev/null 2>&1; then
+    npm install -g wrangler@latest
+    print_status "Wrangler installed successfully"
+else
+    print_status "Wrangler is already installed"
+fi
+
 print_status "Bootstrap completed!"
 print_status "Your system is now fully configured. Enjoy!"
 echo "Bootstrap completed at $(date)"

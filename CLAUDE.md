@@ -69,13 +69,46 @@ gh issue view <number>
 gh issue close <number>
 ```
 
-### Testing
+### Cloudflare Tools
 ```bash
-# Run linting (find exact command in package.json or project config)
-# npm run lint / ruff / etc.
+# Cloudflared - Tunnel management
+cloudflared tunnel create <tunnel-name>
+cloudflared tunnel list
+cloudflared tunnel run <tunnel-name>
 
-# Run type checking
-# npm run typecheck / mypy / etc.
+# Wrangler - Workers/Pages CLI
+wrangler init <project-name>
+wrangler dev
+wrangler publish
+wrangler pages deploy <directory>
+
+# Flarectl - Account management
+flarectl zone list
+flarectl dns list --zone <zone-name>
+flarectl dns create --zone <zone-name> --type A --name @ --content <ip>
+```
+
+### Testing and Linting
+```bash
+# Run all linters
+make lint
+
+# Run all formatters
+make format
+
+# Individual linting commands
+make lint-shell      # Lint shell scripts
+make lint-nix        # Lint Nix files
+make lint-yaml       # Lint YAML files
+make lint-markdown   # Lint Markdown files
+make lint-toml       # Check TOML files
+make lint-fish       # Check Fish scripts
+
+# Individual formatting commands
+make format-shell    # Format shell scripts
+make format-nix      # Format Nix files
+make format-toml     # Format TOML files
+make format-fish     # Format Fish scripts
 ```
 
 ## Current Session (2025-06-17)
@@ -96,15 +129,23 @@ gh issue close <number>
    - Created pull request template
    - Created CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md
    - Updated CHANGELOG.md for v0.0.1
+8. Committed changes and created v0.0.1 tag
+9. Created Issue #6 - Phase 3: Implement Linting and Formatting Tools
+10. Implemented Phase 3 (Issue #6):
+    - Added linting tools to home.nix
+    - Created all configuration files
+    - Created Makefile with linting/formatting targets
+    - Updated pre-commit hooks
+    - Updated documentation
 
 ### In Progress
-- Phase 1 implementation complete, awaiting review and commit
+- Phase 3 complete, awaiting decision on linting fixes
 
 ### Next Steps
-1. Review and commit Phase 1 changes
-2. Create first tagged release (v0.0.1)
-3. Choose next implementation phase from Issue #4
-4. Set up linting and formatting tools
+1. Commit Phase 3 changes
+2. Decide on approach for fixing existing linting issues
+3. Continue with other phases from Issue #4
+4. Consider CI/CD setup for automated checks
 
 ## Previous Sessions
 
@@ -121,13 +162,14 @@ gh issue close <number>
 - #2 - Architecture Separation: Nix/Home Manager from Chezmoi Management (documentation)
 - #3 - Establish Issue-Driven Development Workflow
 - #4 - Setup Professional Development Processes and Standards
-- #5 - Phase 1: GitHub Repository Setup - Labels and Templates (sub-issue of #4)
+- #6 - Phase 3: Implement Linting and Formatting Tools (sub-issue of #4)
 
 ### Completed Issues
-- None yet
+- #5 - Phase 1: GitHub Repository Setup - Labels and Templates ✅
 
 ### Project Version
-- Current: 0.0.1 (initial version)
+- Current: 0.0.1 (tagged)
+- Next: 0.0.2 (after linting implementation)
 
 ## Notes for Next Session
 

@@ -17,9 +17,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue-driven development workflow (#3)
 - GitHub labels for issue organization: priority, type, and status (#5)
 - Professional development standards and processes (#4)
+- Linting and formatting tools configuration (#6)
+  - ShellCheck, shfmt, nixpkgs-fmt, yamllint, markdownlint, taplo
+  - Configuration files for each linter
+  - Makefile for running linters and formatters
+  - Pre-commit hooks for automated checking
+  - EditorConfig for consistent coding style
+- Cloudflare command line tools (#7)
+  - cloudflared for Cloudflare Tunnel management
+  - flarectl for Cloudflare API interactions
+  - wrangler installation via npm in bootstrap.sh
 
 ### Changed
 - Documentation structure improvements
+- Updated CONTRIBUTING.md with linting commands and requirements (#6)
+
+### Known Issues
+- Temporarily disabled keepassxc, git-credential-keepassxc, and statix due to gpgme-1.24.2 broken package issue
 
 ## [0.0.1] - 2025-06-17
 

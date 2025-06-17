@@ -12,3 +12,35 @@ repos:
     hooks:
     -   id: commitizen
         stages: [commit-msg]
+
+# Shell script checks
+-   repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+    -   id: shellcheck
+
+# YAML linting
+-   repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+    -   id: yamllint
+        args: [-c=.yamllint.yml]
+
+# Markdown linting
+-   repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
+    hooks:
+    -   id: markdownlint
+        args: [--config, .markdownlint.json]
+
+# TOML formatting
+-   repo: https://github.com/ComPWA/taplo-pre-commit
+    rev: v0.9.3
+    hooks:
+    -   id: taplo-format
+
+# EditorConfig checker
+-   repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 3.0.3
+    hooks:
+    -   id: editorconfig-checker
