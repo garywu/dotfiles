@@ -113,13 +113,13 @@ charging_symbol = "⚡️"
 discharging_symbol = "💀"
 format = "[$symbol$percentage]($style) "
 style = "green"
-disabled = true  # Enable this if you want battery status
+disabled = true                          # Enable this if you want battery status
 
 # Memory usage
 [memory_usage]
 format = "via [🐏 $ram_used]($style) "
 style = "white"
-disabled = true  # Enable this if you want memory usage
+disabled = true                       # Enable this if you want memory usage
 
 # Custom commands
 [custom.time]

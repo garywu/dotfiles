@@ -1,24 +1,24 @@
 [data]
-    # Personal information (REQUIRED - update these!)
-    name = "Your Name"
-    email = "your.email@example.com"
+# Personal information (REQUIRED - update these!)
+name = "Your Name"
+email = "your.email@example.com"
 
-    # Development preferences
-    editor = "code"
-    browser = "firefox"
+# Development preferences
+editor = "code"
+browser = "firefox"
 
-    # Optional: Work-specific configurations
-    # Uncomment and configure if needed:
-    # work_ssh_key = "id_ed25519_work"
-    # work_git = true
+# Optional: Work-specific configurations
+# Uncomment and configure if needed:
+# work_ssh_key = "id_ed25519_work"
+# work_git = true
 
-    # Optional: Personal server configuration
-    # Uncomment and configure if needed:
-    # [data.personal_server]
-    # hostname = "example.com"
-    # user = "myuser"
-    # port = 22
-    # key = "id_ed25519"
+# Optional: Personal server configuration
+# Uncomment and configure if needed:
+# [data.personal_server]
+# hostname = "example.com"
+# user = "myuser"
+# port = 22
+# key = "id_ed25519"
 
-    # Optional: GPG signing key for git commits
-    # gpg_signing_key = "YOUR_GPG_KEY_ID"
+# Optional: GPG signing key for git commits
+# gpg_signing_key = "YOUR_GPG_KEY_ID"
