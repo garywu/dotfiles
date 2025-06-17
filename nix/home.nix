@@ -42,38 +42,38 @@
     google-cloud-sdk
 
     # Cloudflare tools
-    cloudflared     # Cloudflare Tunnel daemon and toolkit
+    cloudflared # Cloudflare Tunnel daemon and toolkit
     # wrangler        # Cloudflare Workers CLI (temporarily disabled - large download)
-    flarectl        # Cloudflare CLI for account management
+    flarectl # Cloudflare CLI for account management
 
     # Shell tools
     fish
     starship
-    bash         # Modern Bash (macOS ships with 3.2 from 2007)
-    eza          # Modern ls replacement (was exa)
+    bash # Modern Bash (macOS ships with 3.2 from 2007)
+    eza # Modern ls replacement (was exa)
     bat
     fd
     ripgrep
     tldr
 
     # Developer CLI Tools
-    gh          # GitHub CLI
-    hub         # GitHub command-line tool
-    glab        # GitLab CLI
-    jq          # JSON processor
-    yq          # YAML processor
-    htop        # Process viewer
-    ncdu        # Disk usage analyzer
-    tmux        # Terminal multiplexer
-    neovim      # Modern vim
-    fzf         # Fuzzy finder
-    zoxide      # Smarter cd
-    direnv      # Directory-specific environment variables
-    mkcert      # Local HTTPS development
-    httpie      # User-friendly HTTP client
-    wget        # Network downloader
-    curl        # Network transfer
-    tree        # Directory tree
+    gh # GitHub CLI
+    hub # GitHub command-line tool
+    glab # GitLab CLI
+    jq # JSON processor
+    yq # YAML processor
+    htop # Process viewer
+    ncdu # Disk usage analyzer
+    tmux # Terminal multiplexer
+    neovim # Modern vim
+    fzf # Fuzzy finder
+    zoxide # Smarter cd
+    direnv # Directory-specific environment variables
+    mkcert # Local HTTPS development
+    httpie # User-friendly HTTP client
+    wget # Network downloader
+    curl # Network transfer
+    tree # Directory tree
 
     # AI/ML Tools
     # ollama is installed via Homebrew on macOS (see bootstrap.sh)
@@ -82,22 +82,22 @@
     # Or use pipx: pipx install chatblade && pipx install litellm
 
     # Advanced CLI tools
-    chezmoi     # Dotfiles management
-    mosh        # Robust remote shell
+    chezmoi # Dotfiles management
+    mosh # Robust remote shell
     # thefuck   # Removed due to Python 3.12+ incompatibility
-    delta       # Syntax-highlighting pager for git/diff
-    lazygit     # TUI for git
-    btop        # Resource monitor (modern htop alternative)
-    glow        # Markdown previewer in terminal
-    vifm        # Terminal file manager with preview support
+    delta # Syntax-highlighting pager for git/diff
+    lazygit # TUI for git
+    btop # Resource monitor (modern htop alternative)
+    glow # Markdown previewer in terminal
+    vifm # Terminal file manager with preview support
 
     # Environment Variables & Secrets Management
-    sops        # Secrets management with encryption
-    age         # Simple, modern encryption tool
+    sops # Secrets management with encryption
+    age # Simple, modern encryption tool
     # pass        # UNIX password manager (commented out: broken dependency)
     # gnupg       # GNU Privacy Guard for encryption (commented out: broken dependency)
-    envsubst    # Environment variable substitution
-    dotenv-cli  # Load .env files from command line
+    envsubst # Environment variable substitution
+    dotenv-cli # Load .env files from command line
 
     # KeePass-compatible tools
     # keepassxc   # KeePassXC GUI and CLI (keepassxc-cli) (temporarily disabled due to gpgme dependency issue)
@@ -107,13 +107,13 @@
     # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
 
     # Linting and Formatting Tools
-    shellcheck      # Shell script analysis tool
-    shfmt           # Shell script formatter
-    nixpkgs-fmt     # Nix code formatter
+    shellcheck # Shell script analysis tool
+    shfmt # Shell script formatter
+    nixpkgs-fmt # Nix code formatter
     # statix          # Nix static analysis tool (temporarily disabled due to gpgme dependency issue)
-    yamllint        # YAML linter
-    nodePackages.markdownlint-cli  # Markdown linter
-    taplo           # TOML formatter and linter
+    yamllint # YAML linter
+    nodePackages.markdownlint-cli # Markdown linter
+    taplo # TOML formatter and linter
     # Note: fish_indent is included with fish package
   ];
 

@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 # Check for old Bash and handle compatibility
-if [ -n "$BASH_VERSION" ]; then
-    BASH_MAJOR_VERSION=$(echo $BASH_VERSION | cut -d. -f1)
-    if [ "$BASH_MAJOR_VERSION" -lt 4 ]; then
-        echo "⚠️  Detected old Bash version: $BASH_VERSION"
+if [[ -n "${BASH_VERSION}" ]]; then
+    BASH_MAJOR_VERSION=$(echo "${BASH_VERSION}" | cut -d. -f1)
+    if [[ "${BASH_MAJOR_VERSION}" -lt 4 ]]; then
+        echo "⚠️  Detected old Bash version: ${BASH_VERSION}"
         echo "   macOS ships with Bash 3.2 (2007) due to licensing."
         echo "   Modern features may not work properly."
         echo ""
@@ -14,21 +14,21 @@ if [ -n "$BASH_VERSION" ]; then
 fi
 
 # Setup logging
-BOOTSTRAP_LOG="$HOME/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
-mkdir -p "$(dirname "$BOOTSTRAP_LOG")"
+BOOTSTRAP_LOG="${HOME}/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+mkdir -p "$(dirname "${BOOTSTRAP_LOG}")"
 
 # Function to log and display
 log_and_echo() {
-    echo "$1" | tee -a "$BOOTSTRAP_LOG"
+    echo "$1" | tee -a "${BOOTSTRAP_LOG}"
 }
 
-echo "Bootstrap started at $(date)" | tee "$BOOTSTRAP_LOG"
-echo "System: $(uname -a)" | tee -a "$BOOTSTRAP_LOG"
-echo "User: $(whoami)" | tee -a "$BOOTSTRAP_LOG"
-echo "PWD: $(pwd)" | tee -a "$BOOTSTRAP_LOG"
-echo "PATH: $PATH" | tee -a "$BOOTSTRAP_LOG"
-echo "Log file: $BOOTSTRAP_LOG" | tee -a "$BOOTSTRAP_LOG"
-echo "---" | tee -a "$BOOTSTRAP_LOG"
+echo "Bootstrap started at $(date)" | tee "${BOOTSTRAP_LOG}"
+echo "System: $(uname -a)" | tee -a "${BOOTSTRAP_LOG}"
+echo "User: $(whoami)" | tee -a "${BOOTSTRAP_LOG}"
+echo "PWD: $(pwd)" | tee -a "${BOOTSTRAP_LOG}"
+echo "PATH: ${PATH}" | tee -a "${BOOTSTRAP_LOG}"
+echo "Log file: ${BOOTSTRAP_LOG}" | tee -a "${BOOTSTRAP_LOG}"
+echo "---" | tee -a "${BOOTSTRAP_LOG}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -52,7 +52,7 @@ print_warning() {
 
 # Check if a command exists
 command_exists() {
-    command -v "$1" &> /dev/null
+    command -v "$1" >/dev/null 2>&1
 }
 
 # Function to handle previous Nix installation remnants following official documentation
@@ -71,13 +71,13 @@ handle_nix_remnants() {
 
     # Check for backup files that block installation
     for backup_file in "${official_backups[@]}"; do
-        if [ -f "$backup_file" ]; then
+        if [[ -f "${backup_file}" ]]; then
             found_backups=true
-            print_warning "Found Nix backup file: $backup_file"
+            print_warning "Found Nix backup file: ${backup_file}"
         fi
     done
 
-    if [ "$found_backups" = true ]; then
+    if [[ "${found_backups}" = true ]]; then
         echo ""
         echo "According to the official Nix documentation, these backup files contain"
         echo "your original system configuration and should be restored."
@@ -89,13 +89,13 @@ handle_nix_remnants() {
         printf "Restore backup files as recommended by official Nix docs? [Y/n]: "
         read -r response
 
-        case "$response" in
+        case "${response}" in
             [nN]|[nN][oO])
                 print_warning "Moving backup files to /tmp (you can restore them later)"
                 local timestamp=$(date +%s)
                 for backup_file in "${official_backups[@]}"; do
-                    if [ -f "$backup_file" ]; then
-                        local basename=$(basename "$backup_file")
+                    if [[ -f "${backup_file}" ]]; then
+                        local basename=$(basename "${backup_file}")
                         sudo mv "$backup_file" "/tmp/${basename}.${timestamp}" 2>/dev/null && \
                             echo "  → Moved $backup_file to /tmp/${basename}.${timestamp}"
                     fi
@@ -105,22 +105,22 @@ handle_nix_remnants() {
                 print_status "Restoring backup files (following official Nix documentation)..."
 
                 # Follow exact commands from official docs
-                if [ -f "/etc/zshrc.backup-before-nix" ]; then
+                if [[ -f "/etc/zshrc.backup-before-nix" ]]; then
                     sudo mv /etc/zshrc.backup-before-nix /etc/zshrc && \
                         print_status "  → Restored /etc/zshrc"
                 fi
 
-                if [ -f "/etc/zsh/zshrc.backup-before-nix" ]; then
+                if [[ -f "/etc/zsh/zshrc.backup-before-nix" ]]; then
                     sudo mv /etc/zsh/zshrc.backup-before-nix /etc/zsh/zshrc && \
                         print_status "  → Restored /etc/zsh/zshrc"
                 fi
 
-                if [ -f "/etc/bashrc.backup-before-nix" ]; then
+                if [[ -f "/etc/bashrc.backup-before-nix" ]]; then
                     sudo mv /etc/bashrc.backup-before-nix /etc/bashrc && \
                         print_status "  → Restored /etc/bashrc"
                 fi
 
-                if [ -f "/etc/bash.bashrc.backup-before-nix" ]; then
+                if [[ -f "/etc/bash.bashrc.backup-before-nix" ]]; then
                     sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc && \
                         print_status "  → Restored /etc/bash.bashrc"
                 fi
@@ -132,19 +132,19 @@ handle_nix_remnants() {
     fi
 
     # Clean up other remnants (also from official docs)
-    if [ -f "/etc/nix/nix.conf" ]; then
+    if [[ -f "/etc/nix/nix.conf" ]]; then
         print_warning "Removing leftover Nix configuration..."
         sudo rm -rf /etc/nix 2>/dev/null || print_warning "Could not remove /etc/nix"
     fi
 
-    if [ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]; then
+    if [[ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]]; then
         print_warning "Removing leftover Nix daemon service..."
         sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
         sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || \
             print_warning "Could not remove daemon plist"
     fi
 
-    if [ -f "/Library/LaunchDaemons/org.nixos.darwin-store.plist" ]; then
+    if [[ -f "/Library/LaunchDaemons/org.nixos.darwin-store.plist" ]]; then
         print_warning "Removing leftover Darwin store service..."
         sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || true
         sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || \
@@ -182,14 +182,14 @@ if ! command_exists home-manager; then
 fi
 
 # Set NIX_PATH if not set (needed for home-manager to work properly)
-if [ -z "$NIX_PATH" ]; then
+if [[ -z "${NIX_PATH}" ]]; then
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 fi
 
 # Setup Home Manager configuration link
 print_status "Setting up Home Manager configuration..."
 mkdir -p ~/.config/home-manager
-if [ -f ~/.config/home-manager/home.nix ] && [ ! -L ~/.config/home-manager/home.nix ]; then
+if [[ -f ~/.config/home-manager/home.nix ]] && [[ ! -L ~/.config/home-manager/home.nix ]]; then
     print_warning "Backing up existing home.nix..."
     mv ~/.config/home-manager/home.nix ~/.config/home-manager/home.nix.backup
 fi
@@ -202,16 +202,16 @@ if ! command_exists chezmoi; then
 fi
 
 # Get the repository URL
-if [ -d .git ]; then
+if [[ -d .git ]]; then
     REPO_URL=$(git remote get-url origin 2>/dev/null) || print_error "Not a git repository or no remote 'origin' found"
 else
     print_error "Not a git repository"
 fi
 
-print_status "Using repository: $REPO_URL"
+print_status "Using repository: ${REPO_URL}"
 
 # Sync chezmoi-managed files from repo to Chezmoi's source directory
-rsync -a --delete "$HOME/.dotfiles/chezmoi/" "$HOME/.local/share/chezmoi/"
+rsync -a --delete "${HOME}/.dotfiles/chezmoi/" "${HOME}/.local/share/chezmoi/"
 
 # Apply dotfiles
 chezmoi apply
@@ -235,13 +235,13 @@ ls -l ~/.config/fish/config.fish 2>&1 || echo "config.fish does not exist"
 
 # Ensure Nix tools (including modern bash) take precedence in PATH
 print_status "Configuring shell environment for Nix tools..."
-NIX_PROFILE_PATH="$HOME/.nix-profile/bin"
+NIX_PROFILE_PATH="${HOME}/.nix-profile/bin"
 
 # Add to shell configuration files to ensure proper PATH ordering
-for shell_config in "$HOME/.zprofile" "$HOME/.bash_profile" "$HOME/.profile"; do
-    if [ -f "$shell_config" ] || [ "$shell_config" = "$HOME/.zprofile" ]; then
+for shell_config in "${HOME}/.zprofile" "${HOME}/.bash_profile" "${HOME}/.profile"; do
+    if [[ -f "${shell_config}" ]] || [[ "${shell_config}" = "${HOME}/.zprofile" ]]; then
         # Remove any existing nix profile path entries to avoid duplicates
-        if [ -f "$shell_config" ]; then
+        if [[ -f "${shell_config}" ]]; then
             grep -v "/.nix-profile/bin" "$shell_config" > "$shell_config.tmp" && mv "$shell_config.tmp" "$shell_config"
         fi
         # Add nix profile path at the beginning (prepend to PATH)
@@ -256,7 +256,7 @@ done
 # FISH_CONFIG_DIR="$HOME/.config/fish"
 # FISH_CONFIG_FILE="$FISH_CONFIG_DIR/config.fish"
 #
-# if [ -f "$FISH_CONFIG_FILE" ]; then
+# if [[ -f "${FISH_CONFIG_FILE}" ]]; then
 #     # Check if Nix environment is already configured to avoid duplicates
 #     if ! grep -q "nix.fish" "$FISH_CONFIG_FILE" && ! grep -q "NIX_PROFILES" "$FISH_CONFIG_FILE"; then
 #         # Remove any existing Nix configurations to avoid duplicates
@@ -286,7 +286,7 @@ print_status "Verify with: /usr/bin/env bash --version (should show 5.2.x)"
 print_status "Setting up fish as default shell..."
 
 # Store current shell for restoration (used by uninstall script)
-if [ ! -f "$HOME/.dotfiles/.shell_backup" ]; then
+if [[ ! -f "${HOME}/.dotfiles/.shell_backup" ]]; then
   CURRENT_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
   echo "ORIGINAL_SHELL=$CURRENT_SHELL" > "$HOME/.dotfiles/.shell_backup"
 fi
@@ -304,7 +304,7 @@ chsh -s "$FISH_PATH" || print_warning "Failed to change default shell to fish"
 
 # Verify the change
 NEW_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
-if [ "$NEW_SHELL" = "$FISH_PATH" ]; then
+if [[ "${NEW_SHELL}" = "${FISH_PATH}" ]]; then
     print_status "✅ Default shell changed to fish successfully"
     print_status "New terminals will use fish with starship prompt"
 else

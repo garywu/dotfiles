@@ -1,46 +1,46 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-    -   id: check-added-large-files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
 
--   repo: https://github.com/commitizen-tools/commitizen
+  - repo: https://github.com/commitizen-tools/commitizen
     rev: v4.8.3
     hooks:
-    -   id: commitizen
+      - id: commitizen
         stages: [commit-msg]
 
-# Shell script checks
--   repo: https://github.com/shellcheck-py/shellcheck-py
+  # Shell script checks
+  - repo: https://github.com/shellcheck-py/shellcheck-py
     rev: v0.10.0.1
     hooks:
-    -   id: shellcheck
+      - id: shellcheck
 
-# YAML linting
--   repo: https://github.com/adrienverge/yamllint
+  # YAML linting
+  - repo: https://github.com/adrienverge/yamllint
     rev: v1.35.1
     hooks:
-    -   id: yamllint
+      - id: yamllint
         args: [-c=.yamllint.yml]
 
-# Markdown linting
--   repo: https://github.com/igorshubovych/markdownlint-cli
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.41.0
     hooks:
-    -   id: markdownlint
+      - id: markdownlint
         args: [--config, .markdownlint.json]
 
-# TOML formatting
--   repo: https://github.com/ComPWA/taplo-pre-commit
+  # TOML formatting
+  - repo: https://github.com/ComPWA/taplo-pre-commit
     rev: v0.9.3
     hooks:
-    -   id: taplo-format
+      - id: taplo-format
 
-# EditorConfig checker
--   repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+  # EditorConfig checker
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
     rev: 3.0.3
     hooks:
-    -   id: editorconfig-checker
+      - id: editorconfig-checker
