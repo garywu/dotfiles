@@ -1,7 +1,9 @@
 [data]
 # Personal information (REQUIRED - update these!)
-name = "Your Name"
-email = "your.email@example.com"
+# IMPORTANT: Use GitHub's privacy-protecting email to avoid exposing personal email
+# Format: username@users.noreply.github.com
+name = "garywu"
+email = "garywu@users.noreply.github.com"
 
 # Development preferences
 editor = "code"
