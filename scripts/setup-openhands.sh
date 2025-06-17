@@ -47,12 +47,12 @@ check_docker() {
         print_error "Docker is not installed. Please install Docker first."
         return 1
     fi
-    
+
     if ! docker info >/dev/null 2>&1; then
         print_error "Docker is not running. Please start Docker."
         return 1
     fi
-    
+
     print_status "Docker is available"
 }
 
@@ -91,18 +91,18 @@ pull_images() {
 # Function to start OpenHands
 start_openhands() {
     print_info "Starting OpenHands..."
-    
+
     # Stop existing container if running
     if docker ps -q --filter "name=${CONTAINER_NAME}" | grep -q .; then
         print_info "Stopping existing OpenHands container..."
         docker stop "${CONTAINER_NAME}" >/dev/null
     fi
-    
+
     # Remove existing container if exists
     if docker ps -aq --filter "name=${CONTAINER_NAME}" | grep -q .; then
         docker rm "${CONTAINER_NAME}" >/dev/null
     fi
-    
+
     # Start new container
     docker run -d \
         --name "${CONTAINER_NAME}" \
@@ -113,7 +113,7 @@ start_openhands() {
         --add-host host.docker.internal:host-gateway \
         --restart unless-stopped \
         "docker.all-hands.dev/all-hands-ai/openhands:${OPENHANDS_VERSION}"
-    
+
     print_status "OpenHands started successfully"
     print_info "Access OpenHands at: http://localhost:3030"
 }
@@ -144,19 +144,19 @@ status_openhands() {
 # Function to update OpenHands
 update_openhands() {
     print_info "Updating OpenHands..."
-    
+
     # Check for newer version (simplified - you could check GitHub API)
     print_info "Current version: ${OPENHANDS_VERSION}"
-    
+
     # Stop current instance
     stop_openhands
-    
+
     # Pull latest images
     pull_images
-    
+
     # Start with new version
     start_openhands
-    
+
     print_status "OpenHands updated successfully"
 }
 
@@ -175,7 +175,7 @@ create_systemd_service() {
         print_warning "Systemd service creation is only available on Linux"
         return 0
     fi
-    
+
     cat > "/tmp/${SERVICE_NAME}.service" <<EOF
 [Unit]
 Description=OpenHands AI Assistant
@@ -192,11 +192,11 @@ TimeoutStartSec=0
 [Install]
 WantedBy=multi-user.target
 EOF
-    
+
     sudo mv "/tmp/${SERVICE_NAME}.service" "/etc/systemd/system/"
     sudo systemctl daemon-reload
     sudo systemctl enable "${SERVICE_NAME}"
-    
+
     print_status "Systemd service created and enabled"
     print_info "Use 'sudo systemctl start/stop/status ${SERVICE_NAME}' to manage"
 }
@@ -207,9 +207,9 @@ create_launchd_service() {
         print_warning "Launchd service creation is only available on macOS"
         return 0
     fi
-    
+
     local plist_file="$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist"
-    
+
     cat > "$plist_file" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -230,9 +230,9 @@ create_launchd_service() {
 </dict>
 </plist>
 EOF
-    
+
     launchctl load "$plist_file"
-    
+
     print_status "Launchd service created and loaded"
     print_info "OpenHands will start automatically on login"
 }
@@ -242,26 +242,26 @@ uninstall_openhands() {
     print_warning "This will remove OpenHands completely"
     read -p "Are you sure? (y/N) " -n 1 -r
     echo
-    
+
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         print_info "Uninstall cancelled"
         return 0
     fi
-    
+
     # Stop and remove container
     stop_openhands
     if docker ps -aq --filter "name=${CONTAINER_NAME}" | grep -q .; then
         docker rm "${CONTAINER_NAME}"
     fi
-    
+
     # Remove images
     docker rmi "docker.all-hands.dev/all-hands-ai/openhands:${OPENHANDS_VERSION}" 2>/dev/null || true
     docker rmi "docker.all-hands.dev/all-hands-ai/runtime:${OPENHANDS_VERSION}-nikolaik" 2>/dev/null || true
-    
+
     # Remove directories
     rm -rf "$STATE_DIR"
     rm -rf "$CONFIG_DIR"
-    
+
     # Remove services
     if [[ "$(uname)" == "Linux" ]] && systemctl list-unit-files | grep -q "${SERVICE_NAME}"; then
         sudo systemctl disable "${SERVICE_NAME}"
@@ -271,7 +271,7 @@ uninstall_openhands() {
         launchctl unload "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist"
         rm "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist"
     fi
-    
+
     print_status "OpenHands uninstalled completely"
 }
 
@@ -303,7 +303,7 @@ Examples:
 
 Configuration:
     Edit $CONFIG_DIR/config.env to add API keys
-    
+
 Access:
     http://localhost:3030 (when running)
 EOF

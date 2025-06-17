@@ -12,7 +12,7 @@ Welcome to the CLI Tools Academy! Here you'll learn to replace traditional Unix 
 Traditional Unix tools like `ls`, `grep`, and `cat` were created decades ago. Modern alternatives offer:
 
 - ⚡ **Better Performance** - Built with modern languages and algorithms
-- 🎨 **Enhanced UX** - Colored output, better defaults, intuitive interfaces  
+- 🎨 **Enhanced UX** - Colored output, better defaults, intuitive interfaces
 - 🔍 **Smart Features** - Fuzzy finding, git integration, syntax highlighting
 - 🛡️ **Safety** - Better error messages, safer defaults
 - 🔧 **Extensibility** - Plugin systems and customization options
@@ -113,7 +113,7 @@ $ fd -e js -E node_modules
 
 ## Installation Status
 
-All these tools are **already installed and configured** in your environment through the bootstrap process! 
+All these tools are **already installed and configured** in your environment through the bootstrap process!
 
 - ✅ Installed via Nix for reproducible package management
 - ✅ Fish shell aliases configured for familiar commands

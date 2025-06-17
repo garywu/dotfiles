@@ -12,7 +12,7 @@
   --sl-color-gray-4: #ced4da;
   --sl-color-gray-5: #adb5bd;
   --sl-color-gray-6: #6c757d;
-  
+
   /* Syntax highlighting improvements */
   --sl-color-code-bg: #1e1e1e;
 }
@@ -180,11 +180,11 @@
   .highlight-before-after {
     grid-template-columns: 1fr;
   }
-  
+
   .comparison-table {
     font-size: 0.875rem;
   }
-  
+
   .comparison-table th,
   .comparison-table td {
     padding: 0.5rem;
@@ -198,7 +198,7 @@
     border-color: #444;
     color: #e0e0e0;
   }
-  
+
   .interactive-demo {
     background: #2a2a2a;
     border-color: var(--sl-color-accent);

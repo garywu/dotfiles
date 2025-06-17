@@ -12,7 +12,7 @@ Welcome to Dotfiles Academy! This guide will help you set up a modern, automated
 This repository provides a **fully automated, reproducible development environment** using:
 
 - **Nix & Home Manager** - Declarative package management
-- **Chezmoi** - Dotfiles and secrets management  
+- **Chezmoi** - Dotfiles and secrets management
 - **Homebrew** - macOS GUI applications
 - **Fish Shell** - Modern, user-friendly shell
 - **Modern CLI Tools** - Faster, better alternatives to traditional Unix tools
@@ -22,7 +22,7 @@ This repository provides a **fully automated, reproducible development environme
 ### Prerequisites
 
 - **macOS** (tested on macOS 12+)
-- **Administrator access** 
+- **Administrator access**
 - **Internet connection**
 
 ### One-Command Installation

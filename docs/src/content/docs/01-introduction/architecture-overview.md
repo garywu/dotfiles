@@ -15,13 +15,13 @@ graph TB
     B --> C[Nix Package Manager]
     B --> D[Chezmoi Secrets]
     B --> E[Homebrew GUI Apps]
-    
+
     C --> F[Home Manager]
     F --> G[CLI Tools & Configs]
-    
+
     D --> H[Templates & Secrets]
     H --> I[Git Config, SSH, etc.]
-    
+
     E --> J[macOS Applications]
 ```
 
@@ -168,7 +168,7 @@ programs.git = {
 [user]
     name = {{ .git.name }}
     email = {{ .git.email }}
-    
+
 [github]
     user = {{ .github.username }}
 ```
