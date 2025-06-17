@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/garywu/dotfiles/discussions
+    about: Ask questions and discuss ideas
+  - name: Security Issue
+    url: https://github.com/garywu/dotfiles/security/policy
+    about: Report security vulnerabilities privately

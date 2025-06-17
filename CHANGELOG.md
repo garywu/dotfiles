@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- GitHub issue templates for bugs, features, documentation, and refactoring (#5)
+- Pull request template with comprehensive checklist (#5)
+- CONTRIBUTING.md with development guidelines (#5)
+- CODE_OF_CONDUCT.md for community standards (#5)
+- SECURITY.md for vulnerability reporting (#5)
+- CLAUDE.md for AI assistant session tracking and workflow (#3)
+- Issue-driven development workflow (#3)
+- GitHub labels for issue organization: priority, type, and status (#5)
+- Professional development standards and processes (#4)
+
+### Changed
+- Documentation structure improvements
+
+## [0.0.1] - 2025-06-17
+
+### Added
 - Pre-commit hooks configuration with automatic code formatting
 - Architecture documentation (ARCHITECTURE.md) explaining tool separation
 - Example Chezmoi templates for secrets management (SSH config, git config)
