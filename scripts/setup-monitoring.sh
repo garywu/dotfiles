@@ -8,36 +8,36 @@ NC='\033[0m' # No Color
 
 # Function to print status messages
 print_status() {
-    echo -e "${GREEN}==>${NC} $1"
+  echo -e "${GREEN}==>${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}Error:${NC} $1"
+  echo -e "${RED}Error:${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}Warning:${NC} $1"
+  echo -e "${YELLOW}Warning:${NC} $1"
 }
 
 # Check if running on macOS
 if [[ "$(uname)" != "Darwin" ]]; then
-    print_error "This script is designed for macOS only"
-    exit 1
+  print_error "This script is designed for macOS only"
+  exit 1
 fi
 
 # Check if running as root
 if [[ $EUID -eq 0 ]]; then
-    print_error "This script should not be run as root"
-    exit 1
+  print_error "This script should not be run as root"
+  exit 1
 fi
 
 # Function to set up Prometheus
 setup_prometheus() {
-    print_status "Setting up Prometheus..."
+  print_status "Setting up Prometheus..."
 
-    # Create Prometheus configuration
-    mkdir -p ~/monitoring/prometheus
-    cat > ~/monitoring/prometheus/prometheus.yml << 'EOL'
+  # Create Prometheus configuration
+  mkdir -p ~/monitoring/prometheus
+  cat >~/monitoring/prometheus/prometheus.yml <<'EOL'
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
@@ -56,17 +56,17 @@ scrape_configs:
       - targets: ['localhost:8080']
 EOL
 
-    # Start Prometheus
-    prometheus --config.file=~/monitoring/prometheus/prometheus.yml &
+  # Start Prometheus
+  prometheus --config.file=~/monitoring/prometheus/prometheus.yml &
 }
 
 # Function to set up Grafana
 setup_grafana() {
-    print_status "Setting up Grafana..."
+  print_status "Setting up Grafana..."
 
-    # Create Grafana configuration
-    mkdir -p ~/monitoring/grafana
-    cat > ~/monitoring/grafana/grafana.ini << 'EOL'
+  # Create Grafana configuration
+  mkdir -p ~/monitoring/grafana
+  cat >~/monitoring/grafana/grafana.ini <<'EOL'
 [server]
 http_port = 3000
 domain = localhost
@@ -80,17 +80,17 @@ enabled = true
 org_role = Viewer
 EOL
 
-    # Start Grafana
-    grafana-server --config ~/monitoring/grafana/grafana.ini &
+  # Start Grafana
+  grafana-server --config ~/monitoring/grafana/grafana.ini &
 }
 
 # Function to set up Loki
 setup_loki() {
-    print_status "Setting up Loki..."
+  print_status "Setting up Loki..."
 
-    # Create Loki configuration
-    mkdir -p ~/monitoring/loki
-    cat > ~/monitoring/loki/loki-config.yml << 'EOL'
+  # Create Loki configuration
+  mkdir -p ~/monitoring/loki
+  cat >~/monitoring/loki/loki-config.yml <<'EOL'
 auth_enabled: false
 
 server:
@@ -130,17 +130,17 @@ limits_config:
   reject_old_samples_max_age: 168h
 EOL
 
-    # Start Loki
-    loki -config.file=~/monitoring/loki/loki-config.yml &
+  # Start Loki
+  loki -config.file=~/monitoring/loki/loki-config.yml &
 }
 
 # Function to set up Promtail
 setup_promtail() {
-    print_status "Setting up Promtail..."
+  print_status "Setting up Promtail..."
 
-    # Create Promtail configuration
-    mkdir -p ~/monitoring/promtail
-    cat > ~/monitoring/promtail/promtail-config.yml << 'EOL'
+  # Create Promtail configuration
+  mkdir -p ~/monitoring/promtail
+  cat >~/monitoring/promtail/promtail-config.yml <<'EOL'
 server:
   http_listen_port: 9080
   grpc_listen_port: 0
@@ -170,17 +170,17 @@ scrape_configs:
         target_label: 'unit'
 EOL
 
-    # Start Promtail
-    promtail -config.file=~/monitoring/promtail/promtail-config.yml &
+  # Start Promtail
+  promtail -config.file=~/monitoring/promtail/promtail-config.yml &
 }
 
 # Function to set up Elasticsearch
 setup_elasticsearch() {
-    print_status "Setting up Elasticsearch..."
+  print_status "Setting up Elasticsearch..."
 
-    # Create Elasticsearch configuration
-    mkdir -p ~/monitoring/elasticsearch
-    cat > ~/monitoring/elasticsearch/elasticsearch.yml << 'EOL'
+  # Create Elasticsearch configuration
+  mkdir -p ~/monitoring/elasticsearch
+  cat >~/monitoring/elasticsearch/elasticsearch.yml <<'EOL'
 cluster.name: monitoring-cluster
 network.host: localhost
 http.port: 9200
@@ -188,32 +188,32 @@ discovery.type: single-node
 xpack.security.enabled: false
 EOL
 
-    # Start Elasticsearch
-    elasticsearch -Epath.conf=~/monitoring/elasticsearch &
+  # Start Elasticsearch
+  elasticsearch -Epath.conf=~/monitoring/elasticsearch &
 }
 
 # Function to set up Kibana
 setup_kibana() {
-    print_status "Setting up Kibana..."
+  print_status "Setting up Kibana..."
 
-    # Create Kibana configuration
-    mkdir -p ~/monitoring/kibana
-    cat > ~/monitoring/kibana/kibana.yml << 'EOL'
+  # Create Kibana configuration
+  mkdir -p ~/monitoring/kibana
+  cat >~/monitoring/kibana/kibana.yml <<'EOL'
 server.host: localhost
 elasticsearch.hosts: ["http://localhost:9200"]
 EOL
 
-    # Start Kibana
-    kibana --config ~/monitoring/kibana/kibana.yml &
+  # Start Kibana
+  kibana --config ~/monitoring/kibana/kibana.yml &
 }
 
 # Function to set up InfluxDB
 setup_influxdb() {
-    print_status "Setting up InfluxDB..."
+  print_status "Setting up InfluxDB..."
 
-    # Create InfluxDB configuration
-    mkdir -p ~/monitoring/influxdb
-    cat > ~/monitoring/influxdb/influxdb.conf << 'EOL'
+  # Create InfluxDB configuration
+  mkdir -p ~/monitoring/influxdb
+  cat >~/monitoring/influxdb/influxdb.conf <<'EOL'
 [meta]
   dir = "/tmp/influxdb/meta"
 
@@ -227,49 +227,49 @@ setup_influxdb() {
   auth-enabled = false
 EOL
 
-    # Start InfluxDB
-    influxd -config ~/monitoring/influxdb/influxdb.conf &
+  # Start InfluxDB
+  influxd -config ~/monitoring/influxdb/influxdb.conf &
 }
 
 # Function to set up Chronograf
 setup_chronograf() {
-    print_status "Setting up Chronograf..."
+  print_status "Setting up Chronograf..."
 
-    # Start Chronograf
-    chronograf --host localhost --port 8888 &
+  # Start Chronograf
+  chronograf --host localhost --port 8888 &
 }
 
 # Function to set up Node Exporter
 setup_node_exporter() {
-    print_status "Setting up Node Exporter..."
+  print_status "Setting up Node Exporter..."
 
-    # Start Node Exporter
-    node_exporter &
+  # Start Node Exporter
+  node_exporter &
 }
 
 # Function to set up cAdvisor
 setup_cadvisor() {
-    print_status "Setting up cAdvisor..."
+  print_status "Setting up cAdvisor..."
 
-    # Start cAdvisor
-    cadvisor -port 8080 &
+  # Start cAdvisor
+  cadvisor -port 8080 &
 }
 
 # Function to set up Netdata
 setup_netdata() {
-    print_status "Setting up Netdata..."
+  print_status "Setting up Netdata..."
 
-    # Start Netdata
-    netdata -D &
+  # Start Netdata
+  netdata -D &
 }
 
 # Function to create monitoring dashboard
 create_dashboard() {
-    print_status "Creating monitoring dashboard..."
+  print_status "Creating monitoring dashboard..."
 
-    # Create a simple HTML dashboard
-    mkdir -p ~/monitoring/dashboard
-    cat > ~/monitoring/dashboard/index.html << 'EOL'
+  # Create a simple HTML dashboard
+  mkdir -p ~/monitoring/dashboard
+  cat >~/monitoring/dashboard/index.html <<'EOL'
 <!DOCTYPE html>
 <html>
 <head>
@@ -308,30 +308,30 @@ EOL
 
 # Main function
 main() {
-    print_status "Starting monitoring setup..."
+  print_status "Starting monitoring setup..."
 
-    # Set up monitoring tools
-    setup_prometheus
-    setup_grafana
-    setup_loki
-    setup_promtail
-    setup_elasticsearch
-    setup_kibana
-    setup_influxdb
-    setup_chronograf
-    setup_node_exporter
-    setup_cadvisor
-    setup_netdata
+  # Set up monitoring tools
+  setup_prometheus
+  setup_grafana
+  setup_loki
+  setup_promtail
+  setup_elasticsearch
+  setup_kibana
+  setup_influxdb
+  setup_chronograf
+  setup_node_exporter
+  setup_cadvisor
+  setup_netdata
 
-    # Create dashboard
-    create_dashboard
+  # Create dashboard
+  create_dashboard
 
-    print_status "Monitoring setup completed!"
-    print_status "Access the monitoring dashboard at: ~/monitoring/dashboard/index.html"
-    print_status "Grafana: http://localhost:3000"
-    print_status "Kibana: http://localhost:5601"
-    print_status "Chronograf: http://localhost:8888"
-    print_status "Netdata: http://localhost:19999"
+  print_status "Monitoring setup completed!"
+  print_status "Access the monitoring dashboard at: ~/monitoring/dashboard/index.html"
+  print_status "Grafana: http://localhost:3000"
+  print_status "Kibana: http://localhost:5601"
+  print_status "Chronograf: http://localhost:8888"
+  print_status "Netdata: http://localhost:19999"
 }
 
 # Run the main function

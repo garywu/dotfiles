@@ -96,8 +96,8 @@ handle_nix_remnants() {
                 for backup_file in "${official_backups[@]}"; do
                     if [[ -f "${backup_file}" ]]; then
                         local basename=$(basename "${backup_file}")
-                        sudo mv "$backup_file" "/tmp/${basename}.${timestamp}" 2>/dev/null && \
-                            echo "  → Moved $backup_file to /tmp/${basename}.${timestamp}"
+                        sudo mv "${backup_file}" "/tmp/${basename}.${timestamp}" 2>/dev/null && \
+                            echo "  → Moved ${backup_file} to /tmp/${basename}.${timestamp}"
                     fi
                 done
                 ;;
@@ -242,12 +242,12 @@ for shell_config in "${HOME}/.zprofile" "${HOME}/.bash_profile" "${HOME}/.profil
     if [[ -f "${shell_config}" ]] || [[ "${shell_config}" = "${HOME}/.zprofile" ]]; then
         # Remove any existing nix profile path entries to avoid duplicates
         if [[ -f "${shell_config}" ]]; then
-            grep -v "/.nix-profile/bin" "$shell_config" > "$shell_config.tmp" && mv "$shell_config.tmp" "$shell_config"
+            grep -v "/.nix-profile/bin" "${shell_config}" > "${shell_config}.tmp" && mv "${shell_config}.tmp" "${shell_config}"
         fi
         # Add nix profile path at the beginning (prepend to PATH)
-        echo "# Nix package manager - ensure modern tools take precedence" >> "$shell_config"
-        echo "export PATH=\"$NIX_PROFILE_PATH:\$PATH\"" >> "$shell_config"
-        print_status "  → Updated $shell_config"
+        echo "# Nix package manager - ensure modern tools take precedence" >> "${shell_config}"
+        echo "export PATH=\"${NIX_PROFILE_PATH}:\$PATH\"" >> "${shell_config}"
+        print_status "  → Updated ${shell_config}"
     fi
 done
 

@@ -8,45 +8,45 @@ NC='\033[0m' # No Color
 
 # Function to print status messages
 print_status() {
-    echo -e "${GREEN}==>${NC} $1"
+  echo -e "${GREEN}==>${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}Error:${NC} $1"
+  echo -e "${RED}Error:${NC} $1"
 }
 
 print_warning() {
-    echo -e "${YELLOW}Warning:${NC} $1"
+  echo -e "${YELLOW}Warning:${NC} $1"
 }
 
 # Check if project name is provided
 if [ -z "$1" ]; then
-    print_error "Please provide a project name"
-    echo "Usage: $0 <project-name> [project-type]"
-    echo "Project types: python, node, ai, rust, go"
-    exit 1
+  print_error "Please provide a project name"
+  echo "Usage: $0 <project-name> [project-type]"
+  echo "Project types: python, node, ai, rust, go"
+  exit 1
 fi
 
 PROJECT_NAME=$1
-PROJECT_TYPE=${2:-python}  # Default to python if not specified
+PROJECT_TYPE=${2:-python} # Default to python if not specified
 
 # Function to create Python project
 create_python_project() {
-    print_status "Creating Python project: $PROJECT_NAME"
+  print_status "Creating Python project: $PROJECT_NAME"
 
-    # Create project directory
-    mkdir -p "$PROJECT_NAME"
-    cd "$PROJECT_NAME"
+  # Create project directory
+  mkdir -p "$PROJECT_NAME"
+  cd "$PROJECT_NAME"
 
-    # Create virtual environment using uv (faster than venv)
-    print_status "Creating virtual environment with uv..."
-    uv venv
+  # Create virtual environment using uv (faster than venv)
+  print_status "Creating virtual environment with uv..."
+  uv venv
 
-    # Create project structure
-    mkdir -p src tests docs
+  # Create project structure
+  mkdir -p src tests docs
 
-    # Create requirements files
-    cat > requirements.txt << 'EOL'
+  # Create requirements files
+  cat >requirements.txt <<'EOL'
 # Core dependencies
 pytest==7.4.0
 black==23.7.0
@@ -61,7 +61,7 @@ jupyter==1.0.0
 notebook==7.0.3
 EOL
 
-    cat > requirements-dev.txt << 'EOL'
+  cat >requirements-dev.txt <<'EOL'
 -r requirements.txt
 pytest-cov==4.1.0
 pytest-mock==3.11.1
@@ -70,8 +70,8 @@ sphinx==7.1.2
 sphinx-rtd-theme==1.3.0
 EOL
 
-    # Create .gitignore
-    cat > .gitignore << 'EOL'
+  # Create .gitignore
+  cat >.gitignore <<'EOL'
 # Python
 __pycache__/
 *.py[cod]
@@ -122,8 +122,8 @@ docs/_build/
 .env.local
 EOL
 
-    # Create README
-    cat > README.md << 'EOL'
+  # Create README
+  cat >README.md <<'EOL'
 # Project Name
 
 Brief description of your project.
@@ -163,8 +163,8 @@ make html
 ```
 EOL
 
-    # Create pre-commit config
-    cat > .pre-commit-config.yaml << 'EOL'
+  # Create pre-commit config
+  cat >.pre-commit-config.yaml <<'EOL'
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -196,30 +196,30 @@ repos:
         additional_dependencies: [types-all]
 EOL
 
-    # Initialize git
-    git init
-    git add .
-    git commit -m "Initial commit"
+  # Initialize git
+  git init
+  git add .
+  git commit -m "Initial commit"
 
-    print_status "Python project created successfully!"
+  print_status "Python project created successfully!"
 }
 
 # Function to create Node.js project
 create_node_project() {
-    print_status "Creating Node.js project: $PROJECT_NAME"
+  print_status "Creating Node.js project: $PROJECT_NAME"
 
-    # Create project directory
-    mkdir -p "$PROJECT_NAME"
-    cd "$PROJECT_NAME"
+  # Create project directory
+  mkdir -p "$PROJECT_NAME"
+  cd "$PROJECT_NAME"
 
-    # Initialize npm project
-    npm init -y
+  # Initialize npm project
+  npm init -y
 
-    # Create project structure
-    mkdir -p src tests docs
+  # Create project structure
+  mkdir -p src tests docs
 
-    # Create package.json
-    cat > package.json << 'EOL'
+  # Create package.json
+  cat >package.json <<'EOL'
 {
   "name": "project-name",
   "version": "1.0.0",
@@ -252,8 +252,8 @@ create_node_project() {
 }
 EOL
 
-    # Create tsconfig.json
-    cat > tsconfig.json << 'EOL'
+  # Create tsconfig.json
+  cat >tsconfig.json <<'EOL'
 {
   "compilerOptions": {
     "target": "ES2020",
@@ -271,8 +271,8 @@ EOL
 }
 EOL
 
-    # Create .gitignore
-    cat > .gitignore << 'EOL'
+  # Create .gitignore
+  cat >.gitignore <<'EOL'
 # Dependencies
 node_modules/
 npm-debug.log*
@@ -301,8 +301,8 @@ coverage/
 Thumbs.db
 EOL
 
-    # Create README
-    cat > README.md << 'EOL'
+  # Create README
+  cat >README.md <<'EOL'
 # Project Name
 
 Brief description of your project.
@@ -334,31 +334,31 @@ npm run build
 ```
 EOL
 
-    # Initialize git
-    git init
-    git add .
-    git commit -m "Initial commit"
+  # Initialize git
+  git init
+  git add .
+  git commit -m "Initial commit"
 
-    print_status "Node.js project created successfully!"
+  print_status "Node.js project created successfully!"
 }
 
 # Function to create AI project
 create_ai_project() {
-    print_status "Creating AI project: $PROJECT_NAME"
+  print_status "Creating AI project: $PROJECT_NAME"
 
-    # Create project directory
-    mkdir -p "$PROJECT_NAME"
-    cd "$PROJECT_NAME"
+  # Create project directory
+  mkdir -p "$PROJECT_NAME"
+  cd "$PROJECT_NAME"
 
-    # Create virtual environment using uv
-    print_status "Creating virtual environment with uv..."
-    uv venv
+  # Create virtual environment using uv
+  print_status "Creating virtual environment with uv..."
+  uv venv
 
-    # Create project structure
-    mkdir -p src tests docs data models notebooks
+  # Create project structure
+  mkdir -p src tests docs data models notebooks
 
-    # Create requirements files
-    cat > requirements.txt << 'EOL'
+  # Create requirements files
+  cat >requirements.txt <<'EOL'
 # Core ML dependencies
 torch==2.0.1
 transformers==4.30.0
@@ -385,7 +385,7 @@ wandb==0.15.8
 mlflow==2.7.1
 EOL
 
-    cat > requirements-dev.txt << 'EOL'
+  cat >requirements-dev.txt <<'EOL'
 -r requirements.txt
 pytest-cov==4.1.0
 pytest-mock==3.11.1
@@ -394,8 +394,8 @@ sphinx==7.1.2
 sphinx-rtd-theme==1.3.0
 EOL
 
-    # Create .gitignore
-    cat > .gitignore << 'EOL'
+  # Create .gitignore
+  cat >.gitignore <<'EOL'
 # Python
 __pycache__/
 *.py[cod]
@@ -463,8 +463,8 @@ mlruns/
 .env.local
 EOL
 
-    # Create README
-    cat > README.md << 'EOL'
+  # Create README
+  cat >README.md <<'EOL'
 # AI Project Name
 
 Brief description of your AI project.
@@ -517,8 +517,8 @@ make html
 ```
 EOL
 
-    # Create pre-commit config
-    cat > .pre-commit-config.yaml << 'EOL'
+  # Create pre-commit config
+  cat >.pre-commit-config.yaml <<'EOL'
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -550,30 +550,30 @@ repos:
         additional_dependencies: [types-all]
 EOL
 
-    # Initialize git
-    git init
-    git add .
-    git commit -m "Initial commit"
+  # Initialize git
+  git init
+  git add .
+  git commit -m "Initial commit"
 
-    print_status "AI project created successfully!"
+  print_status "AI project created successfully!"
 }
 
 # Function to create Rust project
 create_rust_project() {
-    print_status "Creating Rust project: $PROJECT_NAME"
+  print_status "Creating Rust project: $PROJECT_NAME"
 
-    # Create project directory
-    mkdir -p "$PROJECT_NAME"
-    cd "$PROJECT_NAME"
+  # Create project directory
+  mkdir -p "$PROJECT_NAME"
+  cd "$PROJECT_NAME"
 
-    # Initialize cargo project
-    cargo init --name "$PROJECT_NAME" --bin
+  # Initialize cargo project
+  cargo init --name "$PROJECT_NAME" --bin
 
-    # Create project structure
-    mkdir -p src tests docs examples benches
+  # Create project structure
+  mkdir -p src tests docs examples benches
 
-    # Create Cargo.toml with common dependencies
-    cat > Cargo.toml << 'EOL'
+  # Create Cargo.toml with common dependencies
+  cat >Cargo.toml <<'EOL'
 [package]
 name = "project-name"
 version = "0.1.0"
@@ -618,8 +618,8 @@ opt-level = 0
 debug = true
 EOL
 
-    # Create .gitignore
-    cat > .gitignore << 'EOL'
+  # Create .gitignore
+  cat >.gitignore <<'EOL'
 # Generated by Cargo
 /target/
 **/*.rs.bk
@@ -643,8 +643,8 @@ Thumbs.db
 docs/_build/
 EOL
 
-    # Create README
-    cat > README.md << 'EOL'
+  # Create README
+  cat >README.md <<'EOL'
 # Project Name
 
 Brief description of your Rust project.
@@ -698,9 +698,9 @@ cargo audit
 ```
 EOL
 
-    # Create mdbook configuration
-    mkdir -p docs/src
-    cat > docs/book.toml << 'EOL'
+  # Create mdbook configuration
+  mkdir -p docs/src
+  cat >docs/book.toml <<'EOL'
 [book]
 title = "Project Documentation"
 authors = ["Your Name"]
@@ -721,30 +721,30 @@ git-repository-icon = "fa-github"
 edit-url-template = ""
 EOL
 
-    # Initialize git
-    git init
-    git add .
-    git commit -m "Initial commit"
+  # Initialize git
+  git init
+  git add .
+  git commit -m "Initial commit"
 
-    print_status "Rust project created successfully!"
+  print_status "Rust project created successfully!"
 }
 
 # Function to create Go project
 create_go_project() {
-    print_status "Creating Go project: $PROJECT_NAME"
+  print_status "Creating Go project: $PROJECT_NAME"
 
-    # Create project directory
-    mkdir -p "$PROJECT_NAME"
-    cd "$PROJECT_NAME"
+  # Create project directory
+  mkdir -p "$PROJECT_NAME"
+  cd "$PROJECT_NAME"
 
-    # Initialize go module
-    go mod init "$PROJECT_NAME"
+  # Initialize go module
+  go mod init "$PROJECT_NAME"
 
-    # Create project structure
-    mkdir -p cmd/$PROJECT_NAME internal pkg api docs examples test
+  # Create project structure
+  mkdir -p cmd/$PROJECT_NAME internal pkg api docs examples test
 
-    # Create main.go
-    cat > cmd/$PROJECT_NAME/main.go << 'EOL'
+  # Create main.go
+  cat >cmd/$PROJECT_NAME/main.go <<'EOL'
 package main
 
 import (
@@ -776,8 +776,8 @@ func main() {
 }
 EOL
 
-    # Create go.mod with common dependencies
-    cat > go.mod << 'EOL'
+  # Create go.mod with common dependencies
+  cat >go.mod <<'EOL'
 module project-name
 
 go 1.21
@@ -790,8 +790,8 @@ require (
 )
 EOL
 
-    # Create .gitignore
-    cat > .gitignore << 'EOL'
+  # Create .gitignore
+  cat >.gitignore <<'EOL'
 # Binaries
 *.exe
 *.exe~
@@ -827,8 +827,8 @@ Thumbs.db
 docs/_build/
 EOL
 
-    # Create README
-    cat > README.md << 'EOL'
+  # Create README
+  cat >README.md <<'EOL'
 # Project Name
 
 Brief description of your Go project.
@@ -886,8 +886,8 @@ govulncheck ./...
 ```
 EOL
 
-    # Create mkdocs configuration
-    cat > mkdocs.yml << 'EOL'
+  # Create mkdocs configuration
+  cat >mkdocs.yml <<'EOL'
 site_name: Project Documentation
 site_description: Documentation for the project
 site_author: Your Name
@@ -930,38 +930,38 @@ plugins:
             show_root_heading: true
 EOL
 
-    # Initialize git
-    git init
-    git add .
-    git commit -m "Initial commit"
+  # Initialize git
+  git init
+  git add .
+  git commit -m "Initial commit"
 
-    print_status "Go project created successfully!"
+  print_status "Go project created successfully!"
 }
 
 # Main function
 main() {
-    case $PROJECT_TYPE in
-        "python")
-            create_python_project
-            ;;
-        "node")
-            create_node_project
-            ;;
-        "ai")
-            create_ai_project
-            ;;
-        "rust")
-            create_rust_project
-            ;;
-        "go")
-            create_go_project
-            ;;
-        *)
-            print_error "Unknown project type: $PROJECT_TYPE"
-            echo "Available types: python, node, ai, rust, go"
-            exit 1
-            ;;
-    esac
+  case $PROJECT_TYPE in
+  "python")
+    create_python_project
+    ;;
+  "node")
+    create_node_project
+    ;;
+  "ai")
+    create_ai_project
+    ;;
+  "rust")
+    create_rust_project
+    ;;
+  "go")
+    create_go_project
+    ;;
+  *)
+    print_error "Unknown project type: $PROJECT_TYPE"
+    echo "Available types: python, node, ai, rust, go"
+    exit 1
+    ;;
+  esac
 }
 
 # Run the main function
