@@ -56,6 +56,18 @@
     ripgrep
     tldr
 
+    # Enhanced search and navigation
+    silver-searcher # ag - fast code searching
+    broot # New way to navigate directory trees
+    lsd # Next gen ls command with icons
+    procs # Modern ps replacement
+    dust # More intuitive du
+    duf # Better df alternative
+    tokei # Count code statistics
+    hyperfine # Command-line benchmarking tool
+    watchexec # Execute commands on file changes
+    sd # Intuitive find & replace (better than sed)
+
     # Developer CLI Tools
     gh # GitHub CLI
     hub # GitHub command-line tool
@@ -90,6 +102,17 @@
     btop # Resource monitor (modern htop alternative)
     glow # Markdown previewer in terminal
     vifm # Terminal file manager with preview support
+
+    # Git enhancement tools
+    tig # Text-mode interface for git
+    gitui # Blazing fast terminal-ui for git
+
+    # File content tools
+    gron # Make JSON greppable
+    jless # Command-line JSON viewer
+    hexyl # Command-line hex viewer
+    choose # Human-friendly alternative to cut/awk
+    # xsv # Fast CSV command line toolkit (removed - use xan instead)
 
     # Environment Variables & Secrets Management
     sops # Secrets management with encryption

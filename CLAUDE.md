@@ -111,6 +111,38 @@ make format-toml     # Format TOML files
 make format-fish     # Format Fish scripts
 ```
 
+### Productivity Tools
+```bash
+# Fast searching
+ag "pattern"         # Silver searcher - faster than grep
+rg "pattern"         # Ripgrep - even faster (already had)
+fd "filename"        # Fast file finder (already had)
+
+# Better command alternatives
+sd "find" "replace"  # Better than sed for find/replace
+choose 1 3           # Better than cut/awk
+dust                 # Better du - disk usage
+duf                  # Better df - disk free
+procs                # Better ps - process viewer
+lsd                  # Better ls with icons
+
+# Git tools
+tig                  # Text-mode git interface
+gitui                # Fast terminal UI for git
+lazygit              # TUI for git (already had)
+
+# File exploration
+broot                # New way to navigate directories
+hexyl file.bin       # Hex viewer with colors
+gron file.json       # Make JSON greppable
+jless file.json      # Interactive JSON viewer
+
+# Development
+tokei                # Count lines of code
+hyperfine "cmd"      # Benchmark commands
+watchexec -e py pytest  # Run commands on file change
+```
+
 ## Current Session (2025-06-17)
 
 ### Completed
