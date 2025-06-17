@@ -1,3 +1,23 @@
+# [](https://github.com/garywu/dotfiles/compare/v0.0.1...v) (2025-06-17)
+
+
+### Bug Fixes
+
+* apply pre-commit formatting to shell scripts ([23b71ca](https://github.com/garywu/dotfiles/commit/23b71caa530aaf70f1cd1db4da30a3b49d49598d)), closes [#11](https://github.com/garywu/dotfiles/issues/11) [#4](https://github.com/garywu/dotfiles/issues/4)
+* resolve linting issues in bootstrap.sh and config files ([#8](https://github.com/garywu/dotfiles/issues/8)) ([7363143](https://github.com/garywu/dotfiles/commit/73631434bff8f14a497e52849280d65c72217891))
+* sync package-lock.json with package.json ([0853dfe](https://github.com/garywu/dotfiles/commit/0853dfe6afbcf6670c70df288d6230b401f85544))
+
+
+### Features
+
+* add developer productivity CLI tools ([#10](https://github.com/garywu/dotfiles/issues/10)) ([fbba0bc](https://github.com/garywu/dotfiles/commit/fbba0bc58aafc79319f3fd88f6d22ad9c77bd5fd))
+* add linting infrastructure and Cloudflare CLI tools ([#6](https://github.com/garywu/dotfiles/issues/6), [#7](https://github.com/garywu/dotfiles/issues/7)) ([83ad63b](https://github.com/garywu/dotfiles/commit/83ad63b29a000df97ecccc81cd30dcbb145cd883))
+* complete Dotfiles Academy migration from Docusaurus to Starlight ([#12](https://github.com/garywu/dotfiles/issues/12)) ([cd75b43](https://github.com/garywu/dotfiles/commit/cd75b4342a1901d83adbffac5243a388bf0f9626))
+* implement automated release management system ([03adc6f](https://github.com/garywu/dotfiles/commit/03adc6f593a441a223afcdf5c25b012dd439b80d))
+* implement Git email privacy protection ([eadcc71](https://github.com/garywu/dotfiles/commit/eadcc7180285f98727f1b080fd7e2374ba844cb4))
+
+
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
