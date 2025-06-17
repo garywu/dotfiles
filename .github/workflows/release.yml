@@ -1,0 +1,258 @@
+name: Release Management
+
+on:
+  # Manual trigger for releases
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prerelease
+          - custom
+      custom_version:
+        description: 'Custom version (only used if release_type is custom)'
+        required: false
+        type: string
+      prerelease_identifier:
+        description: 'Prerelease identifier (alpha, beta, rc)'
+        required: false
+        default: 'alpha'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - rc
+
+  # Automated releases
+  schedule:
+    # Weekly patch releases (every Monday at 9 AM UTC)
+    - cron: '0 9 * * 1'
+    
+  # Trigger on push to main (for continuous deployment)
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - '.github/workflows/deploy-docs.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  # Determine what kind of release to make
+  determine-release:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      release_type: ${{ steps.check.outputs.release_type }}
+      new_version: ${{ steps.version.outputs.new_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if release is needed
+        id: check
+        run: |
+          # For manual triggers, always release
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "release_type=${{ inputs.release_type }}" >> $GITHUB_OUTPUT
+          # For scheduled runs, check if there are changes
+          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+            # Check if there are commits since last tag
+            LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+            COMMITS_SINCE_TAG=$(git rev-list --count ${LAST_TAG}..HEAD)
+            
+            if [[ $COMMITS_SINCE_TAG -gt 0 ]]; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "release_type=patch" >> $GITHUB_OUTPUT
+            else
+              echo "should_release=false" >> $GITHUB_OUTPUT
+            fi
+          # For push events, analyze commits
+          else
+            # Simple conventional commit analysis
+            if git log -1 --pretty=%B | grep -q "^feat!:\|^fix!:\|BREAKING CHANGE"; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "release_type=major" >> $GITHUB_OUTPUT
+            elif git log -1 --pretty=%B | grep -q "^feat:"; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "release_type=minor" >> $GITHUB_OUTPUT
+            elif git log -1 --pretty=%B | grep -q "^fix:"; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "release_type=patch" >> $GITHUB_OUTPUT
+            else
+              echo "should_release=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Calculate new version
+        id: version
+        if: steps.check.outputs.should_release == 'true'
+        run: |
+          CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          CURRENT_VERSION=${CURRENT_VERSION#v}
+          
+          IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
+          MAJOR="${VERSION_PARTS[0]:-0}"
+          MINOR="${VERSION_PARTS[1]:-0}"
+          PATCH="${VERSION_PARTS[2]:-0}"
+          
+          RELEASE_TYPE="${{ steps.check.outputs.release_type }}"
+          
+          if [[ "$RELEASE_TYPE" == "major" ]]; then
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+          elif [[ "$RELEASE_TYPE" == "minor" ]]; then
+            MINOR=$((MINOR + 1))
+            PATCH=0
+          elif [[ "$RELEASE_TYPE" == "patch" ]]; then
+            PATCH=$((PATCH + 1))
+          elif [[ "$RELEASE_TYPE" == "custom" ]]; then
+            echo "new_version=${{ inputs.custom_version }}" >> $GITHUB_OUTPUT
+            exit 0
+          elif [[ "$RELEASE_TYPE" == "prerelease" ]]; then
+            PATCH=$((PATCH + 1))
+            IDENTIFIER="${{ inputs.prerelease_identifier }}"
+            # Find the next prerelease number
+            PRERELEASE_NUM=$(git tag -l "v${MAJOR}.${MINOR}.${PATCH}-${IDENTIFIER}.*" | wc -l)
+            PRERELEASE_NUM=$((PRERELEASE_NUM + 1))
+            echo "new_version=v${MAJOR}.${MINOR}.${PATCH}-${IDENTIFIER}.${PRERELEASE_NUM}" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "new_version=v${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
+  # Create the release
+  create-release:
+    needs: determine-release
+    if: needs.determine-release.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          npm install -g conventional-changelog-cli
+          npm install -g @semantic-release/commit-analyzer
+          npm install -g @semantic-release/release-notes-generator
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Generate changelog for this release
+          conventional-changelog -p angular -i CHANGELOG.md -s -r 1
+          
+          # Extract just the latest release notes
+          sed -n '/^##/,/^##/p' CHANGELOG.md | sed '$d' > RELEASE_NOTES.md
+          
+          # If empty, generate from commits
+          if [[ ! -s RELEASE_NOTES.md ]]; then
+            git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..HEAD > RELEASE_NOTES.md
+          fi
+          
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
+          cat RELEASE_NOTES.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Update version in files
+        run: |
+          VERSION="${{ needs.determine-release.outputs.new_version }}"
+          VERSION_NO_V=${VERSION#v}
+          
+          # Update package.json files if they exist
+          find . -name "package.json" -type f | while read -r file; do
+            if [[ -f "$file" ]]; then
+              sed -i.bak "s/\"version\": \".*\"/\"version\": \"${VERSION_NO_V}\"/" "$file"
+              rm "${file}.bak"
+            fi
+          done
+          
+          # Update any VERSION files
+          if [[ -f VERSION ]]; then
+            echo "${VERSION_NO_V}" > VERSION
+          fi
+
+      - name: Commit version changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git add .
+          git diff --staged --quiet || git commit -m "chore(release): ${{ needs.determine-release.outputs.new_version }} [skip ci]
+
+          ${{ env.RELEASE_NOTES }}"
+
+      - name: Push changes
+        run: |
+          git push
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.determine-release.outputs.new_version }}
+          name: ${{ needs.determine-release.outputs.new_version }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: false
+          prerelease: ${{ contains(needs.determine-release.outputs.new_version, '-') }}
+          generate_release_notes: true
+
+  # Send notifications
+  notify:
+    needs: [determine-release, create-release]
+    if: always() && needs.create-release.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue for release notes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ needs.determine-release.outputs.new_version }}';
+            const releaseType = '${{ needs.determine-release.outputs.release_type }}';
+            
+            const labels = ['release', 'documentation'];
+            if (releaseType === 'major') labels.push('breaking-change');
+            if (releaseType.includes('pre')) labels.push('prerelease');
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Release ${version} Published`,
+              body: `A new ${releaseType} release has been published!
+              
+              **Version**: ${version}
+              **Type**: ${releaseType}
+              **Date**: ${new Date().toISOString()}
+              
+              [View Release](https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/${version})
+              
+              ## Next Steps
+              - [ ] Update documentation if needed
+              - [ ] Notify users of breaking changes (if any)
+              - [ ] Update any dependent projects
+              `,
+              labels: labels
+            });

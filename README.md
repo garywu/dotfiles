@@ -1,5 +1,31 @@
 # Modern Development Environment Setup
 
+<!-- Badges -->
+<div align="center">
+
+[![Release](https://img.shields.io/github/v/release/garywu/dotfiles?include_prereleases&sort=semver&display_name=tag&style=flat-square)](https://github.com/garywu/dotfiles/releases/latest)
+[![CI/CD](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/deploy-docs.yml?branch=main&label=docs&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/deploy-docs.yml)
+[![License](https://img.shields.io/github/license/garywu/dotfiles?style=flat-square)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/garywu/dotfiles?style=flat-square)](https://github.com/garywu/dotfiles/commits/main)
+[![Commit Activity](https://img.shields.io/github/commit-activity/w/garywu/dotfiles?style=flat-square)](https://github.com/garywu/dotfiles/graphs/commit-activity)
+
+<!-- Release Channels -->
+[![Stable](https://img.shields.io/badge/channel-stable-green?style=flat-square)](https://github.com/garywu/dotfiles/releases/latest)
+[![Beta](https://img.shields.io/badge/channel-beta-orange?style=flat-square)](https://github.com/garywu/dotfiles/releases?q=prerelease%3Atrue)
+[![Nightly](https://img.shields.io/badge/channel-nightly-red?style=flat-square)](https://github.com/garywu/dotfiles/actions)
+
+<!-- Technology Stack -->
+[![Nix](https://img.shields.io/badge/Nix-5277C3?style=flat-square&logo=nixos&logoColor=white)](https://nixos.org/)
+[![Home Manager](https://img.shields.io/badge/Home_Manager-48B9C7?style=flat-square)](https://github.com/nix-community/home-manager)
+[![Chezmoi](https://img.shields.io/badge/Chezmoi-0078D4?style=flat-square)](https://www.chezmoi.io/)
+[![Fish Shell](https://img.shields.io/badge/Fish-Shell-4AAE46?style=flat-square)](https://fishshell.com/)
+
+<!-- Documentation -->
+[![Documentation](https://img.shields.io/badge/docs-github_pages-blue?style=flat-square)](https://garywu.github.io/dotfiles)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+
+</div>
+
 This repository provides a fully automated, reproducible development environment using Nix, Home Manager, Chezmoi, and Homebrew (macOS).
 
 ## 🚀 Quick Start
