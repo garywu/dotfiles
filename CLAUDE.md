@@ -142,15 +142,17 @@ make format-fish     # Format Fish scripts
     - Added wrangler installation to bootstrap.sh
     - Documented commands in CLAUDE.md
 12. Committed and pushed all changes (commit e57067a)
+13. Created Issue #8 - Fix existing linting warnings
+14. Created Issue #9 - Phase 4: CI/CD with GitHub Actions
 
 ### In Progress
-- Ready for next tasks
+- Ready to work on linting fixes or CI/CD setup
 
 ### Next Steps
-1. Create issue for fixing existing linting warnings
-2. Continue with other phases from Issue #4
-3. Consider CI/CD setup for automated checks
-4. Review and prioritize open issues
+1. Fix existing linting warnings (Issue #8)
+2. Implement CI/CD with GitHub Actions (Issue #9)
+3. Continue with other phases from Issue #4
+4. Consider changelog automation (Phase 2)
 
 ## Previous Sessions
 
@@ -167,6 +169,8 @@ make format-fish     # Format Fish scripts
 - #2 - Architecture Separation: Nix/Home Manager from Chezmoi Management (documentation)
 - #3 - Establish Issue-Driven Development Workflow
 - #4 - Setup Professional Development Processes and Standards
+- #8 - Fix existing linting warnings in codebase
+- #9 - Phase 4: Set up CI/CD with GitHub Actions (sub-issue of #4)
 
 ### Completed Issues
 - #5 - Phase 1: GitHub Repository Setup - Labels and Templates ✅
