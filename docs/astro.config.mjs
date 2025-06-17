@@ -25,69 +25,28 @@ export default defineConfig({
           autogenerate: { directory: '01-introduction' },
         },
         {
-          label: 'Installation & Setup',
-          autogenerate: { directory: '02-installation' },
+          label: 'CLI Tools',
+          autogenerate: { directory: '03-cli-tools' },
         },
         {
-          label: 'Dotfiles Fundamentals',
-          autogenerate: { directory: '03-dotfiles-fundamentals' },
+          label: 'Terminal Workflow',
+          autogenerate: { directory: '04-terminal-workflow' },
         },
         {
-          label: 'Shell Mastery',
-          autogenerate: { directory: '04-shell-mastery' },
+          label: 'AI Development',
+          autogenerate: { directory: '05-ai-development' },
         },
         {
           label: 'CLI Tools Academy',
-          items: [
-            {
-              label: 'Overview',
-              link: '/05-cli-tools-academy/',
-            },
-            {
-              label: 'Modern Replacements',
-              link: '/05-cli-tools-academy/modern-replacements/',
-            },
-            {
-              label: 'File Navigation',
-              autogenerate: { directory: '05-cli-tools-academy/file-navigation' },
-            },
-            {
-              label: 'Text Processing',
-              autogenerate: { directory: '05-cli-tools-academy/text-processing' },
-            },
-            {
-              label: 'System Monitoring',
-              autogenerate: { directory: '05-cli-tools-academy/system-monitoring' },
-            },
-            {
-              label: 'Git Workflow',
-              autogenerate: { directory: '05-cli-tools-academy/git-workflow' },
-            },
-            {
-              label: 'Data Tools',
-              autogenerate: { directory: '05-cli-tools-academy/data-tools' },
-            },
-            {
-              label: 'Productivity Tools',
-              autogenerate: { directory: '05-cli-tools-academy/productivity' },
-            },
-          ],
+          autogenerate: { directory: '05-cli-tools-academy' },
         },
         {
           label: 'AI Tools',
           autogenerate: { directory: '06-ai-tools' },
         },
         {
-          label: 'Development Workflow',
-          autogenerate: { directory: '07-development-workflow' },
-        },
-        {
-          label: 'Automation Scripts',
-          autogenerate: { directory: '08-automation-scripts' },
-        },
-        {
-          label: 'Advanced Topics',
-          autogenerate: { directory: '09-advanced-topics' },
+          label: 'Troubleshooting',
+          autogenerate: { directory: '98-troubleshooting' },
         },
         {
           label: 'Reference',
