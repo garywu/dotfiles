@@ -1,0 +1,49 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Terminal background -->
+  <rect x="20" y="20" width="360" height="260" rx="12" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+  
+  <!-- Terminal header -->
+  <rect x="20" y="20" width="360" height="40" rx="12" fill="#2d2d2d"/>
+  <rect x="20" y="48" width="360" height="1" fill="#333"/>
+  
+  <!-- Terminal buttons -->
+  <circle cx="40" cy="40" r="6" fill="#ff5f56"/>
+  <circle cx="60" cy="40" r="6" fill="#ffbd2e"/>
+  <circle cx="80" cy="40" r="6" fill="#27ca3f"/>
+  
+  <!-- Terminal title -->
+  <text x="200" y="45" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#888" text-anchor="middle">Dotfiles Academy</text>
+  
+  <!-- Command prompt and modern tools -->
+  <text x="40" y="90" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#4a9eff">$</text>
+  <text x="55" y="90" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#e0e0e0">eza --icons --git</text>
+  
+  <!-- File listing with icons -->
+  <text x="40" y="115" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#4a9eff">📁</text>
+  <text x="60" y="115" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#e0e0e0">docs/</text>
+  <text x="120" y="115" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#28a745">[M]</text>
+  
+  <text x="40" y="135" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#f39c12">🐍</text>
+  <text x="60" y="135" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#e0e0e0">main.py</text>
+  <text x="120" y="135" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#28a745">[M]</text>
+  
+  <text x="40" y="155" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#61dafb">⚛️</text>
+  <text x="60" y="155" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#e0e0e0">App.tsx</text>
+  
+  <text x="40" y="175" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#e34c26">📄</text>
+  <text x="60" y="175" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#e0e0e0">README.md</text>
+  
+  <!-- Next command -->
+  <text x="40" y="210" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#4a9eff">$</text>
+  <text x="55" y="210" font-family="SF Mono, Monaco, monospace" font-size="14" fill="#e0e0e0">rg "TODO" --type py</text>
+  
+  <!-- Search results -->
+  <text x="40" y="235" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#f39c12">main.py</text>
+  <text x="90" y="235" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#888">:15:</text>
+  <text x="115" y="235" font-family="SF Mono, Monaco, monospace" font-size="12" fill="#e0e0e0">// TODO: Add error handling</text>
+  
+  <!-- Cursor -->
+  <rect x="40" y="255" width="8" height="15" fill="#4a9eff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1s" repeatCount="indefinite"/>
+  </rect>
+</svg>

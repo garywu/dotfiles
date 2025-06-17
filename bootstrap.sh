@@ -359,6 +359,21 @@ else
     print_status "Wrangler is already installed"
 fi
 
+# Optional: Set up OpenHands (AI coding assistant)
+if [[ "${SETUP_OPENHANDS:-}" == "true" ]]; then
+    print_status "Setting up OpenHands AI coding assistant..."
+    if [[ -x "$HOME/.dotfiles/scripts/setup-openhands.sh" ]]; then
+        "$HOME/.dotfiles/scripts/setup-openhands.sh" install
+        print_status "OpenHands setup complete!"
+        print_status "Access at: http://localhost:3030"
+        print_status "Remember to add your API keys in ~/.config/openhands/config.env"
+    else
+        print_warning "OpenHands setup script not found or not executable"
+    fi
+else
+    print_status "Tip: Set SETUP_OPENHANDS=true to install OpenHands AI coding assistant"
+fi
+
 print_status "Bootstrap completed!"
 print_status "Your system is now fully configured. Enjoy!"
 echo "Bootstrap completed at $(date)"
