@@ -2,7 +2,7 @@
 # Smoke Test: Check if all expected commands are available
 # This is a simple test that verifies commands can be executed
 
-set -euo pipefail
+set -uo pipefail
 
 # Get test directory
 TEST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
