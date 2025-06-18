@@ -181,9 +181,18 @@ if ! command_exists nix; then
     if command -v is_ci &>/dev/null && is_ci; then
         print_status "Nix installed! Continuing in CI mode..."
         # In CI, source nix immediately to make it available
-        if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
-            # shellcheck source=/dev/null
-            source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+        if [[ "$(uname)" == "Darwin" ]]; then
+            # macOS uses nix-daemon.sh for multi-user installation
+            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+                # shellcheck source=/dev/null
+                source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+            fi
+        else
+            # Linux uses nix.sh
+            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
+                # shellcheck source=/dev/null
+                source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+            fi
         fi
         # Also try user profile
         if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
