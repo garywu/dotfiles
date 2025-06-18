@@ -24,7 +24,7 @@ elif [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
     source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
 fi
 
-BOOTSTRAP_LOG="${HOME}/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+BOOTSTRAP_LOG="${SCRIPT_DIR}/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
 mkdir -p "$(dirname "${BOOTSTRAP_LOG}")"
 
 # Function to log and display
@@ -252,7 +252,7 @@ if [[ -f ~/.config/home-manager/home.nix ]] && [[ ! -L ~/.config/home-manager/ho
     print_warning "Backing up existing home.nix..."
     mv ~/.config/home-manager/home.nix ~/.config/home-manager/home.nix.backup
 fi
-ln -sf ~/.dotfiles/nix/home.nix ~/.config/home-manager/home.nix
+ln -sf "${SCRIPT_DIR}/nix/home.nix" ~/.config/home-manager/home.nix
 
 # Install chezmoi temporarily to get dotfiles, then Home Manager will manage it
 if ! command_exists chezmoi; then
@@ -270,7 +270,7 @@ fi
 print_status "Using repository: ${REPO_URL}"
 
 # Sync chezmoi-managed files from repo to Chezmoi's source directory
-rsync -a --delete "${HOME}/.dotfiles/chezmoi/" "${HOME}/.local/share/chezmoi/"
+rsync -a --delete "${SCRIPT_DIR}/chezmoi/" "${HOME}/.local/share/chezmoi/"
 
 # Apply dotfiles
 chezmoi apply
