@@ -4,6 +4,7 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
   site: 'https://garywu.github.io',
   base: '/dotfiles',
+  output: 'static',
   integrations: [
     starlight({
       title: 'Dotfiles Academy',
@@ -29,58 +30,35 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Getting Started',
-          items: [
-            { label: 'Getting Started', link: '/01-introduction/getting-started/' },
-            { label: 'Architecture Overview', link: '/01-introduction/architecture-overview/' },
-          ],
+          autogenerate: { directory: '01-introduction' },
         },
         {
           label: 'CLI Tools',
-          items: [
-            { label: 'Modern Replacements', link: '/03-cli-tools/modern-replacements/' },
-            { label: 'Password Management', link: '/03-cli-tools/password-management/' },
-          ],
+          autogenerate: { directory: '03-cli-tools' },
         },
         {
           label: 'Terminal Workflow',
-          items: [
-            { label: 'Tmux', link: '/04-terminal-workflow/tmux/' },
-          ],
+          autogenerate: { directory: '04-terminal-workflow' },
         },
         {
           label: 'AI Development',
-          items: [
-            { label: 'Chatblade', link: '/05-ai-development/chatblade/' },
-            { label: 'Ollama', link: '/05-ai-development/ollama/' },
-          ],
+          autogenerate: { directory: '05-ai-development' },
         },
         {
           label: 'CLI Tools Academy',
-          items: [
-            { label: 'Overview', link: '/05-cli-tools-academy/' },
-            { label: 'Modern Replacements', link: '/05-cli-tools-academy/modern-replacements/' },
-          ],
+          autogenerate: { directory: '05-cli-tools-academy' },
         },
         {
           label: 'AI Tools',
-          items: [
-            { label: 'Overview', link: '/06-ai-tools/' },
-            { label: 'Ollama', link: '/06-ai-tools/ollama/' },
-            { label: 'OpenHands', link: '/06-ai-tools/openhands/' },
-          ],
+          autogenerate: { directory: '06-ai-tools' },
         },
         {
           label: 'Troubleshooting',
-          items: [
-            { label: 'Git Email Privacy', link: '/98-troubleshooting/git-email-privacy/' },
-            { label: 'Homebrew Fish Config', link: '/98-troubleshooting/homebrew-fish-config/' },
-          ],
+          autogenerate: { directory: '98-troubleshooting' },
         },
         {
           label: 'Reference',
-          items: [
-            { label: 'Command Cheatsheets', link: '/99-reference/command-cheatsheets/' },
-          ],
+          autogenerate: { directory: '99-reference' },
         },
       ],
       customCss: [
