@@ -493,6 +493,9 @@ remove_homebrew() {
 remove_dotfiles() {
   print_status "Removing dotfiles..."
 
+  # Remove Fish configuration
+  rm -rf ~/.config/fish
+
   # Remove Starship configuration
   rm -f ~/.config/starship.toml
 

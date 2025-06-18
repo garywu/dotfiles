@@ -40,7 +40,6 @@ print_section "Configuration Removal"
 configs_to_check=(
     "$HOME/.config/fish"
     "$HOME/.config/home-manager"
-    "$HOME/.config/starship"
     "$HOME/.config/starship.toml"
     "$HOME/.nix-profile"
     "$HOME/.nix-defexpr"
