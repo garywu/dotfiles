@@ -5,10 +5,14 @@
 # It is intended to fully "unbootstrap" your system and restore it to a clean state.
 # Use with caution! You will be prompted for confirmation before anything is removed.
 
+# Get the directory where the script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
+
 # Source CI helpers if available
-if [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
+if [[ -f "${SCRIPT_DIR}/ci-helpers.sh" ]]; then
     # shellcheck source=/dev/null
-    source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
+    source "${SCRIPT_DIR}/ci-helpers.sh"
 fi
 
 # Colors for output
@@ -44,10 +48,6 @@ if [[ $EUID -eq 0 ]]; then
   print_error "This script should not be run as root"
   exit 1
 fi
-
-# Get the directory where the script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Function to verify shell change
 verify_shell_change() {
@@ -634,14 +634,7 @@ uninstall() {
   echo ""
   print_error "This action cannot be easily undone!"
   echo ""
-  print_warning "Are you absolutely sure you want to continue? (y/N) "
-  if command -v is_ci &>/dev/null && is_ci; then
-    response="y"
-    echo "y [auto-confirmed in CI]"
-  else
-    read -r response
-  fi
-  if [[ ! "$response" =~ ^[Yy]$ ]]; then
+  if ! ci_confirm "Are you absolutely sure you want to continue? (y/N)" "y"; then
     print_status "Uninstallation cancelled"
     exit 0
   fi
