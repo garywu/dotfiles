@@ -181,6 +181,11 @@ if ! command_exists nix; then
             # shellcheck source=/dev/null
             source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
         fi
+        # Export PATH to GitHub Actions for subsequent steps
+        if [[ -n "${GITHUB_PATH}" ]]; then
+            echo "/nix/var/nix/profiles/default/bin" >> "${GITHUB_PATH}"
+            echo "$HOME/.nix-profile/bin" >> "${GITHUB_PATH}"
+        fi
     else
         print_status "Nix installed! Please restart your terminal and run this script again."
         exit 0
@@ -203,6 +208,11 @@ if ! command_exists home-manager; then
         if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
             # shellcheck source=/dev/null
             source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        fi
+        # Export PATH to GitHub Actions for subsequent steps (in case paths changed)
+        if [[ -n "${GITHUB_PATH}" ]]; then
+            echo "/nix/var/nix/profiles/default/bin" >> "${GITHUB_PATH}"
+            echo "$HOME/.nix-profile/bin" >> "${GITHUB_PATH}"
         fi
     else
         print_status "Home Manager installed! Please restart your terminal and run this script again."
@@ -361,6 +371,11 @@ if [ "$(uname)" = "Darwin" ]; then
 
         if command -v is_ci &>/dev/null && is_ci; then
             print_status "Homebrew installed! Continuing in CI mode..."
+            # Export Homebrew PATH to GitHub Actions for subsequent steps
+            if [[ -n "${GITHUB_PATH}" ]]; then
+                echo "/opt/homebrew/bin" >> "${GITHUB_PATH}"
+                echo "/usr/local/bin" >> "${GITHUB_PATH}"
+            fi
             # Install GUI apps via Brewfile
             brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
         else
