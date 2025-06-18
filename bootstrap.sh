@@ -15,7 +15,11 @@ fi
 
 # Setup logging
 # Source CI helpers if available
-if [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/scripts/ci-helpers.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "${SCRIPT_DIR}/scripts/ci-helpers.sh"
+elif [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
     # shellcheck source=/dev/null
     source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
 fi
