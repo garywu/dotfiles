@@ -34,12 +34,10 @@ check_command() {
     if command -v "$cmd" &>/dev/null; then
         ((commands_found++))
         print_info "✓ $description"
-        return 0
     else
         ((commands_missing++))
         print_error "✗ $description not found"
         test_passed=false
-        return 1
     fi
 }
 
