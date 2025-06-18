@@ -8,6 +8,13 @@ export default defineConfig({
     starlight({
       title: 'Dotfiles Academy',
       description: 'Master modern development environments and command-line tools',
+      defaultLocale: 'root',
+      locales: {
+        root: {
+          label: 'English',
+          lang: 'en',
+        },
+      },
       logo: {
         src: './src/assets/hero.svg',
         replacesTitle: false,
@@ -55,6 +62,20 @@ export default defineConfig({
       ],
       customCss: [
         './src/styles/custom.css',
+      ],
+      head: [
+        {
+          tag: 'script',
+          content: `
+            // Force light theme as default
+            (function() {
+              if (!localStorage.getItem('starlight-theme')) {
+                localStorage.setItem('starlight-theme', 'light');
+                document.documentElement.dataset.theme = 'light';
+              }
+            })();
+          `
+        }
       ],
     }),
   ],

@@ -1,0 +1,14 @@
+---
+// Force light theme as default
+---
+
+<script>
+  // Force light theme by default
+  (function() {
+    // Only run if no theme is already stored
+    if (!localStorage.getItem('starlight-theme')) {
+      localStorage.setItem('starlight-theme', 'light');
+      document.documentElement.dataset.theme = 'light';
+    }
+  })();
+</script>

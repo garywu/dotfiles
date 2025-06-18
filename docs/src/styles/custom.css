@@ -1,36 +1,13 @@
 /* Custom styles for Dotfiles Academy */
 
+/* Force light theme as default */
 :root {
-  /* Improve text contrast - override all text color variables */
-  --sl-color-text: #f1f5f9;
-  --sl-color-text-accent: #60a5fa;
-  --sl-color-gray-1: #f1f5f9;
-  --sl-color-gray-2: #e2e8f0;
-  --sl-color-gray-3: #cbd5e1;
-
-  /* Brand colors */
-  --sl-color-accent-low: #1e40af;
-  --sl-color-accent: #3b82f6;
-  --sl-color-accent-high: #60a5fa;
-
-  /* Syntax highlighting improvements */
-  --sl-color-code-bg: #1e1e1e;
+  color-scheme: light;
 }
 
-/* Additional text contrast fixes */
-.sl-markdown-content,
-.sl-markdown-content p,
-.sl-markdown-content span,
-.sl-markdown-content div {
-  color: #f1f5f9 !important;
-}
-
-/* Card and section text */
-.card .body,
-.card .body p,
-section p,
-section span {
-  color: #f1f5f9 !important;
+/* Override Starlight's theme detection to default to light */
+html[data-theme="dark"] {
+  /* This will be overridden by the script below */
 }
 
 /* Enhanced code blocks */
