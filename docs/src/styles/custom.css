@@ -1,9 +1,12 @@
 /* Custom styles for Dotfiles Academy */
 
 :root {
-  /* Improve text contrast without breaking layout */
-  --sl-color-text: #e2e8f0;
+  /* Improve text contrast - override all text color variables */
+  --sl-color-text: #f1f5f9;
   --sl-color-text-accent: #60a5fa;
+  --sl-color-gray-1: #f1f5f9;
+  --sl-color-gray-2: #e2e8f0;
+  --sl-color-gray-3: #cbd5e1;
 
   /* Brand colors */
   --sl-color-accent-low: #1e40af;
@@ -12,6 +15,22 @@
 
   /* Syntax highlighting improvements */
   --sl-color-code-bg: #1e1e1e;
+}
+
+/* Additional text contrast fixes */
+.sl-markdown-content,
+.sl-markdown-content p,
+.sl-markdown-content span,
+.sl-markdown-content div {
+  color: #f1f5f9 !important;
+}
+
+/* Card and section text */
+.card .body,
+.card .body p,
+section p,
+section span {
+  color: #f1f5f9 !important;
 }
 
 /* Enhanced code blocks */
