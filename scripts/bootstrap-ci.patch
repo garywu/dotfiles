@@ -1,0 +1,28 @@
+--- bootstrap.sh.orig
++++ bootstrap.sh
+@@ -14,6 +14,11 @@
+ fi
+
+ # Setup logging
++# Source CI helpers if available
++if [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
++    source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
++fi
++
+ BOOTSTRAP_LOG="${HOME}/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+ mkdir -p "$(dirname "${BOOTSTRAP_LOG}")"
+
+@@ -88,7 +93,11 @@
+         echo "the backup files to their original locations."
+         echo ""
+         printf "Restore backup files as recommended by official Nix docs? [Y/n]: "
+-        read -r response
++        if is_ci 2>/dev/null; then
++            response="Y"
++            echo "Y [auto-confirmed in CI]"
++        else
++            read -r response
++        fi
+
+         case "${response}" in
+             [nN]|[nN][oO])

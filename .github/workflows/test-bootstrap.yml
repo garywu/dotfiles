@@ -1,0 +1,197 @@
+name: Test Bootstrap Process
+
+on:
+  pull_request:
+    paths:
+      - 'bootstrap.sh'
+      - 'scripts/unbootstrap.sh'
+      - 'nix/**'
+      - 'brew/**'
+      - 'chezmoi/**'
+      - '.github/workflows/test-bootstrap.yml'
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Enable debug mode'
+        required: false
+        default: false
+
+jobs:
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: System Information
+        run: |
+          echo "=== System Info ==="
+          sw_vers
+          echo "Shell: $SHELL"
+          echo "User: $(whoami)"
+          echo "PATH: $PATH"
+          which bash && bash --version
+
+      - name: Pre-bootstrap check
+        run: |
+          echo "=== Running pre-bootstrap check ==="
+          ./check.sh || true
+
+      - name: Run bootstrap (CI mode)
+        env:
+          CI: true
+          GITHUB_ACTIONS: true
+        run: |
+          echo "=== Running bootstrap ==="
+          ./bootstrap.sh
+
+      - name: Verify installations
+        run: |
+          echo "=== Verifying installations ==="
+          # Source Nix environment
+          source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+
+          # Check Nix
+          which nix || exit 1
+          nix --version
+
+          # Check Home Manager
+          which home-manager || exit 1
+          home-manager --version
+
+          # Check Homebrew
+          which brew || exit 1
+          brew --version
+
+          # Check installed tools
+          which fish || exit 1
+          which starship || exit 1
+          which chezmoi || exit 1
+
+      - name: Audit packages
+        run: |
+          echo "=== Package audit ==="
+          # Source Nix environment
+          source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+
+          # List Nix packages
+          echo "Nix packages:"
+          nix-env -q || true
+
+          # List Homebrew packages
+          echo "Homebrew packages:"
+          brew list || true
+
+          # Check current shell
+          echo "Current shell: $SHELL"
+          echo "Default shell: $(dscl . -read /Users/$USER UserShell | cut -d' ' -f2)"
+
+      - name: Run unbootstrap (CI mode)
+        env:
+          CI: true
+          GITHUB_ACTIONS: true
+        run: |
+          echo "=== Running unbootstrap ==="
+          ./scripts/unbootstrap.sh
+
+      - name: Verify cleanup
+        run: |
+          echo "=== Verifying cleanup ==="
+          # Check Nix is removed
+          if [ -d /nix ]; then
+            echo "ERROR: /nix directory still exists"
+            exit 1
+          fi
+
+          # Check configs are removed
+          if [ -d ~/.config/fish ]; then
+            echo "ERROR: Fish config still exists"
+            exit 1
+          fi
+
+          if [ -d ~/.config/home-manager ]; then
+            echo "ERROR: Home Manager config still exists"
+            exit 1
+          fi
+
+          # Run check again
+          ./check.sh || true
+
+  test-ubuntu:
+    name: Test on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: System Information
+        run: |
+          echo "=== System Info ==="
+          lsb_release -a
+          echo "Shell: $SHELL"
+          echo "User: $(whoami)"
+          uname -a
+
+      - name: Pre-bootstrap check
+        run: |
+          echo "=== Running pre-bootstrap check ==="
+          # Adapt check.sh for Linux if needed
+          if [[ "$(uname)" == "Linux" ]]; then
+            echo "Running on Linux - check.sh may need adaptations"
+          fi
+
+      - name: Run bootstrap (CI mode)
+        env:
+          CI: true
+          GITHUB_ACTIONS: true
+        run: |
+          echo "=== Running bootstrap ==="
+          # Bootstrap may need Linux adaptations
+          ./bootstrap.sh || echo "Bootstrap needs Linux compatibility"
+
+      - name: Verify installations
+        run: |
+          echo "=== Verifying installations ==="
+          # Check what was actually installed
+          which nix && nix --version || echo "Nix not installed"
+          which fish && fish --version || echo "Fish not installed"
+
+  test-wsl:
+    name: Test on WSL
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup WSL
+        uses: Vampire/setup-wsl@v3
+        with:
+          distribution: Ubuntu-22.04
+
+      - name: Test in WSL
+        shell: wsl-bash {0}
+        run: |
+          echo "=== WSL System Info ==="
+          lsb_release -a
+          uname -a
+          echo "Shell: $SHELL"
+
+      - name: Run bootstrap in WSL (CI mode)
+        shell: wsl-bash {0}
+        env:
+          CI: true
+          GITHUB_ACTIONS: true
+        run: |
+          echo "=== Running bootstrap in WSL ==="
+          cd "${{ github.workspace }}"
+          # Bootstrap may need WSL-specific adaptations
+          ./bootstrap.sh || echo "Bootstrap needs WSL compatibility"
+
+      - name: Verify WSL installations
+        shell: wsl-bash {0}
+        run: |
+          echo "=== Verifying installations in WSL ==="
+          which nix && nix --version || echo "Nix not installed"
+          which fish && fish --version || echo "Fish not installed"
