@@ -29,35 +29,58 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Getting Started',
-          autogenerate: { directory: '01-introduction' },
+          items: [
+            { label: 'Getting Started', link: '/01-introduction/getting-started/' },
+            { label: 'Architecture Overview', link: '/01-introduction/architecture-overview/' },
+          ],
         },
         {
           label: 'CLI Tools',
-          autogenerate: { directory: '03-cli-tools' },
+          items: [
+            { label: 'Modern Replacements', link: '/03-cli-tools/modern-replacements/' },
+            { label: 'Password Management', link: '/03-cli-tools/password-management/' },
+          ],
         },
         {
           label: 'Terminal Workflow',
-          autogenerate: { directory: '04-terminal-workflow' },
+          items: [
+            { label: 'Tmux', link: '/04-terminal-workflow/tmux/' },
+          ],
         },
         {
           label: 'AI Development',
-          autogenerate: { directory: '05-ai-development' },
+          items: [
+            { label: 'Chatblade', link: '/05-ai-development/chatblade/' },
+            { label: 'Ollama', link: '/05-ai-development/ollama/' },
+          ],
         },
         {
           label: 'CLI Tools Academy',
-          autogenerate: { directory: '05-cli-tools-academy' },
+          items: [
+            { label: 'Overview', link: '/05-cli-tools-academy/' },
+            { label: 'Modern Replacements', link: '/05-cli-tools-academy/modern-replacements/' },
+          ],
         },
         {
           label: 'AI Tools',
-          autogenerate: { directory: '06-ai-tools' },
+          items: [
+            { label: 'Overview', link: '/06-ai-tools/' },
+            { label: 'Ollama', link: '/06-ai-tools/ollama/' },
+            { label: 'OpenHands', link: '/06-ai-tools/openhands/' },
+          ],
         },
         {
           label: 'Troubleshooting',
-          autogenerate: { directory: '98-troubleshooting' },
+          items: [
+            { label: 'Git Email Privacy', link: '/98-troubleshooting/git-email-privacy/' },
+            { label: 'Homebrew Fish Config', link: '/98-troubleshooting/homebrew-fish-config/' },
+          ],
         },
         {
           label: 'Reference',
-          autogenerate: { directory: '99-reference' },
+          items: [
+            { label: 'Command Cheatsheets', link: '/99-reference/command-cheatsheets/' },
+          ],
         },
       ],
       customCss: [
