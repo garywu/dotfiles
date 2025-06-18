@@ -174,8 +174,17 @@ if ! command_exists nix; then
     sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
     rm /tmp/nix-install.sh
 
-    print_status "Nix installed! Please restart your terminal and run this script again."
-    exit 0
+    if command -v is_ci &>/dev/null && is_ci; then
+        print_status "Nix installed! Continuing in CI mode..."
+        # In CI, source nix immediately to make it available
+        if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
+            # shellcheck source=/dev/null
+            source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+        fi
+    else
+        print_status "Nix installed! Please restart your terminal and run this script again."
+        exit 0
+    fi
 fi
 
 # Check if Home Manager is installed
@@ -188,8 +197,17 @@ if ! command_exists home-manager; then
     # Install Home Manager
     nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
 
-    print_status "Home Manager installed! Please restart your terminal and run this script again."
-    exit 0
+    if command -v is_ci &>/dev/null && is_ci; then
+        print_status "Home Manager installed! Continuing in CI mode..."
+        # In CI, source the home-manager script to make it available immediately
+        if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+            # shellcheck source=/dev/null
+            source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        fi
+    else
+        print_status "Home Manager installed! Please restart your terminal and run this script again."
+        exit 0
+    fi
 fi
 
 # Set NIX_PATH if not set (needed for home-manager to work properly)
@@ -341,8 +359,14 @@ if [ "$(uname)" = "Darwin" ]; then
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
         eval "$(/opt/homebrew/bin/brew shellenv)"
 
-        print_status "Homebrew installed! Please restart your terminal and run this script again."
-        exit 0
+        if command -v is_ci &>/dev/null && is_ci; then
+            print_status "Homebrew installed! Continuing in CI mode..."
+            # Install GUI apps via Brewfile
+            brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
+        else
+            print_status "Homebrew installed! Please restart your terminal and run this script again."
+            exit 0
+        fi
     fi
 fi
 
