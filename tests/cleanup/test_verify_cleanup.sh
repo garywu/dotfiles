@@ -2,7 +2,7 @@
 # Test: Verify Cleanup/Unbootstrap
 # This test verifies that unbootstrap properly removes installations
 
-set -euo pipefail
+set -uo pipefail
 
 # Get test directory
 TEST_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
