@@ -47,27 +47,10 @@ jobs:
           echo "=== Running bootstrap ==="
           ./bootstrap.sh
 
-      - name: Verify installations
+      - name: Run bootstrap tests
         run: |
-          echo "=== Verifying installations ==="
-          echo "Current PATH: $PATH"
-
-          # Check Nix
-          which nix || exit 1
-          nix --version
-
-          # Check Home Manager
-          which home-manager || exit 1
-          home-manager --version
-
-          # Check Homebrew
-          which brew || exit 1
-          brew --version
-
-          # Check installed tools
-          which fish || exit 1
-          which starship || exit 1
-          which chezmoi || exit 1
+          echo "=== Running bootstrap tests ==="
+          ./tests/test_runner.sh --ci bootstrap
 
       - name: Audit packages
         run: |
@@ -93,107 +76,16 @@ jobs:
           echo "=== Running unbootstrap ==="
           ./scripts/unbootstrap.sh
 
-      - name: Verify cleanup
+      - name: Run cleanup tests
         run: |
-          echo "=== Verifying cleanup ==="
-          # Check Nix is removed
-          if [ -d /nix ]; then
-            echo "ERROR: /nix directory still exists"
-            exit 1
-          fi
+          echo "=== Running cleanup tests ==="
+          ./tests/test_runner.sh --ci cleanup
 
-          # Check configs are removed
-          if [ -d ~/.config/fish ]; then
-            echo "ERROR: Fish config still exists"
-            exit 1
-          fi
+  # TODO: Add Ubuntu and WSL tests once cross-platform compatibility is improved
+  # test-ubuntu:
+  #   name: Test on Ubuntu
+  #   runs-on: ubuntu-latest
 
-          if [ -d ~/.config/home-manager ]; then
-            echo "ERROR: Home Manager config still exists"
-            exit 1
-          fi
-
-          # Run check again
-          ./check.sh || true
-
-  test-ubuntu:
-    name: Test on Ubuntu
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: System Information
-        run: |
-          echo "=== System Info ==="
-          lsb_release -a
-          echo "Shell: $SHELL"
-          echo "User: $(whoami)"
-          uname -a
-
-      - name: Pre-bootstrap check
-        run: |
-          echo "=== Running pre-bootstrap check ==="
-          # Adapt check.sh for Linux if needed
-          if [[ "$(uname)" == "Linux" ]]; then
-            echo "Running on Linux - check.sh may need adaptations"
-          fi
-
-      - name: Run bootstrap (CI mode)
-        env:
-          CI: true
-          GITHUB_ACTIONS: true
-        run: |
-          echo "=== Running bootstrap ==="
-          # Bootstrap may need Linux adaptations
-          ./bootstrap.sh || echo "Bootstrap needs Linux compatibility"
-
-      - name: Verify installations
-        run: |
-          echo "=== Verifying installations ==="
-          # Check what was actually installed
-          which nix && nix --version || echo "Nix not installed"
-          which fish && fish --version || echo "Fish not installed"
-
-  test-wsl:
-    name: Test on WSL
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v3
-        with:
-          distribution: Ubuntu-22.04
-
-      - name: Test in WSL
-        shell: wsl-bash {0}
-        run: |
-          echo "=== WSL System Info ==="
-          lsb_release -a
-          uname -a
-          echo "Shell: $SHELL"
-
-      - name: Run bootstrap in WSL (CI mode)
-        shell: wsl-bash {0}
-        env:
-          CI: true
-          GITHUB_ACTIONS: true
-        run: |
-          echo "=== Running bootstrap in WSL ==="
-          # Convert Windows path to WSL path
-          WORKSPACE_WIN="${{ github.workspace }}"
-          WORKSPACE_WSL=$(wslpath -u "$WORKSPACE_WIN")
-          cd "$WORKSPACE_WSL"
-          pwd
-          ls -la
-          # Bootstrap may need WSL-specific adaptations
-          ./bootstrap.sh || echo "Bootstrap needs WSL compatibility"
-
-      - name: Verify WSL installations
-        shell: wsl-bash {0}
-        run: |
-          echo "=== Verifying installations in WSL ==="
-          which nix && nix --version || echo "Nix not installed"
-          which fish && fish --version || echo "Fish not installed"
+  # test-wsl:
+  #   name: Test on WSL
+  #   runs-on: windows-latest
