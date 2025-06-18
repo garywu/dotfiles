@@ -1,40 +1,17 @@
 /* Custom styles for Dotfiles Academy */
 
 :root {
-  /* Override Starlight's default colors for better contrast */
-  --sl-color-text: #ffffff !important;
-  --sl-color-text-accent: #60a5fa !important;
-  --sl-color-white: #ffffff !important;
+  /* Improve text contrast without breaking layout */
+  --sl-color-text: #e2e8f0;
+  --sl-color-text-accent: #60a5fa;
 
   /* Brand colors */
   --sl-color-accent-low: #1e40af;
   --sl-color-accent: #3b82f6;
   --sl-color-accent-high: #60a5fa;
 
-  /* Gray scale with better contrast */
-  --sl-color-gray-1: #f8fafc;
-  --sl-color-gray-2: #e2e8f0;
-  --sl-color-gray-3: #cbd5e1;
-  --sl-color-gray-4: #94a3b8;
-  --sl-color-gray-5: #64748b;
-  --sl-color-gray-6: #475569;
-
   /* Syntax highlighting improvements */
   --sl-color-code-bg: #1e1e1e;
-}
-
-/* Force text color for better readability */
-.sl-markdown-content,
-.sl-markdown-content p,
-.sl-markdown-content li,
-.sl-markdown-content span {
-  color: #ffffff !important;
-}
-
-/* Card text color */
-.card-body,
-.card-body p {
-  color: #ffffff !important;
 }
 
 /* Enhanced code blocks */
