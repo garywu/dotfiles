@@ -14,6 +14,12 @@ if [[ -n "${BASH_VERSION}" ]]; then
 fi
 
 # Setup logging
+# Source CI helpers if available
+if [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
+fi
+
 BOOTSTRAP_LOG="${HOME}/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
 mkdir -p "$(dirname "${BOOTSTRAP_LOG}")"
 
@@ -87,7 +93,12 @@ handle_nix_remnants() {
         echo "the backup files to their original locations."
         echo ""
         printf "Restore backup files as recommended by official Nix docs? [Y/n]: "
-        read -r response
+        if command -v is_ci &>/dev/null && is_ci; then
+            response="Y"
+            echo "Y [auto-confirmed in CI]"
+        else
+            read -r response
+        fi
 
         case "${response}" in
             [nN]|[nN][oO])

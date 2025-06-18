@@ -50,8 +50,19 @@ jobs:
       - name: Verify installations
         run: |
           echo "=== Verifying installations ==="
-          # Source Nix environment
-          source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+          # Try multiple Nix profile locations
+          if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
+            source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+          elif [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
+            source ~/.nix-profile/etc/profile.d/nix.sh
+          elif [[ -f /etc/profile.d/nix.sh ]]; then
+            source /etc/profile.d/nix.sh
+          fi
+
+          # Also add Nix to PATH directly if needed
+          export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
+
+          echo "PATH after sourcing: $PATH"
 
           # Check Nix
           which nix || exit 1
@@ -73,8 +84,17 @@ jobs:
       - name: Audit packages
         run: |
           echo "=== Package audit ==="
-          # Source Nix environment
-          source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+          # Try multiple Nix profile locations
+          if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
+            source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+          elif [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
+            source ~/.nix-profile/etc/profile.d/nix.sh
+          elif [[ -f /etc/profile.d/nix.sh ]]; then
+            source /etc/profile.d/nix.sh
+          fi
+
+          # Also add Nix to PATH directly if needed
+          export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"
 
           # List Nix packages
           echo "Nix packages:"
@@ -185,7 +205,12 @@ jobs:
           GITHUB_ACTIONS: true
         run: |
           echo "=== Running bootstrap in WSL ==="
-          cd "${{ github.workspace }}"
+          # Convert Windows path to WSL path
+          WORKSPACE_WIN="${{ github.workspace }}"
+          WORKSPACE_WSL=$(wslpath -u "$WORKSPACE_WIN")
+          cd "$WORKSPACE_WSL"
+          pwd
+          ls -la
           # Bootstrap may need WSL-specific adaptations
           ./bootstrap.sh || echo "Bootstrap needs WSL compatibility"
 

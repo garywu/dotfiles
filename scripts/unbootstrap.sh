@@ -5,6 +5,12 @@
 # It is intended to fully "unbootstrap" your system and restore it to a clean state.
 # Use with caution! You will be prompted for confirmation before anything is removed.
 
+# Source CI helpers if available
+if [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -626,7 +632,12 @@ uninstall() {
   print_error "This action cannot be easily undone!"
   echo ""
   print_warning "Are you absolutely sure you want to continue? (y/N) "
-  read -r response
+  if command -v is_ci &>/dev/null && is_ci; then
+    response="y"
+    echo "y [auto-confirmed in CI]"
+  else
+    read -r response
+  fi
   if [[ ! "$response" =~ ^[Yy]$ ]]; then
     print_status "Uninstallation cancelled"
     exit 0
