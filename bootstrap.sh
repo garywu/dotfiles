@@ -185,6 +185,13 @@ if ! command_exists nix; then
             # shellcheck source=/dev/null
             source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
         fi
+        # Also try user profile
+        if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+            # shellcheck source=/dev/null
+            source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+        fi
+        # Ensure PATH includes Nix binaries
+        export PATH="/nix/var/nix/profiles/default/bin:$HOME/.nix-profile/bin:$PATH"
         # Export PATH to GitHub Actions for subsequent steps
         if [[ -n "${GITHUB_PATH}" ]]; then
             echo "/nix/var/nix/profiles/default/bin" >> "${GITHUB_PATH}"
