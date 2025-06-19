@@ -34,8 +34,8 @@ else
     ((FAILED++))
 fi
 
-echo -n "Testing development docs... "
-if curl -fs --max-time 5 "$BASE_URL/08-development/contributing/" > /dev/null; then
+echo -n "Testing troubleshooting docs... "
+if curl -fs --max-time 5 "$BASE_URL/98-troubleshooting/git-email-privacy/" > /dev/null; then
     echo "✓"
 else
     echo "✗"

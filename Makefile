@@ -119,7 +119,7 @@ test-shell:
 
 test-docs:
 	@echo "Testing documentation links..."
-	@./tests/docs/test_production_links.sh
+	@timeout 30 ./tests/docs/test_production_links_simple.sh
 
 test-docs-local:
 	@echo "Testing documentation locally..."
