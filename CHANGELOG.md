@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Increase banner indentation for proper centering ([b200a1a](https://github.com/garywu/dotfiles/commit/b200a1af110222153f5c93d28c578bf2a8233d00))
 - Use HTML pre tags for properly centered banner ([2caf426](https://github.com/garywu/dotfiles/commit/2caf426e1b94bba9eb146dfb689983db0ffae046))
 - Resolve security workflow issues ([d407a99](https://github.com/garywu/dotfiles/commit/d407a9976ac13a5c77d810ebfafc871444b25eb6))
+- Center tagline and remove privacy note ([903f7be](https://github.com/garywu/dotfiles/commit/903f7beeaaa078e5ab1bf0fda2fc4d5fbf3cac83))
 
 ### Documentation
 
@@ -54,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add efficiency test results to gitignore (#20) ([800b6a2](https://github.com/garywu/dotfiles/commit/800b6a20cc6133c01a499faa4355613f93b86b40))
 - Fix linting issues for workflow declaration ([6dc0e43](https://github.com/garywu/dotfiles/commit/6dc0e435bff13c922cb417a3bcf2d6d564500f63))
 - V0.2.1 [skip ci] ([b013ed6](https://github.com/garywu/dotfiles/commit/b013ed6ea4ce4562358e2dbf65b4a07e249f9249))
+- V0.2.1 [skip ci] ([c7daeb6](https://github.com/garywu/dotfiles/commit/c7daeb664853a1cce7161c49c2f4e39674274032))
 
 ### Styling
 
