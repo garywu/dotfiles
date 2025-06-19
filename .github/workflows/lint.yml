@@ -34,15 +34,16 @@ jobs:
       - name: Install Dependencies
         run: |
           echo "Installing linting tools via Nix..."
-          nix-env -iA nixpkgs.gnumake
-          nix-env -iA nixpkgs.shellcheck
-          nix-env -iA nixpkgs.shfmt
-          nix-env -iA nixpkgs.yamllint
-          nix-env -iA nixpkgs.nodePackages.markdownlint-cli
-          nix-env -iA nixpkgs.taplo
-          nix-env -iA nixpkgs.nixpkgs-fmt
-          nix-env -iA nixpkgs.statix
-          nix-env -iA nixpkgs.fish
+          nix profile install \
+            nixpkgs#gnumake \
+            nixpkgs#shellcheck \
+            nixpkgs#shfmt \
+            nixpkgs#yamllint \
+            nixpkgs#nodePackages.markdownlint-cli \
+            nixpkgs#taplo \
+            nixpkgs#nixpkgs-fmt \
+            nixpkgs#statix \
+            nixpkgs#fish
 
       - name: Lint Shell Scripts
         id: lint-shell
