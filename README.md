@@ -49,8 +49,10 @@
 
 </div>
 
-This repository provides a fully automated, reproducible development environment using Nix, Home Manager, Chezmoi,
-and Homebrew (macOS).
+**A modern, cross-platform development environment that just works.** Zero-config setup with powerful CLI tools, automated package management, and bulletproof synchronization across all your machines.
+
+**Supported Platforms:** macOS (primary), Linux (experimental)  
+**Tech Stack:** Nix, Home Manager, Chezmoi, Homebrew
 
 ## 🔄 Git Workflow
 
