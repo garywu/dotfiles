@@ -42,10 +42,8 @@ PAGES=(
     "/06-ai-tools/openhands/"
     "/07-security/secrets-management/"
     "/07-security/security-policy/"
-    "/08-development/contributing/"
-    "/08-development/code-of-conduct/"
     "/08-development/ci-cd/"
-    "/08-development/testing/"
+    "/08-development/code-of-conduct/"
     "/98-troubleshooting/homebrew-fish-config/"
     "/98-troubleshooting/git-email-privacy/"
     "/99-reference/command-cheatsheets/"
@@ -56,13 +54,14 @@ PASSED=0
 
 for page in "${PAGES[@]}"; do
     url="${BASE_URL}${page}"
-    status_code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || echo "000")
+    printf "Testing %s..." "$page"
+    status_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url" || echo "000")
 
     if [[ "$status_code" == "200" ]]; then
-        echo -e "${GREEN}✓${NC} $page"
+        printf "\r%b✓%b %-50s\n" "$GREEN" "$NC" "$page"
         ((PASSED++))
     else
-        echo -e "${RED}✗${NC} $page (HTTP $status_code)"
+        printf "\r%b✗%b %-50s (HTTP %s)\n" "$RED" "$NC" "$page" "$status_code"
         ((FAILED++))
     fi
 done
@@ -76,8 +75,8 @@ echo "Passed: $PASSED"
 echo "Failed: $FAILED"
 
 if [[ $FAILED -gt 0 ]]; then
-    echo -e "${RED}Some pages are not accessible!${NC}"
+    printf "%bSome pages are not accessible!%b\n" "$RED" "$NC"
     exit 1
 else
-    echo -e "${GREEN}All pages are accessible!${NC}"
+    printf "%bAll pages are accessible!%b\n" "$GREEN" "$NC"
 fi

@@ -46,6 +46,9 @@
     # wrangler        # Cloudflare Workers CLI (temporarily disabled - large download)
     flarectl # Cloudflare CLI for account management
 
+    # System utilities
+    coreutils # GNU core utilities (timeout, realpath, etc.)
+
     # Shell tools
     fish
     starship
