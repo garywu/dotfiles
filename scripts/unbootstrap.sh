@@ -699,9 +699,7 @@ uninstall() {
     for item in "${EXTRA_TO_REMOVE[@]}"; do
       echo "  $item"
     done
-    echo -n "Are you sure you want to delete these items? (yes/no): "
-    read confirm
-    if [[ "$confirm" == "yes" ]]; then
+    if ci_confirm "Are you sure you want to delete these items? (yes/no):" "no"; then
       for item in "${EXTRA_TO_REMOVE[@]}"; do
         rm -rf "$item"
         print_status "Removed $item"
