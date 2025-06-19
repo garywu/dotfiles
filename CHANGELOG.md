@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Clean up whitespace and line length in CLI tools index ([aeda44a](https://github.com/garywu/dotfiles/commit/aeda44a08301b90e727ac996aa284c2fe8b43ed9))
 - Resolve merge conflict in CLI tools index ([38ef473](https://github.com/garywu/dotfiles/commit/38ef4732e3ee5d7d2457569167496d7dfe8094e3))
 - Resolve CI/CD workflow failures ([1fe1a09](https://github.com/garywu/dotfiles/commit/1fe1a09e9a01e77751b569dedcc72b7678e8426b))
+- Properly center DOTFILES banner alignment ([40014dd](https://github.com/garywu/dotfiles/commit/40014dda76cd11549e18ecfa92d6c7eb5bb30655))
+- Increase banner indentation for proper centering ([b200a1a](https://github.com/garywu/dotfiles/commit/b200a1af110222153f5c93d28c578bf2a8233d00))
+- Use HTML pre tags for properly centered banner ([2caf426](https://github.com/garywu/dotfiles/commit/2caf426e1b94bba9eb146dfb689983db0ffae046))
+- Resolve security workflow issues ([d407a99](https://github.com/garywu/dotfiles/commit/d407a9976ac13a5c77d810ebfafc871444b25eb6))
 
 ### Documentation
 
@@ -49,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update claude-init submodule with advanced features ([e348f35](https://github.com/garywu/dotfiles/commit/e348f353cfb16a576ca893eee6c60b99168b91eb))
 - Add efficiency test results to gitignore (#20) ([800b6a2](https://github.com/garywu/dotfiles/commit/800b6a20cc6133c01a499faa4355613f93b86b40))
 - Fix linting issues for workflow declaration ([6dc0e43](https://github.com/garywu/dotfiles/commit/6dc0e435bff13c922cb417a3bcf2d6d564500f63))
+- V0.2.1 [skip ci] ([b013ed6](https://github.com/garywu/dotfiles/commit/b013ed6ea4ce4562358e2dbf65b4a07e249f9249))
 
 ### Styling
 
