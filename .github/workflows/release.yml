@@ -33,7 +33,7 @@ on:
   schedule:
     # Weekly patch releases (every Monday at 9 AM UTC)
     - cron: '0 9 * * 1'
-    
+
   # Trigger on push to main (for continuous deployment)
   push:
     branches:
@@ -75,7 +75,7 @@ jobs:
             # Check if there are commits since last tag
             LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
             COMMITS_SINCE_TAG=$(git rev-list --count ${LAST_TAG}..HEAD)
-            
+
             if [[ $COMMITS_SINCE_TAG -gt 0 ]]; then
               echo "should_release=true" >> $GITHUB_OUTPUT
               echo "release_type=patch" >> $GITHUB_OUTPUT
@@ -105,14 +105,14 @@ jobs:
         run: |
           CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           CURRENT_VERSION=${CURRENT_VERSION#v}
-          
+
           IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
           MAJOR="${VERSION_PARTS[0]:-0}"
           MINOR="${VERSION_PARTS[1]:-0}"
           PATCH="${VERSION_PARTS[2]:-0}"
-          
+
           RELEASE_TYPE="${{ steps.check.outputs.release_type }}"
-          
+
           if [[ "$RELEASE_TYPE" == "major" ]]; then
             MAJOR=$((MAJOR + 1))
             MINOR=0
@@ -134,7 +134,7 @@ jobs:
             echo "new_version=v${MAJOR}.${MINOR}.${PATCH}-${IDENTIFIER}.${PRERELEASE_NUM}" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
+
           echo "new_version=v${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
 
   # Create the release
@@ -149,31 +149,25 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
         with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: |
-          npm install -g conventional-changelog-cli
-          npm install -g @semantic-release/commit-analyzer
-          npm install -g @semantic-release/release-notes-generator
+          tool: git-cliff@1.4.0
 
       - name: Generate changelog
         id: changelog
         run: |
-          # Generate changelog for this release
-          conventional-changelog -p angular -i CHANGELOG.md -s -r 1
-          
-          # Extract just the latest release notes
-          sed -n '/^##/,/^##/p' CHANGELOG.md | sed '$d' > RELEASE_NOTES.md
-          
+          # Generate full changelog
+          git cliff --config cliff.toml -o CHANGELOG.md
+
+          # Generate release notes for this version
+          git cliff --config cliff.toml --latest --strip header -o RELEASE_NOTES.md
+
           # If empty, generate from commits
           if [[ ! -s RELEASE_NOTES.md ]]; then
             git log --pretty=format:"- %s" $(git describe --tags --abbrev=0)..HEAD > RELEASE_NOTES.md
           fi
-          
+
           echo "RELEASE_NOTES<<EOF" >> $GITHUB_ENV
           cat RELEASE_NOTES.md >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -182,7 +176,7 @@ jobs:
         run: |
           VERSION="${{ needs.determine-release.outputs.new_version }}"
           VERSION_NO_V=${VERSION#v}
-          
+
           # Update package.json files if they exist
           find . -name "package.json" -type f | while read -r file; do
             if [[ -f "$file" ]]; then
@@ -190,7 +184,7 @@ jobs:
               rm "${file}.bak"
             fi
           done
-          
+
           # Update any VERSION files
           if [[ -f VERSION ]]; then
             echo "${VERSION_NO_V}" > VERSION
@@ -200,7 +194,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
+
           git add .
           git diff --staged --quiet || git commit -m "chore(release): ${{ needs.determine-release.outputs.new_version }} [skip ci]
 
@@ -232,23 +226,23 @@ jobs:
           script: |
             const version = '${{ needs.determine-release.outputs.new_version }}';
             const releaseType = '${{ needs.determine-release.outputs.release_type }}';
-            
+
             const labels = ['release', 'documentation'];
             if (releaseType === 'major') labels.push('breaking-change');
             if (releaseType.includes('pre')) labels.push('prerelease');
-            
+
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Release ${version} Published`,
               body: `A new ${releaseType} release has been published!
-              
+
               **Version**: ${version}
               **Type**: ${releaseType}
               **Date**: ${new Date().toISOString()}
-              
+
               [View Release](https://github.com/${context.repo.owner}/${context.repo.repo}/releases/tag/${version})
-              
+
               ## Next Steps
               - [ ] Update documentation if needed
               - [ ] Notify users of breaking changes (if any)

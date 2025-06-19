@@ -46,6 +46,9 @@
     # wrangler        # Cloudflare Workers CLI (temporarily disabled - large download)
     flarectl # Cloudflare CLI for account management
 
+    # System utilities
+    coreutils # GNU core utilities (timeout, realpath, etc.)
+
     # Shell tools
     fish
     starship
@@ -99,6 +102,7 @@
     # thefuck   # Removed due to Python 3.12+ incompatibility
     delta # Syntax-highlighting pager for git/diff
     lazygit # TUI for git
+    git-cliff # Changelog generator
     btop # Resource monitor (modern htop alternative)
     glow # Markdown previewer in terminal
     vifm # Terminal file manager with preview support
@@ -114,6 +118,9 @@
     choose # Human-friendly alternative to cut/awk
     # xsv # Fast CSV command line toolkit (removed - use xan instead)
 
+    # Interactive CLI tools
+    gum # Beautiful CLI prompts and interactions
+
     # Environment Variables & Secrets Management
     sops # Secrets management with encryption
     age # Simple, modern encryption tool
@@ -128,6 +135,10 @@
 
     # Documentation tools
     # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
+
+    # Backup and filesystem monitoring tools
+    borgbackup # Deduplicating backup program
+    fswatch # File system event monitor
 
     # Linting and Formatting Tools
     shellcheck # Shell script analysis tool

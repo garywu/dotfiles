@@ -135,10 +135,19 @@ check_command "jless" "jless (JSON viewer)"
 check_command "hexyl" "hexyl (hex viewer)"
 check_command "choose" "choose (cut alternative)"
 
+# Interactive CLI tools
+print_section "Interactive CLI Tools"
+check_command "gum" "gum (beautiful CLI prompts)"
+
 # Secrets management
 print_section "Secrets Management"
 check_command "sops" "sops"
 check_command "age" "age (encryption)"
+
+# Backup and filesystem monitoring
+print_section "Backup & Filesystem Tools"
+check_command "borg" "borgbackup (deduplicating backup)"
+check_command "fswatch" "fswatch (filesystem monitor)"
 
 # Print summary
 print_section "Summary"

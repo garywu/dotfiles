@@ -1,78 +1,64 @@
 ---
-title: Welcome to Dotfiles Academy
-description: Master modern development environments and command-line tools with this comprehensive learning platform.
+title: Dotfiles
+description: Development environment configuration and command-line tools
 template: splash
 hero:
-  title: |
-    Welcome to
-    <span
-      class="font-black text-transparent bg-gradient-to-br from-[#fb7185] via-[#e879f9] to-[#4338ca] bg-clip-text"
-    >
-      Dotfiles Academy
-    </span>
-  tagline: Master modern development environments, command-line tools, and automation workflows
+  title: Dotfiles
+  tagline: Development environment configuration and command-line tools
   image:
     file: ../../assets/hero.svg
   actions:
-    - text: Quick Start Guide
+    - text: Getting Started
       link: /01-introduction/getting-started/
       icon: right-arrow
       variant: primary
-    - text: Browse Tools
-      link: /05-cli-tools-academy/
+    - text: CLI Tools
+      link: /03-cli-tools/modern-replacements/
       icon: external
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## What You'll Learn
+## Overview
 
 <CardGrid stagger>
   <Card title="Modern CLI Tools" icon="laptop">
-    Replace traditional Unix tools with modern, feature-rich alternatives like `eza`, `bat`, `ripgrep`, and more.
+    GNU coreutils, eza, bat, ripgrep, fd, and other modern replacements for traditional Unix tools.
   </Card>
-  <Card title="Dotfiles Management" icon="setting">
-    Learn to manage your development environment with Nix, Home Manager, Chezmoi, and Homebrew.
+  <Card title="Configuration Management" icon="setting">
+    Nix packages, Home Manager, Chezmoi for secrets, and Homebrew for GUI applications.
   </Card>
-  <Card title="Shell Mastery" icon="open-book">
-    Master Fish shell, Starship prompt, and advanced terminal workflows for maximum productivity.
+  <Card title="Shell Environment" icon="open-book">
+    Fish shell, Starship prompt, tmux, and terminal workflow configurations.
   </Card>
-  <Card title="Automation Scripts" icon="rocket">
-    Understand the complete bootstrap process and automation scripts that set up your entire environment.
+  <Card title="Automation" icon="rocket">
+    Bootstrap scripts, session management, and CI/CD workflows.
   </Card>
 </CardGrid>
 
-## Learning Paths
+## Structure
 
-Whether you're a beginner or an experienced developer, we have learning paths tailored for you:
+### System Configuration
+- Nix and Home Manager for declarative package management
+- Chezmoi for machine-specific secrets and templates
+- Homebrew for macOS GUI applications
 
-### 🚀 **Beginner Path: Terminal Fundamentals**
-Start with basic terminal concepts and gradually work your way up to modern CLI tools.
+### Development Tools
+- Modern CLI replacements with better performance and usability
+- Language-specific toolchains (Python, Node.js, Go, Rust)
+- Cloud provider CLIs (AWS, GCP, Cloudflare)
 
-### 🏗️ **Intermediate Path: Dotfiles Architect**
-Learn to design and implement a comprehensive dotfiles system using modern tools.
+### Workflow Automation
+- Git hooks and pre-commit configurations
+- GitHub Actions for CI/CD
+- Session tracking and management scripts
 
-### ⚡ **Advanced Path: Automation Master**
-Master complex workflows, multi-machine synchronization, and enterprise deployment.
+## Key Components
 
-### 🤖 **AI Tools Integration**
-Integrate AI-powered development tools into your workflow for enhanced productivity.
+- **Package Management**: Reproducible development environments with Nix
+- **Shell Configuration**: Fish shell with custom functions and completions
+- **Security**: Secret management patterns and Git privacy protection
+- **Testing**: Comprehensive test suites for configurations and scripts
+- **Documentation**: Maintained with Starlight and GitHub Pages
 
-## Why This Approach?
-
-This academy teaches you to replace traditional command-line tools with modern alternatives that are:
-
-- **Faster** - Built with performance in mind
-- **More intuitive** - Better defaults and user experience
-- **Feature-rich** - Advanced capabilities built-in
-- **Well-maintained** - Active development and community support
-
-## Interactive Learning
-
-Each section includes:
-- 📖 **Comprehensive guides** with real-world examples
-- 🎯 **Hands-on exercises** to practice what you learn
-- 🔍 **Tool comparisons** showing before/after improvements
-- 🛠️ **Configuration examples** you can use immediately
-
-Ready to become a command-line expert? [Get started now!](/01-introduction/getting-started/)
+[Get started →](/01-introduction/getting-started/)

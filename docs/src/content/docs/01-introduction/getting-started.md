@@ -1,31 +1,29 @@
 ---
 title: Getting Started
-description: Quick start guide to set up your modern development environment
+description: Setup guide for development environment configuration
 ---
 
 # Getting Started
 
-Welcome to Dotfiles Academy! This guide will help you set up a modern, automated development environment in minutes.
+## Overview
 
-## What Is This?
-
-This repository provides a **fully automated, reproducible development environment** using:
+This repository contains development environment configuration using:
 
 - **Nix & Home Manager** - Declarative package management
-- **Chezmoi** - Dotfiles and secrets management
+- **Chezmoi** - Secrets and machine-specific template management
 - **Homebrew** - macOS GUI applications
-- **Fish Shell** - Modern, user-friendly shell
-- **Modern CLI Tools** - Faster, better alternatives to traditional Unix tools
+- **Fish Shell** - Command-line shell with autosuggestions
+- **Modern CLI Tools** - Performance-oriented replacements for Unix tools
 
-## Quick Setup
+## Setup
 
 ### Prerequisites
 
-- **macOS** (tested on macOS 12+)
-- **Administrator access**
-- **Internet connection**
+- macOS 12+ or Linux
+- Administrator access
+- Internet connection
 
-### One-Command Installation
+### Installation
 
 ```bash
 git clone https://github.com/garywu/dotfiles.git ~/.dotfiles
@@ -33,57 +31,116 @@ cd ~/.dotfiles
 ./bootstrap.sh
 ```
 
-That's it! The bootstrap script will:
+The bootstrap script performs:
 
-1. ✅ Install Nix package manager
-2. ✅ Set up Home Manager for declarative packages
-3. ✅ Install Fish shell and modern CLI tools
-4. ✅ Configure development environment
-5. ✅ Install macOS GUI applications via Homebrew
+1. Nix package manager installation
+2. Home Manager setup for declarative package management
+3. Fish shell and CLI tools installation
+4. Development environment configuration
+5. Homebrew installation and GUI applications (macOS only)
 
-## What Gets Installed
+## Installed Tools
 
-### Modern CLI Tools
-- `eza` → Modern `ls` with colors and git integration
-- `bat` → `cat` with syntax highlighting
-- `ripgrep` → Ultra-fast `grep` replacement
-- `fd` → Simple, fast `find` alternative
-- `fzf` → Fuzzy finder for interactive selection
-- `delta` → Better git diff viewer
-- `htop` → Enhanced process viewer
-- And 50+ more productivity tools!
+### Core Utilities
+- `coreutils` - GNU core utilities (timeout, realpath, etc.)
+- `curl`, `wget` - HTTP clients
+- `git` - Version control
+- `jq` - JSON processor
+- `tmux` - Terminal multiplexer
 
-### Development Tools
-- Git, GitHub CLI, and modern git tools
-- Node.js, Python, Go, Rust toolchains
-- Docker, cloud CLIs (AWS, GCP, Cloudflare)
-- AI tools (Ollama, ChatBlade)
+### Modern CLI Replacements
+- `eza` - File listing with git integration
+- `bat` - File viewer with syntax highlighting
+- `ripgrep` - Fast text search
+- `fd` - File finder
+- `sd` - Stream editor (sed replacement)
+- `dust` - Disk usage analyzer
+- `procs` - Process viewer
+- `hyperfine` - Command benchmarking
 
-### Shell Experience
-- **Fish Shell** - Smart autocompletions and syntax highlighting
-- **Starship Prompt** - Fast, customizable prompt
-- **Optimized aliases** - Shortcuts for common tasks
+### Development Languages
+- Python 3.11
+- Node.js 20
+- Go
+- Rust
+- Bun
 
-## After Installation
+### Cloud Tools
+- AWS CLI v2
+- Google Cloud SDK
+- Cloudflare tools (cloudflared, flarectl)
 
-1. **Restart your terminal** to activate the new shell
-2. **Explore the tools** - Try `ls`, `cat`, or `grep` to see the modern alternatives
-3. **Learn the basics** - Continue with our [CLI Tools Academy](/05-cli-tools-academy/)
-4. **Customize** - Modify configurations in `~/.dotfiles/`
+## Configuration Files
 
-## Need Help?
+### Directory Structure
+```
+~/.dotfiles/
+├── nix/
+│   ├── home.nix          # Package declarations
+│   └── flake.nix         # Nix flake configuration
+├── chezmoi/
+│   └── chezmoi.toml      # Machine-specific values
+├── brew/
+│   └── Brewfile          # macOS GUI applications
+└── bootstrap.sh          # Setup script
+```
 
-- 📚 **Browse the documentation** - Each tool has comprehensive guides
-- 🐛 **Troubleshooting** - Check our [troubleshooting guide](/99-reference/troubleshooting-guide/)
-- 💬 **Get support** - Open an issue on GitHub
+### Home Manager
+Packages are declared in `nix/home.nix`. To add packages:
+```bash
+# Edit nix/home.nix
+# Then apply changes:
+home-manager switch
+```
 
-## Next Steps
+### Chezmoi Templates
+Machine-specific configurations use Chezmoi templates:
+```bash
+chezmoi edit ~/.gitconfig
+chezmoi apply
+```
 
-Ready to dive deeper? Here are recommended next steps:
+## Post-Installation
 
-1. [**Understand the Architecture**](/01-introduction/architecture-overview/) - Learn how everything fits together
-2. [**Master the Shell**](/04-shell-mastery/) - Get the most out of Fish shell
-3. [**Explore CLI Tools**](/05-cli-tools-academy/) - Learn modern command-line tools
-4. [**Automation Deep Dive**](/08-automation-scripts/) - Understand the bootstrap process
+### Shell Configuration
+Fish shell is set as default. Configuration files:
+- `~/.config/fish/config.fish` - Main configuration
+- `~/.config/fish/functions/` - Custom functions
 
-Let's start your journey to command-line mastery! 🚀
+### Session Management
+Track work sessions:
+```bash
+make session-start    # Begin session
+make session-log MSG="completed task"  # Log progress
+make session-end      # End session
+```
+
+### Testing
+Verify installation:
+```bash
+make test            # Run all tests
+make test-shell      # Test shell scripts
+make test-docs       # Test documentation links
+```
+
+## Maintenance
+
+### Update Packages
+```bash
+# Update Nix packages
+nix flake update
+home-manager switch
+
+# Update Homebrew packages
+brew update && brew upgrade
+```
+
+### Backup Secrets
+```bash
+chezmoi cd
+# Backup encrypted files to secure location
+```
+
+## Troubleshooting
+
+Common issues and solutions are documented in the [troubleshooting section](/98-troubleshooting/homebrew-fish-config/).

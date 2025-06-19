@@ -4,12 +4,28 @@
 if [[ -n "${BASH_VERSION}" ]]; then
     BASH_MAJOR_VERSION=$(echo "${BASH_VERSION}" | cut -d. -f1)
     if [[ "${BASH_MAJOR_VERSION}" -lt 4 ]]; then
-        echo "⚠️  Detected old Bash version: ${BASH_VERSION}"
-        echo "   macOS ships with Bash 3.2 (2007) due to licensing."
-        echo "   Modern features may not work properly."
-        echo ""
-        echo "🔧 Installing modern Bash via Nix (will be available after bootstrap)..."
-        echo ""
+        # Check if modern bash is already available
+        MODERN_BASH_AVAILABLE=false
+        if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
+            MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+            if [[ -n "$MODERN_BASH_VERSION" ]]; then
+                MODERN_BASH_AVAILABLE=true
+            fi
+        fi
+
+        if [[ "$MODERN_BASH_AVAILABLE" == "true" ]]; then
+            echo "ℹ️  Bootstrap is running with system Bash ${BASH_VERSION}"
+            echo "   ✅ Modern Bash ${MODERN_BASH_VERSION} is already installed at ~/.nix-profile/bin/bash"
+            echo "   Your shell sessions will use the modern version."
+            echo ""
+        else
+            echo "⚠️  Bootstrap is running with system Bash ${BASH_VERSION}"
+            echo "   macOS ships with Bash 3.2 (2007) due to GPL licensing."
+            echo ""
+            echo "🔧 This bootstrap will install modern Bash 5.2+ via Nix."
+            echo "   After completion, new shells will use the modern version."
+            echo ""
+        fi
     fi
 fi
 
@@ -445,6 +461,20 @@ else
 fi
 
 print_status "Bootstrap completed!"
+
+# Final bash check if we were running with old bash
+if [[ -n "${BASH_VERSION}" ]] && [[ "${BASH_MAJOR_VERSION}" -lt 4 ]]; then
+    if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
+        MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+        if [[ -n "$MODERN_BASH_VERSION" ]]; then
+            echo ""
+            echo "🎉 Modern Bash ${MODERN_BASH_VERSION} is now available!"
+            echo "   New terminal sessions will automatically use it."
+            echo "   To use it in the current session: exec $HOME/.nix-profile/bin/bash"
+        fi
+    fi
+fi
+
 print_status "Your system is now fully configured. Enjoy!"
 echo "Bootstrap completed at $(date)"
 echo "Log saved to: $BOOTSTRAP_LOG"

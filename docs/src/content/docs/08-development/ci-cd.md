@@ -1,3 +1,8 @@
+---
+title: CI/CD Workflows
+description: GitHub Actions workflows for continuous integration and deployment
+---
+
 # GitHub Actions Workflows
 
 This directory contains GitHub Actions workflows for the dotfiles repository.

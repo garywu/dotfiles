@@ -153,6 +153,40 @@ hyperfine "cmd"      # Benchmark commands
 watchexec -e py pytest  # Run commands on file change
 ```
 
+## IMPORTANT: Default Tool Usage for Claude CLI
+
+**ALWAYS use modern CLI tools as the FIRST choice:**
+
+### File Operations
+- **USE `eza -la`** instead of `ls -la`
+- **USE `fd pattern`** instead of `find . -name pattern`
+- **USE `bat file`** instead of `cat file` (when showing content to user)
+- **USE `dust`** instead of `du -sh`
+
+### Search Operations
+- **USE `rg pattern`** instead of `grep -r pattern .`
+- **USE `rg -l pattern`** instead of `grep -rl pattern .`
+- **USE `fd -e txt`** instead of `find . -name "*.txt"`
+
+### Data Processing
+- **USE `jq`** for JSON instead of grep/sed/awk
+- **USE `sd 'find' 'replace'`** instead of `sed 's/find/replace/g'`
+- **USE `choose 0 2`** instead of `cut -f1,3` or `awk '{print $1,$3}'`
+
+### Interactive Tools
+- **USE `gum choose`** for selection menus
+- **USE `gum input`** for user input
+- **USE `gum spin`** for progress indicators
+
+### Why This Matters
+The efficiency testing framework (Issue #20) proved these tools provide:
+- 36% fewer keystrokes (human efficiency)
+- Better defaults and discoverability
+- More consistent cross-platform behavior
+- Better error messages and output formatting
+
+**Remember**: These tools are already installed. There's no compatibility concern. Use them!
+
 ## Documentation and Testing Commands
 
 ### Documentation Site (Starlight)
@@ -169,6 +203,39 @@ npm run preview         # Preview built site
 # Troubleshooting
 npx astro sync          # Sync content collections if pages missing
 ```
+
+## Current Session (2025-06-19)
+
+### Focus: Claude-Init Knowledge Transfer
+
+1. **Analyzed dotfiles for valuable learnings**:
+   - Extracted debugging experiences from Issue #15 (Astro docs)
+   - Captured CI/CD platform-specific knowledge
+   - Documented testing framework patterns
+
+2. **Created comprehensive documentation for claude-init**:
+   - Added 7 new documentation guides
+   - Captured 3.5 hours of Astro debugging into guide
+   - Documented platform-specific CI gotchas
+   - Created meta-guide on learning from mistakes
+
+3. **Transformed claude-init philosophy**:
+   - Shifted from prescriptive scripts to information resource
+   - Added "information over implementation" principle
+   - Made debugging-to-documentation process explicit
+
+4. **Key Contributions**:
+   - `docs/debugging-and-troubleshooting.md` - Common issues
+   - `docs/testing-framework-guide.md` - Complete test patterns
+   - `docs/github-actions-multi-platform.md` - CI/CD guide
+   - `docs/documentation-site-setup.md` - Astro lessons
+   - `docs/learning-from-mistakes.md` - Knowledge capture process
+
+### Commits
+
+- Added linting/formatting reference documentation
+- Added core design principle of information over implementation
+- Added comprehensive debugging knowledge from real-world experience
 
 ## Current Session (2025-06-18)
 
@@ -203,16 +270,18 @@ npx astro sync          # Sync content collections if pages missing
 4. Created GitHub Issue #4 - Setup Professional Development Processes and Standards
 5. Created GitHub Issue #5 - Phase 1: GitHub Repository Setup
 6. Established project decisions:
-  - Version: Starting at 0.0.1
-  - Commit format: Conventional Commits
-  - Versioning: Semantic Versioning
+
+   - Version: Starting at 0.0.1
+   - Commit format: Conventional Commits
+   - Versioning: Semantic Versioning
 
 7. Implemented Phase 1 (Issue #5):
-  - Created all GitHub labels
-  - Created issue templates (bug, feature, docs, refactor)
-  - Created pull request template
-  - Created CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md
-  - Updated CHANGELOG.md for v0.0.1
+
+   - Created all GitHub labels
+   - Created issue templates (bug, feature, docs, refactor)
+   - Created pull request template
+   - Created CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md
+   - Updated CHANGELOG.md for v0.0.1
 
 8. Committed changes and created v0.0.1 tag
 
