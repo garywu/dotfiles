@@ -51,7 +51,7 @@
 
 **A modern, cross-platform development environment that just works.** Zero-config setup with powerful CLI tools, automated package management, and bulletproof synchronization across all your machines.
 
-**Supported Platforms:** macOS (primary), Linux (experimental)  
+**Supported Platforms:** macOS (primary), Linux (experimental), Windows WSL (experimental)  
 **Tech Stack:** Nix, Home Manager, Chezmoi, Homebrew
 
 ## 🔄 Git Workflow
