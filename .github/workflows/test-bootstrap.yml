@@ -75,7 +75,7 @@ jobs:
         shell: bash {0}  # Use bash without -e flag
         run: |
           echo "=== Running unbootstrap ==="
-          ./scripts/unbootstrap.sh || true
+          (./scripts/unbootstrap.sh || echo "Unbootstrap exited with code $?")
           echo "Unbootstrap step completed"
 
       - name: Run cleanup tests
