@@ -5,8 +5,8 @@
   programs.home-manager.enable = true;
 
   # Home Manager needs a bit of information about you and the paths it should manage.
-  home.username = "admin";
-  home.homeDirectory = "/Users/admin";
+  home.username = builtins.getEnv "USER";
+  home.homeDirectory = builtins.getEnv "HOME";
 
   # Add npm and pipx bin directories to PATH
   home.sessionPath = [

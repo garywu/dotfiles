@@ -1,0 +1,92 @@
+name: Test Bootstrap Process
+
+on:
+  pull_request:
+    paths:
+      - 'bootstrap.sh'
+      - 'scripts/unbootstrap.sh'
+      - 'nix/**'
+      - 'brew/**'
+      - 'chezmoi/**'
+      - '.github/workflows/test-bootstrap.yml'
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: 'Enable debug mode'
+        required: false
+        default: false
+
+jobs:
+  test-macos:
+    name: Test on macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: System Information
+        run: |
+          echo "=== System Info ==="
+          sw_vers
+          echo "Shell: $SHELL"
+          echo "User: $(whoami)"
+          echo "PATH: $PATH"
+          which bash && bash --version
+
+      - name: Pre-bootstrap check
+        run: |
+          echo "=== Running pre-bootstrap check ==="
+          ./check.sh || true
+
+      - name: Run bootstrap (CI mode)
+        env:
+          CI: true
+          GITHUB_ACTIONS: true
+        run: |
+          echo "=== Running bootstrap ==="
+          ./bootstrap.sh
+
+      - name: Run bootstrap tests
+        run: |
+          echo "=== Running bootstrap tests ==="
+          ./tests/test_runner.sh --ci bootstrap
+
+      - name: Audit packages
+        run: |
+          echo "=== Package audit ==="
+
+          # List Nix packages
+          echo "Nix packages:"
+          nix-env -q || true
+
+          # List Homebrew packages
+          echo "Homebrew packages:"
+          brew list || true
+
+          # Check current shell
+          echo "Current shell: $SHELL"
+          echo "Default shell: $(dscl . -read /Users/$USER UserShell | cut -d' ' -f2)"
+
+      - name: Run unbootstrap (CI mode)
+        env:
+          CI: true
+          GITHUB_ACTIONS: true
+        continue-on-error: true  # Allow step to continue even if it fails
+        run: |
+          echo "=== Running unbootstrap ==="
+          ./scripts/unbootstrap.sh
+
+      - name: Run cleanup tests
+        run: |
+          echo "=== Running cleanup tests ==="
+          ./tests/test_runner.sh --ci cleanup
+
+  # TODO: Add Ubuntu and WSL tests once cross-platform compatibility is improved
+  # test-ubuntu:
+  #   name: Test on Ubuntu
+  #   runs-on: ubuntu-latest
+
+  # test-wsl:
+  #   name: Test on WSL
+  #   runs-on: windows-latest

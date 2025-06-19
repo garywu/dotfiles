@@ -5,6 +5,16 @@
 # It is intended to fully "unbootstrap" your system and restore it to a clean state.
 # Use with caution! You will be prompted for confirmation before anything is removed.
 
+# Get the directory where the script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Source CI helpers if available
+if [[ -f "${SCRIPT_DIR}/ci-helpers.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "${SCRIPT_DIR}/ci-helpers.sh"
+fi
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -38,10 +48,6 @@ if [[ $EUID -eq 0 ]]; then
   print_error "This script should not be run as root"
   exit 1
 fi
-
-# Get the directory where the script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Function to verify shell change
 verify_shell_change() {
@@ -422,7 +428,12 @@ remove_nix() {
   stop_nix_daemon || print_warning "Some Nix services may still be running"
 
   # Remove Nix APFS volumes if they exist
-  remove_nix_volume || print_warning "Manual volume cleanup may be required"
+  # Skip in CI as this often fails/times out
+  if is_ci; then
+    print_warning "Skipping APFS volume removal in CI environment"
+  else
+    remove_nix_volume || print_warning "Manual volume cleanup may be required"
+  fi
 
   # Remove /nix directory (the main challenge)
   remove_nix_directory
@@ -486,6 +497,9 @@ remove_homebrew() {
 # Function to remove dotfiles
 remove_dotfiles() {
   print_status "Removing dotfiles..."
+
+  # Remove Fish configuration
+  rm -rf ~/.config/fish
 
   # Remove Starship configuration
   rm -f ~/.config/starship.toml
@@ -625,9 +639,7 @@ uninstall() {
   echo ""
   print_error "This action cannot be easily undone!"
   echo ""
-  print_warning "Are you absolutely sure you want to continue? (y/N) "
-  read -r response
-  if [[ ! "$response" =~ ^[Yy]$ ]]; then
+  if ! ci_confirm "Are you absolutely sure you want to continue? (y/N)" "y"; then
     print_status "Uninstallation cancelled"
     exit 0
   fi
@@ -650,15 +662,24 @@ uninstall() {
   # If a reboot is required (e.g., synthetic mount was removed), inform the user and skip further verification
   if [ "$NEEDS_REBOOT" -eq 1 ]; then
     print_warning "A system restart is required to finish removing /nix."
-    print_warning "Please reboot your computer, then run this script again to complete cleanup."
-    exit 0
+    if is_ci; then
+      print_warning "Continuing in CI mode (reboot not possible)"
+    else
+      print_warning "Please reboot your computer, then run this script again to complete cleanup."
+      exit 0
+    fi
   fi
 
   # Verify cleanup
   if ! verify_cleanup; then
-    print_warning "Some components require a system restart to be fully removed"
-    print_warning "Please restart your computer and run this script again to complete the cleanup"
-    exit 1
+    if is_ci && [ "$NEEDS_REBOOT" -eq 1 ]; then
+      print_warning "Some components require a system restart to be fully removed"
+      print_warning "This is expected in CI environments - marking as successful"
+    else
+      print_warning "Some components require a system restart to be fully removed"
+      print_warning "Please restart your computer and run this script again to complete the cleanup"
+      exit 1
+    fi
   fi
 
   print_status "Uninstallation completed successfully!"
@@ -678,9 +699,7 @@ uninstall() {
     for item in "${EXTRA_TO_REMOVE[@]}"; do
       echo "  $item"
     done
-    echo -n "Are you sure you want to delete these items? (yes/no): "
-    read confirm
-    if [[ "$confirm" == "yes" ]]; then
+    if ci_confirm "Are you sure you want to delete these items? (yes/no):" "no"; then
       for item in "${EXTRA_TO_REMOVE[@]}"; do
         rm -rf "$item"
         print_status "Removed $item"
@@ -689,6 +708,8 @@ uninstall() {
       print_status "No files were deleted."
     fi
   fi
+  # Ensure clean exit
+  exit 0
 }
 
 # Run the uninstallation

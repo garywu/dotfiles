@@ -14,7 +14,17 @@ if [[ -n "${BASH_VERSION}" ]]; then
 fi
 
 # Setup logging
-BOOTSTRAP_LOG="${HOME}/.dotfiles/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
+# Source CI helpers if available
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "${SCRIPT_DIR}/scripts/ci-helpers.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "${SCRIPT_DIR}/scripts/ci-helpers.sh"
+elif [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
+    # shellcheck source=/dev/null
+    source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
+fi
+
+BOOTSTRAP_LOG="${SCRIPT_DIR}/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
 mkdir -p "$(dirname "${BOOTSTRAP_LOG}")"
 
 # Function to log and display
@@ -87,7 +97,12 @@ handle_nix_remnants() {
         echo "the backup files to their original locations."
         echo ""
         printf "Restore backup files as recommended by official Nix docs? [Y/n]: "
-        read -r response
+        if command -v is_ci &>/dev/null && is_ci; then
+            response="Y"
+            echo "Y [auto-confirmed in CI]"
+        else
+            read -r response
+        fi
 
         case "${response}" in
             [nN]|[nN][oO])
@@ -163,8 +178,38 @@ if ! command_exists nix; then
     sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
     rm /tmp/nix-install.sh
 
-    print_status "Nix installed! Please restart your terminal and run this script again."
-    exit 0
+    if command -v is_ci &>/dev/null && is_ci; then
+        print_status "Nix installed! Continuing in CI mode..."
+        # In CI, source nix immediately to make it available
+        if [[ "$(uname)" == "Darwin" ]]; then
+            # macOS uses nix-daemon.sh for multi-user installation
+            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+                # shellcheck source=/dev/null
+                source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+            fi
+        else
+            # Linux uses nix.sh
+            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
+                # shellcheck source=/dev/null
+                source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+            fi
+        fi
+        # Also try user profile
+        if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+            # shellcheck source=/dev/null
+            source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+        fi
+        # Ensure PATH includes Nix binaries
+        export PATH="/nix/var/nix/profiles/default/bin:$HOME/.nix-profile/bin:$PATH"
+        # Export PATH to GitHub Actions for subsequent steps
+        if [[ -n "${GITHUB_PATH}" ]]; then
+            echo "/nix/var/nix/profiles/default/bin" >> "${GITHUB_PATH}"
+            echo "$HOME/.nix-profile/bin" >> "${GITHUB_PATH}"
+        fi
+    else
+        print_status "Nix installed! Please restart your terminal and run this script again."
+        exit 0
+    fi
 fi
 
 # Check if Home Manager is installed
@@ -177,8 +222,22 @@ if ! command_exists home-manager; then
     # Install Home Manager
     nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
 
-    print_status "Home Manager installed! Please restart your terminal and run this script again."
-    exit 0
+    if command -v is_ci &>/dev/null && is_ci; then
+        print_status "Home Manager installed! Continuing in CI mode..."
+        # In CI, source the home-manager script to make it available immediately
+        if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+            # shellcheck source=/dev/null
+            source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        fi
+        # Export PATH to GitHub Actions for subsequent steps (in case paths changed)
+        if [[ -n "${GITHUB_PATH}" ]]; then
+            echo "/nix/var/nix/profiles/default/bin" >> "${GITHUB_PATH}"
+            echo "$HOME/.nix-profile/bin" >> "${GITHUB_PATH}"
+        fi
+    else
+        print_status "Home Manager installed! Please restart your terminal and run this script again."
+        exit 0
+    fi
 fi
 
 # Set NIX_PATH if not set (needed for home-manager to work properly)
@@ -193,7 +252,7 @@ if [[ -f ~/.config/home-manager/home.nix ]] && [[ ! -L ~/.config/home-manager/ho
     print_warning "Backing up existing home.nix..."
     mv ~/.config/home-manager/home.nix ~/.config/home-manager/home.nix.backup
 fi
-ln -sf ~/.dotfiles/nix/home.nix ~/.config/home-manager/home.nix
+ln -sf "${SCRIPT_DIR}/nix/home.nix" ~/.config/home-manager/home.nix
 
 # Install chezmoi temporarily to get dotfiles, then Home Manager will manage it
 if ! command_exists chezmoi; then
@@ -211,7 +270,7 @@ fi
 print_status "Using repository: ${REPO_URL}"
 
 # Sync chezmoi-managed files from repo to Chezmoi's source directory
-rsync -a --delete "${HOME}/.dotfiles/chezmoi/" "${HOME}/.local/share/chezmoi/"
+rsync -a --delete "${SCRIPT_DIR}/chezmoi/" "${HOME}/.local/share/chezmoi/"
 
 # Apply dotfiles
 chezmoi apply
@@ -330,8 +389,19 @@ if [ "$(uname)" = "Darwin" ]; then
         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
         eval "$(/opt/homebrew/bin/brew shellenv)"
 
-        print_status "Homebrew installed! Please restart your terminal and run this script again."
-        exit 0
+        if command -v is_ci &>/dev/null && is_ci; then
+            print_status "Homebrew installed! Continuing in CI mode..."
+            # Export Homebrew PATH to GitHub Actions for subsequent steps
+            if [[ -n "${GITHUB_PATH}" ]]; then
+                echo "/opt/homebrew/bin" >> "${GITHUB_PATH}"
+                echo "/usr/local/bin" >> "${GITHUB_PATH}"
+            fi
+            # Install GUI apps via Brewfile
+            brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
+        else
+            print_status "Homebrew installed! Please restart your terminal and run this script again."
+            exit 0
+        fi
     fi
 fi
 
