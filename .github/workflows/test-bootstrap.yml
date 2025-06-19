@@ -2,6 +2,16 @@ name: Test Bootstrap Process
 
 on:
   pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'bootstrap.sh'
+      - 'scripts/unbootstrap.sh'
+      - 'nix/**'
+      - 'brew/**'
+      - 'chezmoi/**'
+      - '.github/workflows/test-bootstrap.yml'
+  push:
+    branches: [ develop ]
     paths:
       - 'bootstrap.sh'
       - 'scripts/unbootstrap.sh'
