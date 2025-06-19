@@ -1,7 +1,7 @@
 {
-  "name": "dotfiles-academy",
+  "name": "dotfiles",
   "version": "0.1.0",
-  "description": "Comprehensive documentation and learning platform for modern development environments",
+  "description": "Development environment configuration documentation",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

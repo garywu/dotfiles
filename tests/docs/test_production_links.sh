@@ -44,6 +44,8 @@ PAGES=(
     "/07-security/security-policy/"
     "/08-development/ci-cd/"
     "/08-development/code-of-conduct/"
+    "/08-development/contributing/"
+    "/08-development/testing/"
     "/98-troubleshooting/homebrew-fish-config/"
     "/98-troubleshooting/git-email-privacy/"
     "/99-reference/command-cheatsheets/"

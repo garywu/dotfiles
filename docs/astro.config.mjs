@@ -7,8 +7,8 @@ export default defineConfig({
   output: 'static',
   integrations: [
     starlight({
-      title: 'Dotfiles Academy',
-      description: 'Master modern development environments and command-line tools',
+      title: 'Dotfiles',
+      description: 'Development environment configuration and command-line tools',
       defaultLocale: 'root',
       locales: {
         root: {
@@ -47,10 +47,6 @@ export default defineConfig({
         {
           label: 'AI Development',
           autogenerate: { directory: '05-ai-development' },
-        },
-        {
-          label: 'CLI Tools Academy',
-          autogenerate: { directory: '05-cli-tools-academy' },
         },
         {
           label: 'AI Tools',

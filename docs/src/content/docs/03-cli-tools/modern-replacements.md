@@ -1,16 +1,16 @@
 ---
 title: Modern CLI Replacements
-description: Replace traditional Unix tools with modern, feature-rich alternatives for enhanced productivity
+description: Modern command-line tools that replace traditional Unix utilities
 ---
 
-# Modern CLI Replacements 🚀
+# Modern CLI Replacements
 
-Replace traditional Unix tools with modern, feature-rich alternatives. All these tools are already installed and configured with fish aliases.
+Modern alternatives to traditional Unix tools with enhanced performance and features. All tools are installed via Home Manager and configured with fish aliases.
 
-## 🗂️ **File Listing & Navigation**
+## File Listing & Navigation
 
-### **eza (ls replacement)**
-Modern `ls` with colors, icons, and git integration
+### eza (ls replacement)
+File listing with colors, icons, and git integration
 
 ```bash
 # Basic usage (via alias)
@@ -18,7 +18,7 @@ ls          # eza with default options
 ll          # eza -l (detailed list)
 la          # eza -la (all files, detailed)
 
-# Advanced eza features
+# Advanced features
 eza --tree                    # Tree view
 eza --git                     # Show git status
 eza --long --header           # Detailed with headers
@@ -27,321 +27,404 @@ eza --sort=modified           # Sort by modification time
 eza --group-directories-first # Directories first
 eza --icons                   # Show file type icons
 
-# Useful combinations
+# Common combinations
 eza -la --git --header        # Detailed view with git status
 eza --tree --level=2          # Tree view, 2 levels deep
 eza -la --sort=size           # Detailed, sorted by size
 ```
 
-### **zoxide (cd replacement)**
-Smart directory navigation with frecency
+### zoxide (cd replacement)
+Directory navigation with frecency-based jumping
 
 ```bash
-# Basic navigation
+# Navigation
 z Documents           # Jump to Documents directory
-z doc                # Partial match works
-z ~/proj/my-app      # Full path also works
+z doc                # Partial match
+z ~/proj/my-app      # Full path
 
 # Interactive selection
 zi                   # Interactive fuzzy search
 
-# Add current directory
-zoxide add .         # Manually add current dir
-
-# List tracked directories
-zoxide query -l      # List all directories
-zoxide query -l proj # List directories matching "proj"
-
-# Remove from database
-zoxide remove ~/old-project
+# Directory management
+zoxide add .         # Add current directory
+zoxide query doc     # Show matching directories
+zoxide remove docs   # Remove from database
 ```
 
-## 🔍 **Search & Content**
+## File Viewing & Editing
 
-### **ripgrep (grep replacement)**
-Ultra-fast text search with smart defaults
-
-```bash
-# Basic search (via alias 'rg' or 'grep')
-rg "function"                    # Search for "function" in all files
-rg -i "error"                    # Case insensitive search
-rg "TODO" --type py             # Search only in Python files
-rg "api" --type-not md          # Exclude markdown files
-
-# Advanced patterns
-rg "class \w+"                  # Regex patterns
-rg -w "word"                    # Whole word matches
-rg -A 3 -B 3 "error"           # Show 3 lines before/after match
-
-# File type filters
-rg "import" --type js           # JavaScript files only
-rg "def " --type py             # Python files only
-rg "function" --type ts         # TypeScript files only
-
-# Useful flags
-rg -n "pattern"                 # Show line numbers
-rg -c "pattern"                 # Count matches only
-rg --files-with-matches "error" # Just show file names
-rg --hidden "config"            # Include hidden files
-
-# Context and formatting
-rg -C 5 "error"                 # 5 lines of context
-rg --color=always "pattern"     # Force color output
-rg --no-heading "pattern"       # Don't group by file
-```
-
-### **fd (find replacement)**
-Simple, fast, user-friendly alternative to find
+### bat (cat replacement)
+File viewer with syntax highlighting
 
 ```bash
-# Basic usage (via alias 'find' or direct 'fd')
-fd filename                     # Find files named 'filename'
-fd -e py                        # Find all Python files
-fd -e js -e ts                  # Find JavaScript and TypeScript files
+# Basic viewing
+bat file.py                    # View with syntax highlighting
+bat README.md                  # Markdown rendering
+bat -n script.sh              # Show line numbers
 
-# Pattern matching
-fd "\.py$"                      # Regex: files ending in .py
-fd "test.*\.js$"               # Test JavaScript files
-fd -i readme                   # Case insensitive search
-
-# Directory operations
-fd -t d config                 # Find directories named 'config'
-fd -t f -e md                  # Find files with .md extension
-fd -t l                        # Find symlinks
-
-# Advanced features
-fd -H config                   # Include hidden files
-fd -I node_modules             # Include ignored files (like node_modules)
-fd -E "*.pyc"                 # Exclude pattern
-fd -x wc -l                   # Execute command on each result
-
-# Useful combinations
-fd -e py -x grep -l "import requests"  # Find Python files containing "import requests"
-fd -t f -e log -x tail -n 10          # Show last 10 lines of all log files
-```
-
-## 📄 **File Content Viewing**
-
-### **bat (cat replacement)**
-Syntax highlighting and git integration
-
-```bash
-# Basic usage (via alias 'cat')
-cat file.py                    # View file with syntax highlighting
-bat file.js                    # Direct bat usage
-
-# Advanced features
-bat -n file.py                 # Show line numbers
-bat -A file.py                 # Show all characters (tabs, spaces)
-bat --paging=never file.py     # Don't use pager for short files
-bat --style=numbers,changes    # Custom style
+# Advanced options
+bat --style=plain file.txt    # No decorations
+bat --style=numbers,grid      # Line numbers with grid
+bat --paging=never           # Disable pager
+bat --theme=Dracula          # Change color theme
 
 # Multiple files
-bat *.py                       # View multiple files
-bat src/**/*.js               # Recursive pattern
+bat file1.py file2.py        # View multiple files
+bat src/*.js                 # View all JS files
 
 # Integration with other tools
-fd -e py | head -5 | xargs bat # View first 5 Python files
-rg -l "TODO" | xargs bat       # View files containing TODO
+git diff | bat               # Syntax highlight diffs
+man ls | bat -l man          # Highlight man pages
 ```
 
-## 🚀 **System Monitoring**
-
-### **btop (htop/top replacement)**
-Modern system monitor with mouse support
+### delta (diff viewer)
+Enhanced diff viewer for git
 
 ```bash
-btop                           # Launch interactive system monitor
+# Git integration (automatic)
+git diff                     # Uses delta automatically
+git show                     # Enhanced commit viewing
+git log -p                   # Better patch viewing
 
-# Key shortcuts in btop:
-# q - quit
-# space - pause/resume
-# + - select process
-# k - kill process
-# m - memory view
-# n - network view
-# d - disk view
+# Standalone usage
+delta file1.txt file2.txt    # Compare two files
+diff -u a.txt b.txt | delta  # Process unified diff
+
+# Features
+# - Syntax highlighting
+# - Line numbers
+# - Side-by-side view
+# - File headers
 ```
 
-### **ncdu (du replacement)**
-Interactive disk usage analyzer
+## Searching & Finding
+
+### ripgrep (grep replacement)
+Fast text search with smart defaults
 
 ```bash
-ncdu                           # Analyze current directory
-ncdu /                         # Analyze entire system
-ncdu ~                         # Analyze home directory
+# Basic search
+rg "pattern"                 # Search in current directory
+rg "TODO"                    # Find all TODOs
+rg -i "error"               # Case-insensitive search
 
-# Interactive navigation:
-# Enter - enter directory
-# Backspace - go up
-# d - delete selected item
-# q - quit
+# File type filtering
+rg "import" -t py           # Python files only
+rg "console.log" -t js      # JavaScript files only
+rg "SELECT" -t sql          # SQL files only
+
+# Advanced patterns
+rg "func\w+"                # Regex search
+rg -w "test"                # Whole word matching
+rg -v "debug"               # Invert match
+
+# Context and formatting
+rg -C 3 "error"             # Show 3 lines context
+rg -N "pattern"             # No line numbers
+rg --heading "TODO"         # Group by file
+
+# Performance options
+rg -j 4 "pattern"           # Use 4 threads
+rg -m 10 "error"            # Max 10 matches per file
 ```
 
-## 🌐 **Network & Downloads**
-
-### **httpie (curl replacement)**
-Human-friendly HTTP client
+### fd (find replacement)
+Fast file finder
 
 ```bash
-# GET requests
-http GET httpbin.org/json
+# Basic finding
+fd pattern                   # Find files matching pattern
+fd ".py"                    # Find Python files
+fd -e md                    # Find by extension
 
-# POST requests
-http POST httpbin.org/post name=John age:=30
+# Type filtering
+fd -t f pattern             # Files only
+fd -t d pattern             # Directories only
+fd -t l pattern             # Symlinks only
 
-# Headers and authentication
-http GET api.github.com/user Authorization:"token your_token"
+# Advanced options
+fd -H pattern               # Include hidden files
+fd -I pattern               # Include ignored files
+fd -u pattern               # Unrestricted (both -H and -I)
 
-# File uploads
-http --form POST httpbin.org/post file@document.pdf
+# Size filtering
+fd --size +1M               # Files larger than 1MB
+fd --size -100k             # Files smaller than 100KB
 
-# JSON data
-http POST api.example.com/users name=John email=john@example.com
+# Time filtering
+fd --changed-within 1d      # Changed in last day
+fd --changed-before 1w      # Changed before 1 week
+
+# Execution
+fd -e py -x pylint {}       # Run pylint on Python files
+fd -t f -x chmod 644 {}     # Change permissions
 ```
 
-## 🔧 **Development Tools**
+## Text Processing
 
-### **delta (git diff replacement)**
-Enhanced git diff with syntax highlighting
+### sd (sed replacement)
+Simple find and replace
 
 ```bash
-# Already configured in git, but can use directly:
-delta file1.py file2.py        # Compare two files
-git diff                       # Uses delta automatically
-git log -p                     # Git log with delta
-git show HEAD                  # Show commit with delta
+# Basic replacement
+sd "old" "new" file.txt              # Replace in file
+sd "TODO" "DONE" *.md                # Multiple files
+echo "hello world" | sd "world" "sd" # Pipe usage
+
+# Regex patterns
+sd "v\d+\.\d+\.\d+" "v2.0.0" *.json  # Version replacement
+sd "(\w+)@(\w+)" "$2 at $1" file     # Capture groups
+
+# Practical examples
+sd "http:" "https:" *.html           # Update protocols
+sd "\r\n" "\n" file.txt              # Fix line endings
+sd "  +" " " file.txt                # Collapse spaces
 ```
 
-### **lazygit**
-Terminal UI for git
-
-```bash
-lazygit                        # Launch git TUI
-
-# Key shortcuts:
-# Space - stage/unstage
-# c - commit
-# P - push
-# p - pull
-# Enter - view details
-# q - quit
-```
-
-### **fzf (fuzzy finder)**
-Command-line fuzzy finder
+### jq (JSON processor)
+Command-line JSON processing
 
 ```bash
 # Basic usage
-fzf                            # Interactive file finder
+jq '.' file.json             # Pretty print
+jq '.name' data.json         # Extract field
+jq '.[]' array.json          # Iterate array
 
-# Integration with other commands
-fd -t f | fzf                  # Find files with fuzzy search
-history | fzf                  # Search command history
-git branch | fzf               # Select git branch
+# Filtering
+jq '.[] | select(.age > 30)' users.json
+jq '.items[] | .name' data.json
 
-# Preview integration
-fzf --preview 'bat --color=always {}'  # Preview files with bat
+# Transformation
+jq '.[] | {name: .name, id: .id}' data.json
+jq 'map(. + 1)' numbers.json
+
+# Complex operations
+jq -r '.[] | [.name, .email] | @csv' users.json
+curl api.example.com | jq '.results[0]'
 ```
 
-## 📁 **File Operations**
+## System Monitoring
 
-### **tree (built-in alternative)**
-Directory tree visualization
+### htop (top replacement)
+Interactive process viewer
 
 ```bash
-tree                           # Show directory tree
-tree -a                        # Include hidden files
-tree -L 2                      # Limit to 2 levels
-tree -I "node_modules|.git"    # Ignore patterns
-tree -d                        # Directories only
+htop                        # Launch htop
 
-# Or use eza for tree view
-eza --tree --level=3           # Tree with eza
+# Key bindings:
+# F2 - Setup
+# F3 - Search
+# F4 - Filter
+# F5 - Tree view
+# F6 - Sort by column
+# F9 - Kill process
+# F10 - Quit
 ```
 
-## 🎯 **Productivity Workflows**
+### procs (ps replacement)
+Modern process viewer
 
-### **Combined Workflows**
-
-#### **File Search & Edit**
 ```bash
-# Find and edit files
-vim $(fd -e py | fzf)
+# Basic usage
+procs                       # List all processes
+procs python               # Search for python processes
+procs --tree               # Tree view
 
-# Search content and edit file
-vim $(rg -l "TODO" | fzf)
+# Sorting
+procs --sortd cpu          # Sort by CPU (descending)
+procs --sortd mem          # Sort by memory
+procs --sorta pid          # Sort by PID (ascending)
 
-# Find recent files and edit
-vim $(fd -t f --changed-within=1day | fzf)
+# Filtering
+procs --uid 1000           # By user ID
+procs --tcp                # TCP connections
+procs --udp                # UDP connections
+
+# Watch mode
+procs --watch              # Auto-refresh
+procs --watch-interval 1   # Refresh every second
 ```
 
-#### **Project Analysis**
+### dust (du replacement)
+Disk usage analyzer
+
 ```bash
-# Find large files
-fd -t f -x ls -lh {} | sort -k5 -hr | head -10
+# Basic usage
+dust                       # Current directory
+dust ~/Documents          # Specific directory
+dust -n 10                # Top 10 entries
 
-# Count lines of code by type
-fd -e py -x wc -l | sort -nr
-fd -e js -x wc -l | sort -nr
+# Display options
+dust -r                   # Reverse order (smallest first)
+dust -p                   # Show percentages
+dust -b                   # Show bars
+dust -d 3                 # Max depth 3
 
-# Find empty files
-fd -t f -x test -s {} \; -print
+# Filtering
+dust -X node_modules      # Exclude pattern
+dust -x                   # Stay on same filesystem
 ```
 
-#### **Cleanup Workflows**
+### duf (df replacement)
+Disk usage viewer
+
 ```bash
-# Find large directories
-ncdu --exclude=node_modules --exclude=.git
+# Basic usage
+duf                       # All filesystems
+duf /home                # Specific mount point
 
-# Find old files
-fd -t f --changed-before=30days
-
-# Find duplicate file names
-fd -t f | sort | uniq -d
+# Filtering
+duf --local              # Local filesystems only
+duf --type ext4,apfs     # Specific filesystem types
+duf --json               # JSON output
 ```
 
-## ⚙️ **Configuration Tips**
+## Git Enhancements
 
-### **Fish Aliases (Already Configured)**
+### lazygit
+Terminal UI for git
+
 ```bash
-# These aliases are already set up:
-alias ls eza
-alias ll 'eza -l'
-alias la 'eza -la'
-alias cat bat
-alias find fd
-alias grep rg
+lazygit                   # Launch in current repo
+
+# Key features:
+# - Interactive staging
+# - Commit graph
+# - Branch management
+# - Stash handling
+# - Cherry-picking
+# - Interactive rebase
 ```
 
-### **Environment Variables**
+### gitui
+Fast terminal UI for git
+
 ```bash
-# Add to fish config for customization
-export BAT_THEME="TwoDark"              # Dark theme for bat
-export FZF_DEFAULT_OPTS="--height 40%"  # FZF height
-export RIPGREP_CONFIG_PATH="~/.ripgreprc"  # Ripgrep config
+gitui                     # Launch gitui
+
+# Key bindings:
+# Tab - Switch tabs
+# Enter - Stage/unstage
+# c - Commit
+# p - Push
+# P - Pull
+# f - Fetch
 ```
 
-### **Custom Ripgrep Config**
-Create `~/.ripgreprc`:
+## Benchmarking & Analysis
+
+### hyperfine
+Command-line benchmarking
+
+```bash
+# Basic benchmark
+hyperfine 'sleep 0.3'
+
+# Compare commands
+hyperfine 'rg TODO' 'grep -r TODO'
+
+# Multiple runs
+hyperfine --runs 10 'npm test'
+hyperfine --warmup 3 'cargo build'
+
+# Export results
+hyperfine --export-json results.json 'cmd1' 'cmd2'
+hyperfine --export-markdown results.md 'cmd1' 'cmd2'
+
+# Shell comparison
+hyperfine --shell fish 'ls' --shell bash 'ls'
 ```
-# Default ripgrep options
---smart-case
---follow
---hidden
---glob=!.git/*
---glob=!node_modules/*
---glob=!.venv/*
+
+### tokei
+Code statistics
+
+```bash
+# Basic usage
+tokei                     # Current directory
+tokei src/               # Specific directory
+
+# Filtering
+tokei -t Python,JavaScript
+tokei --exclude "*.min.js"
+
+# Output formats
+tokei --output json
+tokei --output yaml
+
+# Sorting
+tokei --sort code        # By lines of code
+tokei --sort files       # By file count
 ```
 
-## 🚀 **Performance Tips**
+## Network Tools
 
-1. **Use type filters**: `rg --type py` is faster than `rg . | grep "\.py"`
-2. **Combine tools**: `fd -e py | xargs rg "import"`
-3. **Use zoxide**: Let it learn your patterns for faster navigation
-4. **Custom aliases**: Create shortcuts for complex commands
-5. **Pipe efficiently**: `fd | fzf` instead of `find | grep | fzf`
+### dog (dig replacement)
+DNS lookup tool
 
----
+```bash
+# Basic queries
+dog example.com          # A records
+dog example.com MX       # MX records
+dog example.com ANY      # All records
 
-**💡 Pro Tip**: These tools work great together! Use `fd` to find files, `rg` to search content, `fzf` to select interactively, and `bat` to preview - all in one workflow!
+# Options
+dog example.com @8.8.8.8 # Use specific DNS
+dog -J example.com       # JSON output
+dog -H example.com       # Short output
+```
+
+### xh (HTTPie alternative)
+HTTP client
+
+```bash
+# GET requests
+xh httpbin.org/get
+xh localhost:3000/api/users
+
+# POST requests
+xh POST httpbin.org/post name=John age=30
+xh POST api.example.com/users < user.json
+
+# Headers
+xh GET httpbin.org/headers Authorization:"Bearer token"
+xh GET example.com Accept:application/json
+
+# Download
+xh --download example.com/file.zip
+```
+
+## Performance Comparison
+
+### Speed Improvements
+
+| Traditional | Modern | Speed Improvement |
+|------------|--------|------------------|
+| find | fd | 5-10x faster |
+| grep | ripgrep | 2-10x faster |
+| ls | eza | Similar speed, more features |
+| cat | bat | Similar speed, more features |
+| sed | sd | Similar speed, easier syntax |
+| cd | zoxide | Instant jumping |
+| top | htop/procs | More efficient |
+| du | dust | 2-5x faster |
+
+### Key Advantages
+
+1. **Better Defaults**: Smart ignore patterns, colors, sensible options
+2. **Modern Features**: Git integration, syntax highlighting, interactive modes
+3. **Performance**: Parallel processing, efficient algorithms
+4. **User Experience**: Better error messages, intuitive interfaces
+5. **Cross-platform**: Consistent behavior across macOS and Linux
+
+## Configuration
+
+All tools are configured via:
+- `~/.config/fish/config.fish` - Aliases and functions
+- `~/.gitconfig` - Git tool integration
+- Individual tool configs in `~/.config/`
+
+To update tool configurations:
+```bash
+chezmoi edit ~/.config/fish/config.fish
+chezmoi apply
+```
