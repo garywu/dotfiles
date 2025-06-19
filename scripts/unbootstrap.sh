@@ -708,6 +708,8 @@ uninstall() {
       print_status "No files were deleted."
     fi
   fi
+  # Ensure clean exit
+  exit 0
 }
 
 # Run the uninstallation
