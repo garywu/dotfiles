@@ -153,6 +153,40 @@ hyperfine "cmd"      # Benchmark commands
 watchexec -e py pytest  # Run commands on file change
 ```
 
+## IMPORTANT: Default Tool Usage for Claude CLI
+
+**ALWAYS use modern CLI tools as the FIRST choice:**
+
+### File Operations
+- **USE `eza -la`** instead of `ls -la`
+- **USE `fd pattern`** instead of `find . -name pattern`
+- **USE `bat file`** instead of `cat file` (when showing content to user)
+- **USE `dust`** instead of `du -sh`
+
+### Search Operations
+- **USE `rg pattern`** instead of `grep -r pattern .`
+- **USE `rg -l pattern`** instead of `grep -rl pattern .`
+- **USE `fd -e txt`** instead of `find . -name "*.txt"`
+
+### Data Processing
+- **USE `jq`** for JSON instead of grep/sed/awk
+- **USE `sd 'find' 'replace'`** instead of `sed 's/find/replace/g'`
+- **USE `choose 0 2`** instead of `cut -f1,3` or `awk '{print $1,$3}'`
+
+### Interactive Tools
+- **USE `gum choose`** for selection menus
+- **USE `gum input`** for user input
+- **USE `gum spin`** for progress indicators
+
+### Why This Matters
+The efficiency testing framework (Issue #20) proved these tools provide:
+- 36% fewer keystrokes (human efficiency)
+- Better defaults and discoverability
+- More consistent cross-platform behavior
+- Better error messages and output formatting
+
+**Remember**: These tools are already installed. There's no compatibility concern. Use them!
+
 ## Documentation and Testing Commands
 
 ### Documentation Site (Starlight)

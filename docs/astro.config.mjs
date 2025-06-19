@@ -33,6 +33,10 @@ export default defineConfig({
           autogenerate: { directory: '01-introduction' },
         },
         {
+          label: 'Platform Setup',
+          autogenerate: { directory: '02-platform-setup' },
+        },
+        {
           label: 'CLI Tools',
           autogenerate: { directory: '03-cli-tools' },
         },
@@ -51,6 +55,14 @@ export default defineConfig({
         {
           label: 'AI Tools',
           autogenerate: { directory: '06-ai-tools' },
+        },
+        {
+          label: 'Security',
+          autogenerate: { directory: '07-security' },
+        },
+        {
+          label: 'Development',
+          autogenerate: { directory: '08-development' },
         },
         {
           label: 'Troubleshooting',
