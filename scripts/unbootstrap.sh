@@ -428,7 +428,12 @@ remove_nix() {
   stop_nix_daemon || print_warning "Some Nix services may still be running"
 
   # Remove Nix APFS volumes if they exist
-  remove_nix_volume || print_warning "Manual volume cleanup may be required"
+  # Skip in CI as this often fails/times out
+  if is_ci; then
+    print_warning "Skipping APFS volume removal in CI environment"
+  else
+    remove_nix_volume || print_warning "Manual volume cleanup may be required"
+  fi
 
   # Remove /nix directory (the main challenge)
   remove_nix_directory
