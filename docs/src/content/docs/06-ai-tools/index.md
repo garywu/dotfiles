@@ -17,7 +17,7 @@ Run powerful language models locally on your Apple Silicon Mac for privacy and s
 - **Performance**: Optimized for M1/M2/M3/M4 Macs
 - **Models**: Coding-specific models like Qwen2.5-Coder, CodeLlama
 
-[→ Learn Ollama](/06-ai-tools/ollama/)
+[→ Learn Ollama](./ollama/)
 
 ### 💬 **ChatBlade - Terminal Chat Interface**
 Command-line interface for various AI providers with streaming responses.
@@ -26,7 +26,7 @@ Command-line interface for various AI providers with streaming responses.
 - **Providers**: OpenAI, Claude, local models via Ollama
 - **Features**: Streaming, conversation history, scripting support
 
-[→ Learn ChatBlade](/06-ai-tools/chatblade/)
+[→ Learn ChatBlade](./chatblade/)
 
 ### 🖥️ **OpenHands - AI Coding Assistant**
 Full AI development environment that can browse files, run commands, and write code.
@@ -35,7 +35,7 @@ Full AI development environment that can browse files, run commands, and write c
 - **Features**: File browsing, terminal access, multi-step tasks
 - **Models**: Works with Claude, GPT-4, local models
 
-[→ Learn OpenHands](/06-ai-tools/openhands/)
+[→ Learn OpenHands](./openhands/)
 
 ## Quick Start Guide
 
@@ -208,4 +208,4 @@ pkill ollama && ollama serve
 4. **Integrate with workflows** - Add AI to your daily development tasks
 5. **Customize prompts** - Develop effective prompting strategies
 
-Ready to supercharge your development workflow with AI? [Get started with Ollama!](/06-ai-tools/ollama/)
+Ready to supercharge your development workflow with AI? [Get started with Ollama!](./ollama/)

@@ -226,9 +226,8 @@ ollama serve
 ## 🔗 **Integration Examples**
 
 See also:
-- [ChatBlade Integration](/06-ai-tools/chatblade/) - Use Ollama with ChatBlade
-- [OpenHands Setup](/06-ai-tools/openhands/) - AI coding assistant
-- [Development Workflow](/07-development-workflow/) - Complete AI coding setup
+- [ChatBlade Integration](../chatblade/) - Use Ollama with ChatBlade
+- [OpenHands Setup](../openhands/) - AI coding assistant
 
 ---
 
