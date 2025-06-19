@@ -99,6 +99,7 @@
     # thefuck   # Removed due to Python 3.12+ incompatibility
     delta # Syntax-highlighting pager for git/diff
     lazygit # TUI for git
+    git-cliff # Changelog generator
     btop # Resource monitor (modern htop alternative)
     glow # Markdown previewer in terminal
     vifm # Terminal file manager with preview support

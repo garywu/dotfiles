@@ -5,6 +5,13 @@
 # Default target
 all: help
 
+# Changelog generation
+.PHONY: changelog
+changelog: ## Generate changelog using git-cliff
+	@echo "Generating changelog..."
+	@git cliff --config cliff.toml -o CHANGELOG.md
+	@echo "Changelog updated!"
+
 # Help target
 help:
 	@echo "Dotfiles Management"
