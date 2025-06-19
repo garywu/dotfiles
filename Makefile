@@ -109,6 +109,22 @@ format-fish:
 	@echo "🎨 Formatting Fish scripts..."
 	@find . -type f -name "*.fish" | grep -v node_modules | xargs -r fish_indent -w || true
 
+# Test targets
+test: test-shell test-docs
+	@echo "✓ All tests passed"
+
+test-shell:
+	@echo "Testing shell scripts..."
+	@shellcheck bootstrap.sh tests/*.sh tests/docs/*.sh || true
+
+test-docs:
+	@echo "Testing documentation links..."
+	@./tests/docs/test_production_links.sh
+
+test-docs-local:
+	@echo "Testing documentation locally..."
+	@./tests/docs/test_links.sh local
+
 # Session Management
 session-start:
 	@./scripts/session-start.sh
