@@ -1,0 +1,140 @@
+---
+title: Learning Paths
+description: Structured learning paths for mastering modern development environments
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { ProgressTracker } from '../../components';
+
+# Learning Paths
+
+Choose your learning path based on your experience level and goals.
+
+## Beginner Path: Foundation
+
+Perfect for those new to dotfiles and command-line tools.
+
+<ProgressTracker
+  sections={[
+    { title: "Getting Started", completed: false, current: true },
+    { title: "Architecture Overview", completed: false },
+    { title: "Platform Setup", completed: false },
+    { title: "Basic Shell Usage", completed: false },
+    { title: "Essential CLI Tools", completed: false }
+  ]}
+/>
+
+### Week 1: Environment Setup
+- [Getting Started](/dotfiles/01-introduction/getting-started/) - 30 min
+- [Architecture Overview](/dotfiles/01-introduction/architecture-overview/) - 20 min
+- Platform-specific setup ([macOS](/dotfiles/02-platform-setup/macos/), [Ubuntu](/dotfiles/02-platform-setup/ubuntu/), or [WSL2](/dotfiles/02-platform-setup/wsl2/)) - 45 min
+
+### Week 2: Shell Fundamentals
+- Fish shell basics - 40 min
+- Terminal navigation with tmux - 30 min
+- Basic CLI tool usage - 45 min
+
+## Intermediate Path: Power User
+
+For developers comfortable with the command line looking to enhance their workflow.
+
+<ProgressTracker
+  sections={[
+    { title: "Modern CLI Tools", completed: false, current: true },
+    { title: "Code Golf Techniques", completed: false },
+    { title: "Session Patterns", completed: false },
+    { title: "AI Tools Integration", completed: false },
+    { title: "Automation Scripts", completed: false }
+  ]}
+/>
+
+### Month 1: CLI Mastery
+- [Modern CLI Replacements](/dotfiles/03-cli-tools/modern-replacements/) - 45 min
+- [CLI Code Golf](/dotfiles/03-cli-tools/code-golf/) - 60 min
+- [Session Patterns](/dotfiles/03-cli-tools/session-patterns/) - 30 min
+
+### Month 2: Advanced Tools
+- [Ollama Setup](/dotfiles/05-ai-development/ollama/) - 30 min
+- [ChatBlade Integration](/dotfiles/05-ai-development/chatblade/) - 20 min
+- [Password Management](/dotfiles/03-cli-tools/password-management/) - 25 min
+
+## Advanced Path: System Architect
+
+For experienced users managing complex multi-machine setups.
+
+<ProgressTracker
+  sections={[
+    { title: "Security Hardening", completed: false, current: true },
+    { title: "CI/CD Integration", completed: false },
+    { title: "Multi-Machine Setup", completed: false },
+    { title: "Custom Tooling", completed: false },
+    { title: "Enterprise Deployment", completed: false }
+  ]}
+/>
+
+### Quarter 1: Security & Automation
+- [Secrets Management](/dotfiles/07-security/secrets-management/) - 40 min
+- [CI/CD Setup](/dotfiles/08-development/ci-cd/) - 60 min
+- Advanced testing patterns - 45 min
+
+### Quarter 2: Enterprise Features
+- Multi-machine synchronization - 90 min
+- Custom tool development - 120 min
+- Team deployment strategies - 60 min
+
+## Quick Start Guides
+
+<CardGrid>
+  <Card title="5-Minute Setup" icon="rocket">
+    Get up and running with the essential tools quickly.
+    Perfect for trying out the environment.
+  </Card>
+  <Card title="Migration Guide" icon="seti:folder">
+    Moving from an existing dotfiles setup? Follow our
+    migration guide for a smooth transition.
+  </Card>
+  <Card title="Tool Comparison" icon="open-book">
+    Not sure which tools to use? Check our comprehensive
+    comparisons and recommendations.
+  </Card>
+  <Card title="Troubleshooting" icon="warning">
+    Common issues and their solutions. Save time by
+    checking here first when something goes wrong.
+  </Card>
+</CardGrid>
+
+## Learning Resources
+
+### Interactive Tutorials
+- Command comparison playground
+- Live terminal demonstrations
+- Tool selection wizard
+
+### Reference Materials
+- [Command Cheatsheets](/dotfiles/99-reference/command-cheatsheets/)
+- [Troubleshooting Guide](/dotfiles/98-troubleshooting/homebrew-fish-config/)
+- [Contributing Guidelines](/dotfiles/08-development/contributing/)
+
+### Community Resources
+- GitHub Discussions for Q&A
+- Example configurations from the community
+- Video walkthroughs (coming soon)
+
+## Track Your Progress
+
+Use the session tracking system to monitor your learning:
+
+```bash
+# Start a learning session
+make session-start
+
+# Log what you learned
+make session-log MSG="Completed Modern CLI Tools section"
+
+# Review your progress
+make session-show
+```
+
+## Next Steps
+
+Ready to begin? Start with the [Getting Started](/dotfiles/01-introduction/getting-started/) guide and follow your chosen learning path. Remember, you can always switch paths or explore topics that interest you most!

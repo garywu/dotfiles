@@ -3,7 +3,20 @@ title: Getting Started
 description: Setup guide for development environment configuration
 ---
 
+import { LearningPath, ProgressTracker } from '../../../components';
+
 # Getting Started
+
+<LearningPath
+  level="beginner"
+  time="30 minutes"
+  prerequisites={[]}
+  nextSteps={[
+    "Architecture Overview",
+    "Platform-specific setup guides",
+    "Modern CLI Tools introduction"
+  ]}
+/>
 
 ## Overview
 

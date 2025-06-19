@@ -1,0 +1,160 @@
+---
+export interface Props {
+  sections: {
+    title: string;
+    completed: boolean;
+    current?: boolean;
+  }[];
+}
+
+const { sections } = Astro.props;
+const completedCount = sections.filter(s => s.completed).length;
+const totalCount = sections.length;
+const percentage = Math.round((completedCount / totalCount) * 100);
+---
+
+<div class="progress-tracker">
+  <div class="progress-header">
+    <h3>Learning Progress</h3>
+    <span class="progress-stats">{completedCount} of {totalCount} completed</span>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" style={`width: ${percentage}%`}></div>
+  </div>
+
+  <div class="progress-sections">
+    {sections.map((section, index) => (
+      <div class={`section ${section.completed ? 'completed' : ''} ${section.current ? 'current' : ''}`}>
+        <div class="section-indicator">
+          {section.completed ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+          ) : section.current ? (
+            <div class="current-dot"></div>
+          ) : (
+            <span class="section-number">{index + 1}</span>
+          )}
+        </div>
+        <span class="section-title">{section.title}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .progress-tracker {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background-color: var(--sl-color-gray-6);
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .progress-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .progress-stats {
+    font-size: 0.875rem;
+    color: var(--sl-color-text-accent);
+  }
+
+  .progress-bar {
+    height: 8px;
+    background-color: var(--sl-color-gray-4);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sl-color-accent) 0%, var(--sl-color-accent-high) 100%);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .section-indicator {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--sl-color-gray-4);
+    color: var(--sl-color-text-accent);
+    flex-shrink: 0;
+  }
+
+  .section.completed .section-indicator {
+    background-color: var(--sl-color-green);
+    color: white;
+  }
+
+  .section.current .section-indicator {
+    background-color: var(--sl-color-accent);
+    color: white;
+  }
+
+  .current-dot {
+    width: 12px;
+    height: 12px;
+    background-color: white;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+  }
+
+  .section-number {
+    font-weight: 600;
+  }
+
+  .section-title {
+    color: var(--sl-color-text);
+  }
+
+  .section.completed .section-title {
+    color: var(--sl-color-text-accent);
+    text-decoration: line-through;
+  }
+
+  .section.current .section-title {
+    font-weight: 600;
+    color: var(--sl-color-accent);
+  }
+</style>

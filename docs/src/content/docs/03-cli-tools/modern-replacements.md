@@ -3,7 +3,24 @@ title: Modern CLI Replacements
 description: Modern command-line tools that replace traditional Unix utilities
 ---
 
+import { LearningPath, CommandComparison, ToolSelector } from '../../../components';
+
 # Modern CLI Replacements
+
+<LearningPath
+  level="intermediate"
+  time="45 minutes"
+  prerequisites={[
+    "Basic command-line knowledge",
+    "Understanding of Unix utilities",
+    "Fish shell basics"
+  ]}
+  nextSteps={[
+    "CLI Code Golf techniques",
+    "Session patterns and workflows",
+    "Advanced tool combinations"
+  ]}
+/>
 
 Modern alternatives to traditional Unix tools with enhanced performance and features. All tools are installed via Home Manager and configured with fish aliases.
 
@@ -32,6 +49,18 @@ eza -la --git --header        # Detailed view with git status
 eza --tree --level=2          # Tree view, 2 levels deep
 eza -la --sort=size           # Detailed, sorted by size
 ```
+
+<CommandComparison
+  traditional={{
+    command: "ls -la --color=auto",
+    description: "Basic file listing with colors"
+  }}
+  modern={{
+    command: "eza -la --git --icons",
+    description: "Enhanced listing with git status and icons"
+  }}
+  improvement="Git integration, file icons, better performance, and more intuitive output"
+/>
 
 ### zoxide (cd replacement)
 Directory navigation with frecency-based jumping

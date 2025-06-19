@@ -1,0 +1,151 @@
+---
+export interface Props {
+  level: 'beginner' | 'intermediate' | 'advanced';
+  time?: string;
+  prerequisites?: string[];
+  nextSteps?: string[];
+}
+
+const { level, time, prerequisites, nextSteps } = Astro.props;
+
+const levelConfig = {
+  beginner: {
+    label: 'Beginner',
+    color: 'green',
+    icon: '🌱',
+  },
+  intermediate: {
+    label: 'Intermediate',
+    color: 'blue',
+    icon: '🚀',
+  },
+  advanced: {
+    label: 'Advanced',
+    color: 'purple',
+    icon: '🏆',
+  },
+};
+
+const config = levelConfig[level];
+---
+
+<div class="learning-path">
+  <div class="path-header">
+    <span class={`level level-${level}`}>
+      <span class="icon">{config.icon}</span>
+      {config.label}
+    </span>
+    {time && (
+      <span class="time">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        {time}
+      </span>
+    )}
+  </div>
+
+  {prerequisites && prerequisites.length > 0 && (
+    <div class="prerequisites">
+      <h4>Prerequisites</h4>
+      <ul>
+        {prerequisites.map((prereq) => (
+          <li>{prereq}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+
+  {nextSteps && nextSteps.length > 0 && (
+    <div class="next-steps">
+      <h4>Next Steps</h4>
+      <ul>
+        {nextSteps.map((step) => (
+          <li>{step}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<style>
+  .learning-path {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background-color: var(--sl-color-gray-6);
+  }
+
+  .path-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .level {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .level-beginner {
+    background-color: var(--sl-color-green-low);
+    color: var(--sl-color-green-high);
+  }
+
+  .level-intermediate {
+    background-color: var(--sl-color-blue-low);
+    color: var(--sl-color-blue-high);
+  }
+
+  .level-advanced {
+    background-color: var(--sl-color-purple-low);
+    color: var(--sl-color-purple-high);
+  }
+
+  .icon {
+    font-size: 1rem;
+  }
+
+  .time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--sl-color-text-accent);
+  }
+
+  .time svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .prerequisites,
+  .next-steps {
+    margin-top: 1rem;
+  }
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sl-color-text);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  li {
+    font-size: 0.875rem;
+    color: var(--sl-color-text-accent);
+  }
+</style>

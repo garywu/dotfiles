@@ -1,0 +1,250 @@
+---
+export interface Props {
+  title: string;
+  tools: {
+    name: string;
+    description: string;
+    command: string;
+    useCase: string;
+    tags?: string[];
+  }[];
+}
+
+const { title, tools } = Astro.props;
+---
+
+<div class="tool-selector">
+  <h3>{title}</h3>
+
+  <div class="filter-tags" data-tool-filters>
+    <button class="filter-tag active" data-filter="all">All</button>
+  </div>
+
+  <div class="tools-grid" data-tools-grid>
+    {tools.map((tool) => (
+      <div class="tool-card" data-tool-card data-tags={tool.tags?.join(',') || ''}>
+        <h4>{tool.name}</h4>
+        <p class="description">{tool.description}</p>
+        <div class="command">
+          <code>{tool.command}</code>
+          <button class="copy-btn" data-copy-btn data-command={tool.command} title="Copy command">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="use-case">
+          <strong>Best for:</strong> {tool.useCase}
+        </div>
+        {tool.tags && tool.tags.length > 0 && (
+          <div class="tags">
+            {tool.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  // Extract unique tags
+  const toolCards = document.querySelectorAll<HTMLElement>('[data-tool-card]');
+  const uniqueTags = new Set<string>();
+
+  toolCards.forEach(card => {
+    const tags = card.getAttribute('data-tags')?.split(',').filter(Boolean) || [];
+    tags.forEach(tag => uniqueTags.add(tag));
+  });
+
+  // Create filter buttons
+  const filterContainer = document.querySelector('[data-tool-filters]');
+  if (filterContainer && uniqueTags.size > 0) {
+    uniqueTags.forEach(tag => {
+      const button = document.createElement('button');
+      button.className = 'filter-tag';
+      button.setAttribute('data-filter', tag);
+      button.textContent = tag;
+      filterContainer.appendChild(button);
+    });
+  }
+
+  // Filter functionality
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const filter = button.getAttribute('data-filter');
+      if (!filter) return;
+
+      // Update active state
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      // Filter tools
+      toolCards.forEach(card => {
+        if (filter === 'all') {
+          card.style.display = '';
+        } else {
+          const tags = card.getAttribute('data-tags')?.split(',') || [];
+          card.style.display = tags.includes(filter) ? '' : 'none';
+        }
+      });
+    });
+  });
+
+  // Copy functionality
+  const copyButtons = document.querySelectorAll<HTMLButtonElement>('[data-copy-btn]');
+
+  copyButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const command = button.getAttribute('data-command');
+      if (!command) return;
+
+      try {
+        await navigator.clipboard.writeText(command);
+        button.classList.add('copied');
+        setTimeout(() => button.classList.remove('copied'), 2000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    });
+  });
+</script>
+
+<style>
+  .tool-selector {
+    margin: 2rem 0;
+  }
+
+  .tool-selector h3 {
+    margin-bottom: 1rem;
+  }
+
+  .filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-tag {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--sl-color-gray-4);
+    background-color: transparent;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-tag:hover {
+    background-color: var(--sl-color-gray-5);
+  }
+
+  .filter-tag.active {
+    background-color: var(--sl-color-accent);
+    color: white;
+    border-color: var(--sl-color-accent);
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+
+  .tool-card {
+    padding: 1.5rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background-color: var(--sl-color-gray-6);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .tool-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .tool-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--sl-color-accent);
+  }
+
+  .description {
+    margin: 0 0 1rem 0;
+    font-size: 0.875rem;
+    color: var(--sl-color-text-accent);
+  }
+
+  .command {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .command code {
+    flex: 1;
+    padding: 0.5rem;
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-white);
+    border-radius: 0.25rem;
+    font-family: var(--sl-font-mono);
+    font-size: 0.875rem;
+    overflow-x: auto;
+  }
+
+  .copy-btn {
+    padding: 0.5rem;
+    background-color: var(--sl-color-gray-4);
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--sl-color-text);
+  }
+
+  .copy-btn:hover {
+    background-color: var(--sl-color-gray-3);
+  }
+
+  .copy-btn.copied {
+    background-color: var(--sl-color-green);
+    color: white;
+  }
+
+  .copy-btn.copied::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: inherit;
+    border-radius: inherit;
+  }
+
+  .use-case {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: var(--sl-color-text-accent);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .tag {
+    padding: 0.125rem 0.5rem;
+    background-color: var(--sl-color-gray-4);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    color: var(--sl-color-text-accent);
+  }
+</style>
