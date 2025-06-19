@@ -72,11 +72,10 @@ jobs:
         env:
           CI: true
           GITHUB_ACTIONS: true
-        shell: bash {0}  # Use bash without -e flag
+        continue-on-error: true  # Allow step to continue even if it fails
         run: |
           echo "=== Running unbootstrap ==="
-          (./scripts/unbootstrap.sh || echo "Unbootstrap exited with code $?")
-          echo "Unbootstrap step completed"
+          ./scripts/unbootstrap.sh
 
       - name: Run cleanup tests
         run: |
