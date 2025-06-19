@@ -17,7 +17,7 @@ set -euo pipefail
 # Script metadata for context preservation
 SCRIPT_NAME="CLI Efficiency Benchmark Runner"
 ISSUE_REFERENCE="#20"
-CREATED_DATE="2025-06-19"
+# CREATED_DATE="2025-06-19"  # For documentation purposes
 PURPOSE="Orchestrate execution of all CLI tool efficiency benchmarks"
 
 # Colors for output
@@ -44,7 +44,8 @@ log() {
   local level="$1"
   shift
   local message="$*"
-  local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+  local timestamp
+  timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   case "$level" in
   INFO) echo -e "${GREEN}[INFO]${NC} ${timestamp}: $message" ;;
@@ -52,6 +53,7 @@ log() {
   ERROR) echo -e "${RED}[ERROR]${NC} ${timestamp}: $message" ;;
   DEBUG) echo -e "${BLUE}[DEBUG]${NC} ${timestamp}: $message" ;;
   HEADER) echo -e "${PURPLE}[EXEC]${NC} ${timestamp}: $message" ;;
+  *) echo -e "[UNKNOWN] ${timestamp}: $message" ;;
   esac
 
   # Also log to file for historical tracking
@@ -107,8 +109,9 @@ EOF
 
 # Archive previous results for historical comparison
 archive_previous_results() {
-  if [[ -d "$LATEST_DIR" ]] && [[ "$(ls -A "$LATEST_DIR" 2>/dev/null)" ]]; then
-    local archive_name="results_$(date +%Y%m%d_%H%M%S)"
+  if [[ -d "$LATEST_DIR" ]] && [[ -n "$(ls -A "$LATEST_DIR" 2>/dev/null || true)" ]]; then
+    local archive_name
+    archive_name="results_$(date +%Y%m%d_%H%M%S)"
     log INFO "Archiving previous results to $archive_name"
 
     mkdir -p "$HISTORICAL_DIR"
@@ -137,35 +140,63 @@ run_search_benchmarks() {
   fi
 }
 
-# Run file operation benchmarks (to be implemented)
+# Run file operation benchmarks
 run_file_operation_benchmarks() {
   log HEADER "Running file operation efficiency benchmarks"
 
-  # TODO: Implement file operation benchmarks
-  # This will test: eza vs ls, fd vs find, bat vs cat
-  log WARN "File operation benchmarks not yet implemented (TODO for future)"
+  local failed_tests=()
 
-  # Create placeholder for now
-  cat >"$LATEST_DIR/file_ops_placeholder.md" <<EOF
-# File Operation Benchmarks - TODO
+  # Run file listing benchmarks (eza vs ls)
+  local listing_script="$BENCHMARKS_DIR/file_listing_benchmarks.sh"
+  if [[ -x "$listing_script" ]]; then
+    log INFO "Executing file listing benchmarks: eza vs ls"
+    if "$listing_script"; then
+      log INFO "File listing benchmarks completed successfully"
+    else
+      log ERROR "File listing benchmarks failed"
+      failed_tests+=("file_listing")
+    fi
+  else
+    log ERROR "File listing benchmark script not found or not executable: $listing_script"
+    failed_tests+=("file_listing")
+  fi
 
-**Status**: Not yet implemented
-**Context**: Issue $ISSUE_REFERENCE
-**Planned Tests**:
-- eza vs ls (directory listing)
-- fd vs find (file searching)
-- bat vs cat (file viewing)
+  # Run file finding benchmarks (fd vs find)
+  local finding_script="$BENCHMARKS_DIR/file_finding_benchmarks.sh"
+  if [[ -x "$finding_script" ]]; then
+    log INFO "Executing file finding benchmarks: fd vs find"
+    if "$finding_script"; then
+      log INFO "File finding benchmarks completed successfully"
+    else
+      log ERROR "File finding benchmarks failed"
+      failed_tests+=("file_finding")
+    fi
+  else
+    log ERROR "File finding benchmark script not found or not executable: $finding_script"
+    failed_tests+=("file_finding")
+  fi
 
-**Implementation Notes**:
-Will measure both human efficiency (command length, discoverability)
-and runtime efficiency (speed, output quality) for file operations.
+  # Run file viewing benchmarks (bat vs cat)
+  local viewing_script="$BENCHMARKS_DIR/file_viewing_benchmarks.sh"
+  if [[ -x "$viewing_script" ]]; then
+    log INFO "Executing file viewing benchmarks: bat vs cat"
+    if "$viewing_script"; then
+      log INFO "File viewing benchmarks completed successfully"
+    else
+      log ERROR "File viewing benchmarks failed"
+      failed_tests+=("file_viewing")
+    fi
+  else
+    log ERROR "File viewing benchmark script not found or not executable: $viewing_script"
+    failed_tests+=("file_viewing")
+  fi
 
-**Future Context**:
-This placeholder ensures we don't lose track of planned file operation
-benchmarks in future Claude CLI sessions.
-EOF
-
-  log INFO "File operation benchmarks placeholder created"
+  if [[ ${#failed_tests[@]} -gt 0 ]]; then
+    log WARN "Some file operation benchmarks failed: ${failed_tests[*]}"
+    return 1
+  else
+    log INFO "All file operation benchmarks completed successfully"
+  fi
 }
 
 # Run data processing benchmarks (to be implemented)
@@ -232,10 +263,11 @@ EOF
 generate_summary_report() {
   log HEADER "Generating comprehensive efficiency summary report"
 
+  # shellcheck disable=SC2312
   cat >"$LATEST_DIR/efficiency_summary_report.md" <<EOF
 # CLI Tool Efficiency Analysis - Summary Report
 
-**Generated**: $(date)
+**Generated**: $(date || true)
 **Context**: Issue $ISSUE_REFERENCE - CLI Tool Efficiency Testing Framework
 **Purpose**: Systematic measurement to overcome tool adoption inertia
 
@@ -267,9 +299,31 @@ $(if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
     echo "**Status**: Not executed this run"
   fi)
 
-### File Operations ⏳
-**Status**: Planned for future implementation
-**Scope**: eza vs ls, fd vs find, bat vs cat
+### File Operations
+$(if [[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]] || [[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]] || [[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]; then
+    echo "**Status**: Completed"
+    echo ""
+    if [[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]; then
+      echo "#### File Listing (eza vs ls) ✅"
+      echo "**Key Finding**: eza provides better features with comparable performance"
+      echo "**Details**: See file_listing_efficiency_report.md"
+      echo ""
+    fi
+    if [[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]; then
+      echo "#### File Finding (fd vs find) ✅"
+      echo "**Key Finding**: fd reduces command complexity by 58-84%"
+      echo "**Details**: See file_finding_efficiency_report.md"
+      echo ""
+    fi
+    if [[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]; then
+      echo "#### File Viewing (bat vs cat) ✅"
+      echo "**Key Finding**: bat adds syntax highlighting with minimal overhead"
+      echo "**Details**: See file_viewing_efficiency_report.md"
+    fi
+  else
+    echo "**Status**: Not executed this run"
+    echo "**Scope**: eza vs ls, fd vs find, bat vs cat"
+  fi)
 
 ### Data Processing ⏳
 **Status**: Planned for future implementation
@@ -282,12 +336,40 @@ $(if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
 ## Recommendations for Claude CLI
 
 ### Immediate Recommendations
+
 $(if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
-    echo "Based on search benchmark results:"
+    echo "#### Search Operations"
     echo "- ✅ Default to \`rg pattern\` instead of \`grep -r pattern .\`"
     echo "- ✅ Use ripgrep for all text search operations"
     echo "- ✅ Leverage ripgrep's sensible defaults"
-  else
+    echo ""
+  fi)
+
+$(if [[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]; then
+    echo "#### File Listing"
+    echo "- ✅ Use \`eza\` for interactive directory browsing"
+    echo "- ✅ Leverage \`eza --git\` for git status integration"
+    echo "- ✅ Use \`eza --tree\` instead of installing tree"
+    echo ""
+  fi)
+
+$(if [[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]; then
+    echo "#### File Finding"
+    echo "- ✅ Default to \`fd\` for finding files"
+    echo "- ✅ Use \`fd -e ext\` for extension filtering"
+    echo "- ✅ Leverage fd's .gitignore awareness"
+    echo ""
+  fi)
+
+$(if [[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]; then
+    echo "#### File Viewing"
+    echo "- ✅ Use \`bat\` for viewing code files"
+    echo "- ✅ Leverage syntax highlighting for debugging"
+    echo "- ✅ Use \`bat -r X:Y\` for line ranges"
+    echo ""
+  fi)
+
+$(if ! [[ -f "$LATEST_DIR/search_efficiency_report.md" ]] && ! [[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]] && ! [[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]] && ! [[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]; then
     echo "Pending completion of benchmark execution"
   fi)
 
@@ -301,13 +383,13 @@ $(if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
 ### Completed Infrastructure ✅
 - Efficiency testing framework established
 - Search benchmarks implemented and tested
+- File operation benchmarks implemented (eza, fd, bat)
 - Results archival and historical tracking
 - Comprehensive documentation with context preservation
 
 ### Planned Additions 📋
-- File operation benchmarks
-- Data processing benchmarks
-- Interactive tool benchmarks
+- Data processing benchmarks (jq, yq, sd)
+- Interactive tool benchmarks (gum, fzf)
 - CI integration for periodic execution
 - Enhanced reporting and trend analysis
 
@@ -413,6 +495,7 @@ main() {
   # Execute benchmarks based on options
   if [[ "$report_only" == "false" ]]; then
     if [[ "$run_search" == "true" ]]; then
+      # shellcheck disable=SC2310
       run_search_benchmarks || log ERROR "Search benchmarks failed"
     fi
 

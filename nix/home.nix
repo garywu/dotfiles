@@ -149,6 +149,26 @@
     nodePackages.markdownlint-cli # Markdown linter
     taplo # TOML formatter and linter
     # Note: fish_indent is included with fish package
+
+    # Security and Quality Tools
+    trivy # Vulnerability scanner for containers and filesystems
+    # grype # Vulnerability scanner for container images (alternative to trivy)
+    # syft # SBOM generator for containers and filesystems
+    hadolint # Dockerfile linter
+    gitleaks # Detect secrets in git repos
+    # tfsec # Security scanner for Terraform code
+    # semgrep # Static analysis tool for finding bugs
+    # safety # Python dependency security checker (use via pip)
+    # bundler-audit # Ruby dependency security checker (use via gem)
+    # npm-audit # Node.js dependency security checker (built into npm)
+
+    # Code Quality Metrics
+    tokei # Count lines of code
+    # scc # Fast code counter (alternative to tokei)
+    # cloc # Count lines of code (traditional tool)
+    hyperfine # Command-line benchmarking tool
+    # gocyclo # Go cyclomatic complexity analyzer
+    # lizard # Code complexity analyzer (multiple languages)
   ];
 
   # Configure basic programs

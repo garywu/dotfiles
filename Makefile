@@ -1,4 +1,4 @@
-# Makefile for dotfiles linting and formatting
+# Makefile for dotfiles development and management
 
 .PHONY: all help lint format lint-shell format-shell lint-nix format-nix lint-yaml lint-markdown lint-toml format-toml lint-fish format-fish check fix session-start session-end session-status session-log
 
@@ -17,31 +17,53 @@ help:
 	@echo "Dotfiles Management"
 	@echo "==================="
 	@echo ""
+	@echo "Quick Start:"
+	@echo "  make dev-setup      - Set up development environment"
+	@echo "  make update         - Update all dependencies"
+	@echo "  make deps           - Show dependency versions"
+	@echo "  make test           - Run all tests"
+	@echo ""
+	@echo "Development:"
+	@echo "  make lint           - Run all linters"
+	@echo "  make format         - Run all formatters"
+	@echo "  make pr-ready       - Prepare for pull request"
+	@echo "  make ci-test        - Run CI tests locally"
+	@echo ""
+	@echo "Release Management:"
+	@echo "  make changelog      - Generate/update changelog"
+	@echo "  make version        - Show current version info"
+	@echo "  make tag VERSION=v1.0.0 - Create version tag"
+	@echo "  make release-beta   - Create beta release"
+	@echo "  make release-stable - Promote beta to stable"
+	@echo ""
 	@echo "Session Management:"
 	@echo "  make session-start  - Start a new development session"
 	@echo "  make session-end    - End current session and archive"
 	@echo "  make session-status - Show current session status"
-	@echo "  make session-log    - Add entry to session log (use with MSG=)"
+	@echo "  make session-log MSG=\"message\" - Add session log entry"
 	@echo ""
-	@echo "Linting & Formatting:"
-	@echo "  make lint       - Run all linters"
-	@echo "  make format     - Run all formatters"
-	@echo "  make check      - Same as 'make lint'"
-	@echo "  make fix        - Same as 'make format'"
+	@echo "Utilities:"
+	@echo "  make issues         - Show open GitHub issues"
+	@echo "  make pr             - Show open pull requests"
+	@echo "  make clean-logs     - Clean old log files"
+	@echo "  make install-docs   - Install documentation dependencies"
 	@echo ""
-	@echo "Individual linters:"
-	@echo "  make lint-shell     - Lint shell scripts with shellcheck"
-	@echo "  make lint-nix       - Lint Nix files with statix"
-	@echo "  make lint-yaml      - Lint YAML files with yamllint"
-	@echo "  make lint-markdown  - Lint Markdown files with markdownlint"
-	@echo "  make lint-toml      - Check TOML files with taplo"
-	@echo "  make lint-fish      - Check Fish scripts syntax"
+	@echo "Security & Quality:"
+	@echo "  make security-all   - Run all security checks"
+	@echo "  make security-scan  - Scan for vulnerabilities"
+	@echo "  make secret-scan    - Scan for exposed secrets"
+	@echo "  make metrics        - Show code metrics"
+	@echo "  make coverage       - Check dependency vulnerabilities"
 	@echo ""
-	@echo "Individual formatters:"
-	@echo "  make format-shell   - Format shell scripts with shfmt"
-	@echo "  make format-nix     - Format Nix files with nixpkgs-fmt"
-	@echo "  make format-toml    - Format TOML files with taplo"
-	@echo "  make format-fish    - Format Fish scripts with fish_indent"
+	@echo "Individual Tools:"
+	@echo "  make lint-shell     - Lint shell scripts"
+	@echo "  make lint-nix       - Lint Nix files"
+	@echo "  make lint-yaml      - Lint YAML files"
+	@echo "  make lint-markdown  - Lint Markdown files"
+	@echo "  make format-shell   - Format shell scripts"
+	@echo "  make format-nix     - Format Nix files"
+	@echo ""
+	@echo "Use 'make <target>' to run a command."
 
 # Aliases
 check: lint
@@ -142,3 +164,183 @@ session-log:
 	else \
 		./scripts/session-log.sh "$(MSG)"; \
 	fi
+
+# Development Environment Setup
+.PHONY: dev-setup dev-clean update deps bootstrap ci-test
+
+dev-setup: ## Set up development environment
+	@echo "Setting up development environment..."
+	@./bootstrap.sh
+	@echo "Development environment ready!"
+
+dev-clean: ## Clean development environment
+	@echo "Cleaning development environment..."
+	@./unbootstrap.sh
+	@echo "Development environment cleaned!"
+
+update: ## Update all dependencies (Nix, Homebrew, etc.)
+	@echo "Updating Nix packages..."
+	@nix flake update
+	@echo "Applying Home Manager updates..."
+	@home-manager switch
+	@echo "Updating Homebrew packages..."
+	@brew update && brew upgrade
+	@echo "All dependencies updated!"
+
+deps: ## Show dependency versions
+	@echo "=== System Dependencies ==="
+	@echo "Nix version: $$(nix --version)"
+	@echo "Home Manager: $$(home-manager --version)"
+	@echo "Chezmoi: $$(chezmoi --version)"
+	@echo "Homebrew: $$(brew --version | head -1)"
+	@echo ""
+	@echo "=== Language Versions ==="
+	@echo "Node.js: $$(node --version)"
+	@echo "Python: $$(python3 --version)"
+	@echo "Ruby: $$(ruby --version)"
+	@echo ""
+	@echo "=== Key Tools ==="
+	@echo "Git: $$(git --version)"
+	@echo "Fish: $$(fish --version)"
+	@echo "Starship: $$(starship --version)"
+
+bootstrap: dev-setup ## Alias for dev-setup
+
+ci-test: ## Run CI tests locally
+	@echo "Running CI tests locally..."
+	@echo "Linting..."
+	@$(MAKE) lint
+	@echo "Testing documentation..."
+	@$(MAKE) test-docs
+	@echo "All CI tests passed!"
+
+# Git Workflow Helpers
+.PHONY: pr-ready release-beta release-stable
+
+pr-ready: lint format test ## Prepare for pull request
+	@echo "Checking for uncommitted changes..."
+	@git diff --exit-code || (echo "Error: Uncommitted changes found" && exit 1)
+	@echo "Ready for PR!"
+
+release-beta: ## Create beta release
+	@echo "Creating beta release..."
+	@git checkout main
+	@git pull origin main
+	@git checkout beta
+	@git merge main --no-ff -m "chore: merge main into beta for release"
+	@echo "Beta release prepared. Don't forget to push!"
+
+release-stable: ## Promote beta to stable
+	@echo "Promoting beta to stable..."
+	@git checkout beta
+	@git pull origin beta
+	@git checkout stable
+	@git merge beta --no-ff -m "chore: promote beta to stable release"
+	@echo "Stable release prepared. Don't forget to push and tag!"
+
+# Utility Commands
+.PHONY: clean-logs issues pr
+
+clean-logs: ## Clean old log files
+	@echo "Cleaning old log files..."
+	@find logs -name "*.log" -mtime +30 -delete 2>/dev/null || true
+	@echo "Log files cleaned!"
+
+issues: ## Show open GitHub issues
+	@gh issue list --limit 20
+
+pr: ## Show open pull requests
+	@gh pr list --limit 10
+
+# Installation shortcuts
+.PHONY: install-docs install-cli
+
+install-docs: ## Install documentation dependencies
+	@echo "Installing documentation dependencies..."
+	@cd docs && npm install
+	@echo "Documentation dependencies installed!"
+
+install-cli: ## Install additional CLI tools
+	@echo "Installing additional CLI tools..."
+	@home-manager switch
+	@echo "CLI tools installed!"
+
+# Version and Release Management
+.PHONY: version changelog-preview tag
+
+version: ## Show current version
+	@echo "Current version: $$(git describe --tags --abbrev=0 2>/dev/null || echo 'No version tagged')"
+	@echo "Commits since last tag: $$(git rev-list --count $$(git describe --tags --abbrev=0 2>/dev/null)..HEAD 2>/dev/null || echo 'N/A')"
+
+changelog-preview: ## Preview changelog for next release
+	@echo "Preview of changes for next release:"
+	@git cliff --unreleased
+
+tag: ## Create a new version tag
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Usage: make tag VERSION=v1.0.0"; \
+		exit 1; \
+	else \
+		git tag -a $(VERSION) -m "Release $(VERSION)"; \
+		echo "Tagged version $(VERSION)"; \
+		echo "Don't forget to push tags: git push origin $(VERSION)"; \
+	fi
+
+# Security and Quality Metrics
+.PHONY: security-scan secret-scan docker-scan metrics coverage
+
+security-scan: ## Run security scans on the codebase
+	@echo "Running security scans..."
+	@echo "Scanning for vulnerabilities in filesystem..."
+	@trivy fs . --severity HIGH,CRITICAL || true
+	@echo "Security scan complete!"
+
+secret-scan: ## Scan for secrets in git history
+	@echo "Scanning for secrets in git repository..."
+	@gitleaks detect --source . --verbose || true
+	@echo "Secret scan complete!"
+
+docker-scan: ## Scan Dockerfiles for issues
+	@echo "Scanning Dockerfiles..."
+	@find . -name "Dockerfile*" -type f | while read -r file; do \
+		echo "Checking $$file..."; \
+		hadolint "$$file" || true; \
+	done
+	@echo "Dockerfile scan complete!"
+
+metrics: ## Show code metrics
+	@echo "=== Code Metrics ==="
+	@tokei .
+	@echo ""
+	@echo "=== Repository Size ==="
+	@du -sh .
+	@echo ""
+	@echo "=== Git Statistics ==="
+	@echo "Total commits: $$(git rev-list --all --count)"
+	@echo "Contributors: $$(git shortlog -sn | wc -l)"
+	@echo "Files tracked: $$(git ls-files | wc -l)"
+
+coverage: ## Check dependency vulnerabilities
+	@echo "Checking for vulnerabilities in dependencies..."
+	@echo ""
+	@echo "=== NPM Dependencies ==="
+	@if [ -f package.json ]; then \
+		cd docs && npm audit || true; \
+	else \
+		echo "No package.json found"; \
+	fi
+	@echo ""
+	@echo "=== Python Dependencies ==="
+	@if command -v pip3 >/dev/null 2>&1; then \
+		pip3 list --outdated || true; \
+	else \
+		echo "pip3 not found"; \
+	fi
+	@echo ""
+	@echo "Dependency check complete!"
+
+# Combined security check
+.PHONY: security-all
+
+security-all: security-scan secret-scan docker-scan coverage ## Run all security checks
+	@echo "All security checks complete!"

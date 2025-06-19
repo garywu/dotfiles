@@ -51,7 +51,7 @@
 
 **A modern, cross-platform development environment that just works.** Zero-config setup with powerful CLI tools, automated package management, and bulletproof synchronization across all your machines.
 
-**Supported Platforms:** macOS (primary), Linux (experimental), Windows WSL (experimental)  
+**Supported Platforms:** macOS (primary), Linux (experimental), Windows WSL (experimental)
 **Tech Stack:** Nix, Home Manager, Chezmoi, Homebrew
 
 ## 🔄 Git Workflow
@@ -116,6 +116,22 @@ cd docs && npm test
 
 See [`tests/docs/README.md`](tests/docs/README.md) for comprehensive testing documentation.
 
+## 🛠️ Features
+
+### Core Features
+- **Zero-Config Setup**: One command to configure your entire development environment
+- **Cross-Platform**: Works on macOS, Linux, and Windows WSL
+- **Declarative Configuration**: All settings in version-controlled Nix files
+- **Automated Updates**: Keep all tools current with simple commands
+- **Safe Rollbacks**: Revert to any previous configuration instantly
+
+### Included Tools
+- **Modern CLI Replacements**: `eza` (ls), `ripgrep` (grep), `fd` (find), `bat` (cat), and more
+- **Development Essentials**: Git, SSH, tmux, neovim, starship prompt
+- **Language Support**: Node.js, Python, Ruby, Rust, Go environments
+- **Cloud Tools**: AWS CLI, Terraform, Docker, Kubernetes utilities
+- **Security Tools**: GPG, password managers, SSH key management
+
 ## 📝 Documentation
 
 For full documentation, philosophy, architecture, and advanced usage, see:
@@ -123,3 +139,72 @@ For full documentation, philosophy, architecture, and advanced usage, see:
 - **📘 [Complete Documentation](https://garywu.github.io/dotfiles/)** - Comprehensive guides and reference
 - **🔧 [Getting Started](https://garywu.github.io/dotfiles/01-introduction/getting-started/)** - Step-by-step setup
 - **⚡ [CLI Tools](https://garywu.github.io/dotfiles/03-cli-tools/modern-replacements/)** - Modern command-line tools
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+**Bootstrap fails with "command not found"**
+- Restart your terminal and re-run `./bootstrap.sh`
+- The script will continue from where it left off
+
+**Nix installation appears stuck**
+- This is normal - Nix downloads can take 10-15 minutes
+- Check Activity Monitor/System Monitor for active downloads
+
+**Home Manager won't activate**
+- Ensure you've restarted your terminal after Nix installation
+- Run `nix-shell -p home-manager --run "home-manager switch"`
+
+**Fish shell not loading properly**
+- Run `chsh -s $(which fish)` manually
+- Log out and back in for changes to take effect
+
+### Getting Help
+
+1. Check the [documentation](https://garywu.github.io/dotfiles/)
+2. Search [existing issues](https://github.com/garywu/dotfiles/issues)
+3. Create a [new issue](https://github.com/garywu/dotfiles/issues/new) with:
+  - Your OS and version
+  - Error messages
+  - Steps to reproduce
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/dotfiles.git
+cd dotfiles
+
+# Create a feature branch
+git checkout -b feature/amazing-feature
+
+# Make changes and test
+make lint        # Run linters
+make format      # Format code
+make test        # Run tests
+
+# Commit with conventional commits
+git commit -m "feat: add amazing feature"
+```
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Nix](https://nixos.org/) and [Home Manager](https://github.com/nix-community/home-manager) teams
+- [Chezmoi](https://www.chezmoi.io/) for secrets management
+- All the amazing CLI tool authors
+- Contributors and users of this project
+
+---
+
+<div align="center">
+<sub>Built with ❤️ by the community</sub>
+</div>

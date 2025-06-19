@@ -1,0 +1,210 @@
+name: CLI Tool Efficiency Tests
+
+# PURPOSE: Automated execution of CLI tool efficiency benchmarks
+# CONTEXT: Issue #20 - Systematic measurement to overcome tool adoption inertia
+#
+# This workflow runs efficiency benchmarks periodically to track performance
+# over time and ensure modern CLI tools maintain their efficiency advantages.
+
+on:
+  # Run weekly on Sunday at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * 0'
+
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      test_category:
+        description: 'Test category to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - search
+          - file-ops
+          - quick
+
+  # Run on PRs that modify efficiency tests
+  pull_request:
+    paths:
+      - 'tests/efficiency/**'
+      - '.github/workflows/efficiency-tests.yml'
+
+jobs:
+  efficiency-benchmarks:
+    name: Run Efficiency Benchmarks
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install Nix for tool availability
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      # Set up home-manager
+      - name: Set up home-manager
+        run: |
+          nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+          nix-channel --update
+
+      # Install required tools via Nix
+      - name: Install benchmark tools
+        run: |
+          # Install tools individually to ensure availability
+          nix-env -iA nixpkgs.ripgrep
+          nix-env -iA nixpkgs.fd
+          nix-env -iA nixpkgs.eza
+          nix-env -iA nixpkgs.bat
+          nix-env -iA nixpkgs.hyperfine
+          nix-env -iA nixpkgs.silver-searcher
+
+          # Verify installations
+          echo "Verifying tool installations:"
+          command -v rg && rg --version || echo "ripgrep not found"
+          command -v fd && fd --version || echo "fd not found"
+          command -v eza && eza --version || echo "eza not found"
+          command -v bat && bat --version || echo "bat not found"
+          command -v hyperfine && hyperfine --version || echo "hyperfine not found"
+          command -v ag && ag --version || echo "ag not found"
+
+      # Make scripts executable
+      - name: Prepare test scripts
+        run: |
+          chmod +x tests/efficiency/tools/benchmark_runner.sh
+          chmod +x tests/efficiency/benchmarks/*.sh
+
+      # Run efficiency benchmarks
+      - name: Run benchmarks
+        run: |
+          # Determine which tests to run
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TEST_FLAG="--${{ github.event.inputs.test_category }}"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            TEST_FLAG="--quick"
+          else
+            TEST_FLAG="--all"
+          fi
+
+          echo "Running benchmarks with flag: $TEST_FLAG"
+          ./tests/efficiency/tools/benchmark_runner.sh $TEST_FLAG
+
+      # Upload results as artifacts
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: efficiency-results-${{ matrix.os }}-${{ github.run_number }}
+          path: tests/efficiency/results/latest/
+          retention-days: 90
+
+      # Comment on PR with results summary (if PR)
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Read the summary report
+            const reportPath = path.join(process.env.GITHUB_WORKSPACE,
+              'tests/efficiency/results/latest/efficiency_summary_report.md');
+
+            let comment = '## 📊 CLI Tool Efficiency Test Results\n\n';
+
+            try {
+              const report = fs.readFileSync(reportPath, 'utf8');
+
+              // Extract key sections from the report
+              const recommendationsMatch = report.match(/### Immediate Recommendations[\s\S]*?(?=###|$)/);
+              if (recommendationsMatch) {
+                comment += recommendationsMatch[0] + '\n';
+              }
+
+              comment += '\n**Full results**: See artifacts for detailed reports\n';
+              comment += '**OS**: ${{ matrix.os }}\n';
+            } catch (error) {
+              comment += '⚠️ Could not read efficiency report. Check workflow logs.\n';
+            }
+
+            // Post comment
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  # Aggregate results from multiple OS runs
+  aggregate-results:
+    name: Aggregate Results
+    needs: efficiency-benchmarks
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      # Download all artifacts
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-results/
+
+      # Create summary across all OS results
+      - name: Create cross-platform summary
+        run: |
+          echo "# Cross-Platform Efficiency Results" > cross-platform-summary.md
+          echo "" >> cross-platform-summary.md
+          echo "**Run Date**: $(date)" >> cross-platform-summary.md
+          echo "**Run Number**: ${{ github.run_number }}" >> cross-platform-summary.md
+          echo "" >> cross-platform-summary.md
+
+          # List all result directories
+          echo "## Results by Platform" >> cross-platform-summary.md
+          for dir in all-results/*/; do
+            platform=$(basename "$dir" | sed 's/efficiency-results-//' | sed 's/-[0-9]*$//')
+            echo "### $platform" >> cross-platform-summary.md
+
+            # Check for key files
+            if [ -f "$dir/efficiency_summary_report.md" ]; then
+              echo "✅ Summary report generated" >> cross-platform-summary.md
+            else
+              echo "❌ Summary report missing" >> cross-platform-summary.md
+            fi
+
+            # Count benchmark files
+            count=$(find "$dir" -name "*_results.md" -type f | wc -l)
+            echo "📊 Benchmark files found: $count" >> cross-platform-summary.md
+            echo "" >> cross-platform-summary.md
+          done
+
+      # Upload aggregated summary
+      - name: Upload aggregated summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-platform-summary-${{ github.run_number }}
+          path: cross-platform-summary.md
+          retention-days: 90
+
+# Context for future sessions:
+#
+# This workflow implements automated efficiency testing for Issue #20.
+# It runs weekly to track performance trends and on PRs to catch regressions.
+#
+# Key features:
+# - Multi-OS testing (Ubuntu and macOS)
+# - Flexible test categories via workflow_dispatch
+# - PR comments with results summary
+# - Long-term result retention (90 days)
+#
+# The workflow ensures we maintain evidence of CLI tool efficiency
+# benefits over time and across different platforms.
