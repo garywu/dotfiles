@@ -10,7 +10,7 @@ Modern command-line tools that replace traditional Unix utilities with enhanced 
 ## File Navigation & Listing
 
 - **eza** - Modern `ls` with colors and git integration
-- **fd** - Simple, fast `find` alternative  
+- **fd** - Simple, fast `find` alternative
 - **zoxide** - Smart `cd` with frecency algorithm
 
 ## Text Search & Processing
@@ -37,6 +37,7 @@ Modern command-line tools that replace traditional Unix utilities with enhanced 
 
 ## Getting Started
 
-See the [Modern CLI Replacements](./modern-replacements/) page for detailed usage examples and comparisons with traditional tools.
+See the [Modern CLI Replacements](./modern-replacements/) page for detailed usage examples and comparisons with
+traditional tools.
 
 All tools are installed via Home Manager and configured with fish shell aliases for optimal productivity.
