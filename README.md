@@ -11,7 +11,7 @@
 ██████╔╝╚██████╔╝   ██║   ██║     ██║███████╗███████╗███████║
 ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
 
-                ∙∙∙ Don't Leave Home Without It ∙∙∙
+            ∙∙∙ Don't Leave Home Without It ∙∙∙
 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 </pre>
@@ -77,12 +77,6 @@ cd ~/.dotfiles
 ```
 
 - After each major step, restart your terminal and re-run `./bootstrap.sh` if prompted.
-
-### 🔒 Privacy Note
-
-This repository uses GitHub's privacy-protecting email (`username@users.noreply.github.com`) to prevent email
-exposure in public commits. See [Git Email Privacy](https://garywu.github.io/dotfiles/98-troubleshooting/git-email-privacy/)
-for details.
 
 ## 📁 Project Structure
 

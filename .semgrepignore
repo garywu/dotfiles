@@ -11,6 +11,9 @@ templates/
 *.template
 *.example
 
+# Ignore GitHub workflows that use standard GitHub Actions patterns
+.github/workflows/release.yml
+
 # Ignore build artifacts and dependencies
 node_modules/
 dist/
