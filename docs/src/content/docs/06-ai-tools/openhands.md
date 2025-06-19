@@ -335,10 +335,8 @@ docker system prune
 
 ## 🔗 **Related Tools**
 
-- [Ollama](/06-ai-tools/ollama/) - Local AI models for privacy
-- [ChatBlade](/06-ai-tools/chatblade/) - Terminal AI chat
-- [Git Workflow](/05-cli-tools-academy/git-workflow/) - Enhanced git tools
-- [Development Environment](/07-development-workflow/) - Complete dev setup
+- [Ollama](../ollama/) - Local AI models for privacy
+- [ChatBlade](../chatblade/) - Terminal AI chat
 
 ---
 

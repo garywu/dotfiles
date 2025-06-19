@@ -143,4 +143,4 @@ chezmoi cd
 
 ## Troubleshooting
 
-Common issues and solutions are documented in the [troubleshooting section](/98-troubleshooting/homebrew-fish-config/).
+Common issues and solutions are documented in the [troubleshooting section](../98-troubleshooting/homebrew-fish-config/).
