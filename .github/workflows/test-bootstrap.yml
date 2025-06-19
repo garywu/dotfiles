@@ -74,7 +74,8 @@ jobs:
           GITHUB_ACTIONS: true
         run: |
           echo "=== Running unbootstrap ==="
-          (./scripts/unbootstrap.sh || true) && echo "Unbootstrap completed"
+          ./scripts/unbootstrap.sh || true
+          echo "Unbootstrap step completed"
 
       - name: Run cleanup tests
         run: |
