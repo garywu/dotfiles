@@ -9,6 +9,7 @@ on:
       - 'nix/**'
       - 'brew/**'
       - 'chezmoi/**'
+      - 'tests/**'
       - '.github/workflows/test-bootstrap.yml'
   push:
     branches: [ develop ]
@@ -18,6 +19,7 @@ on:
       - 'nix/**'
       - 'brew/**'
       - 'chezmoi/**'
+      - 'tests/**'
       - '.github/workflows/test-bootstrap.yml'
   workflow_dispatch:
     inputs:

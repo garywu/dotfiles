@@ -114,6 +114,9 @@
     choose # Human-friendly alternative to cut/awk
     # xsv # Fast CSV command line toolkit (removed - use xan instead)
 
+    # Interactive CLI tools
+    gum # Beautiful CLI prompts and interactions
+
     # Environment Variables & Secrets Management
     sops # Secrets management with encryption
     age # Simple, modern encryption tool
@@ -128,6 +131,10 @@
 
     # Documentation tools
     # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
+
+    # Backup and filesystem monitoring tools
+    borgbackup # Deduplicating backup program
+    fswatch # File system event monitor
 
     # Linting and Formatting Tools
     shellcheck # Shell script analysis tool
