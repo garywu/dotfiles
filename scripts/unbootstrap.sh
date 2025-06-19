@@ -662,15 +662,24 @@ uninstall() {
   # If a reboot is required (e.g., synthetic mount was removed), inform the user and skip further verification
   if [ "$NEEDS_REBOOT" -eq 1 ]; then
     print_warning "A system restart is required to finish removing /nix."
-    print_warning "Please reboot your computer, then run this script again to complete cleanup."
-    exit 0
+    if is_ci; then
+      print_warning "Continuing in CI mode (reboot not possible)"
+    else
+      print_warning "Please reboot your computer, then run this script again to complete cleanup."
+      exit 0
+    fi
   fi
 
   # Verify cleanup
   if ! verify_cleanup; then
-    print_warning "Some components require a system restart to be fully removed"
-    print_warning "Please restart your computer and run this script again to complete the cleanup"
-    exit 1
+    if is_ci && [ "$NEEDS_REBOOT" -eq 1 ]; then
+      print_warning "Some components require a system restart to be fully removed"
+      print_warning "This is expected in CI environments - marking as successful"
+    else
+      print_warning "Some components require a system restart to be fully removed"
+      print_warning "Please restart your computer and run this script again to complete the cleanup"
+      exit 1
+    fi
   fi
 
   print_status "Uninstallation completed successfully!"
