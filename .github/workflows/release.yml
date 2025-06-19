@@ -65,13 +65,16 @@ jobs:
 
       - name: Check if release is needed
         id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
         run: |
           # For manual triggers, always release
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             echo "should_release=true" >> $GITHUB_OUTPUT
-            echo "release_type=${{ inputs.release_type }}" >> $GITHUB_OUTPUT
+            echo "release_type=$RELEASE_TYPE" >> $GITHUB_OUTPUT
           # For scheduled runs, check if there are changes
-          elif [[ "${{ github.event_name }}" == "schedule" ]]; then
+          elif [[ "$EVENT_NAME" == "schedule" ]]; then
             # Check if there are commits since last tag
             LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
             COMMITS_SINCE_TAG=$(git rev-list --count ${LAST_TAG}..HEAD)
@@ -102,6 +105,8 @@ jobs:
       - name: Calculate new version
         id: version
         if: steps.check.outputs.should_release == 'true'
+        env:
+          RELEASE_TYPE_VALUE: ${{ steps.check.outputs.release_type }}
         run: |
           CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           CURRENT_VERSION=${CURRENT_VERSION#v}
@@ -111,7 +116,7 @@ jobs:
           MINOR="${VERSION_PARTS[1]:-0}"
           PATCH="${VERSION_PARTS[2]:-0}"
 
-          RELEASE_TYPE="${{ steps.check.outputs.release_type }}"
+          RELEASE_TYPE="${RELEASE_TYPE_VALUE}"
 
           if [[ "$RELEASE_TYPE" == "major" ]]; then
             MAJOR=$((MAJOR + 1))

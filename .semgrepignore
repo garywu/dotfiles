@@ -1,0 +1,24 @@
+# Ignore documentation examples that may contain security patterns for educational purposes
+docs/src/content/docs/03-cli-tools/password-management.md
+
+# Ignore test files that may contain mock secrets
+tests/
+**/test_*
+**/*_test.*
+
+# Ignore configuration templates that may have placeholder values
+templates/
+*.template
+*.example
+
+# Ignore build artifacts and dependencies
+node_modules/
+dist/
+build/
+.next/
+*.min.js
+
+# Ignore common false positives
+CHANGELOG.md
+README.md
+LICENSE
