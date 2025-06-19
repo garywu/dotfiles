@@ -1,69 +1,3 @@
-# [](https://github.com/garywu/dotfiles/compare/v0.1.0...v) (2025-06-19)
-
-
-### Bug Fixes
-
-* add CI mode support to bootstrap and unbootstrap scripts ([374604e](https://github.com/garywu/dotfiles/commit/374604eef8a300f2b48d3d5e589a08c9be472338))
-* add execute permissions to unbootstrap.sh ([7016ceb](https://github.com/garywu/dotfiles/commit/7016cebd4f75b08d272d5259a165e1ef35d36c6c))
-* add explicit exit 0 to prevent exit code 138 ([568f146](https://github.com/garywu/dotfiles/commit/568f14612c28b73c11316c79cb633df3f65d0b59))
-* allow bootstrap.sh to continue in CI mode instead of exiting ([17c4c9c](https://github.com/garywu/dotfiles/commit/17c4c9c608ff467f58871f3ea5961bfc75bc644b))
-* capture unbootstrap exit code in subshell ([16a7ef7](https://github.com/garywu/dotfiles/commit/16a7ef75cf3cce1a6a4dba46f2ad53c4a90c2257))
-* comprehensive text contrast improvements ([eaa6e03](https://github.com/garywu/dotfiles/commit/eaa6e032890bd328664e439ac6786ed93a0fd545))
-* ensure Nix commands are available after installation in CI ([09d4261](https://github.com/garywu/dotfiles/commit/09d4261897ce27954c32fee87653b031da346c54))
-* export PATH to GITHUB_PATH for environment persistence in CI ([07de5e5](https://github.com/garywu/dotfiles/commit/07de5e54690952a2ce39fe31638f5e89617a134f))
-* force light theme as default in Starlight docs ([2016747](https://github.com/garywu/dotfiles/commit/2016747ef99aff1b72adf584268f583dab467d09))
-* handle macOS CI limitations in unbootstrap and cleanup tests ([b6b757f](https://github.com/garywu/dotfiles/commit/b6b757fc7e7c002442ef44517a5db47d524cc8fa))
-* handle reboot requirements gracefully in CI ([2cafb16](https://github.com/garywu/dotfiles/commit/2cafb16cf338926aa2ecfdf7366b2afe03a36d3e))
-* improve text contrast in docs theme ([a9ac779](https://github.com/garywu/dotfiles/commit/a9ac779d5f4e93a68c85df8472e6256c34132ccb))
-* improve unbootstrap cleanup and test verification ([0655371](https://github.com/garywu/dotfiles/commit/065537108fbed8ce223e902d7948b19078b007ed))
-* make exit code 138 workaround work with GitHub Actions ([5657b54](https://github.com/garywu/dotfiles/commit/5657b542fc72a5e236375fb49300353f17133fba))
-* prevent smoke test from exiting on first missing command ([f6efa80](https://github.com/garywu/dotfiles/commit/f6efa8094c60b64d4bbee41f441741fd0c1f9b21))
-* remove -e flag from cleanup test to see all remaining configs ([276fa47](https://github.com/garywu/dotfiles/commit/276fa47773a3ccf12b1ba91f4e4387ad99831d16))
-* remove -e flag from smoke test to allow checking all commands ([d549da6](https://github.com/garywu/dotfiles/commit/d549da6759c03286781f0b4062be91c895aae890))
-* resolve Starlight build and GitHub Actions deployment issues ([3fe3262](https://github.com/garywu/dotfiles/commit/3fe32621cb39cfa03530e065c760fd6a09053472))
-* revert aggressive CSS changes that broke layout ([a7bff0d](https://github.com/garywu/dotfiles/commit/a7bff0db8fd36d5b7bf5f9f25f4b49a351d8dfc5))
-* separate unbootstrap and echo commands to ensure completion message ([a0276b1](https://github.com/garywu/dotfiles/commit/a0276b12c01a4fe3ec1ab014cd94f074b575c7ca))
-* sync package-lock.json for GitHub Actions deployment ([9e7853d](https://github.com/garywu/dotfiles/commit/9e7853d6fd8421e6bd3a4cc0b76cb0307263481f))
-* unbootstrap script CI mode detection and confirmation ([1bfbade](https://github.com/garywu/dotfiles/commit/1bfbade969bba8daeb172669d50312a398c6d091))
-* update docs structure and content ([df2e02d](https://github.com/garywu/dotfiles/commit/df2e02d6570f6b996a8b7f1a9b951577126fd2e5))
-* update sidebar to explicit links and package versions ([2678ffa](https://github.com/garywu/dotfiles/commit/2678ffab4be2233151a264f6e528d8e5e063ad21))
-* use bash without -e flag for unbootstrap step ([3116ab6](https://github.com/garywu/dotfiles/commit/3116ab6446c805a35ac79c1c3a02296917b77fca))
-* use ci_confirm for extra files cleanup prompt ([c635589](https://github.com/garywu/dotfiles/commit/c635589b49b776291ff19e2be8e2248064b8f327))
-* use continue-on-error for unbootstrap step ([257b953](https://github.com/garywu/dotfiles/commit/257b953916306ac6f2abe0aa42392fa056e97aa9))
-* use correct Nix profile script for macOS (nix-daemon.sh) ([9b618f7](https://github.com/garywu/dotfiles/commit/9b618f7ee5fffd6e5bc69eddc97486ebeb4c0885))
-* use relative path to source ci-helpers.sh in CI environment ([b20d853](https://github.com/garywu/dotfiles/commit/b20d85366fc5b281df61c1b5dd819736a58cc9fa))
-* use relative paths for Home Manager configuration in CI ([a8d631e](https://github.com/garywu/dotfiles/commit/a8d631e258934914f39dca9183ed27c6fd858e69))
-* use simpler approach to handle unbootstrap exit code ([85410bb](https://github.com/garywu/dotfiles/commit/85410bbe2346f232bc3bef0d8893a6b285a591d4))
-* workaround exit code 138 in CI for macOS unbootstrap ([0a99574](https://github.com/garywu/dotfiles/commit/0a99574364812500e4fab4d7adefd100720097dc))
-
-
-### Features
-
-* add CI testing for bootstrap/unbootstrap process ([db0680d](https://github.com/garywu/dotfiles/commit/db0680d83314ca2fa62394a75fa181258090ec0d)), closes [#16](https://github.com/garywu/dotfiles/issues/16)
-* create comprehensive test framework for continuous testing ([83b44ee](https://github.com/garywu/dotfiles/commit/83b44eeb1b8d29891182ed60a69246ad1579eb7d))
-
-
-
-# [](https://github.com/garywu/dotfiles/compare/v0.0.1...v) (2025-06-17)
-
-
-### Bug Fixes
-
-* apply pre-commit formatting to shell scripts ([23b71ca](https://github.com/garywu/dotfiles/commit/23b71caa530aaf70f1cd1db4da30a3b49d49598d)), closes [#11](https://github.com/garywu/dotfiles/issues/11) [#4](https://github.com/garywu/dotfiles/issues/4)
-* resolve linting issues in bootstrap.sh and config files ([#8](https://github.com/garywu/dotfiles/issues/8)) ([7363143](https://github.com/garywu/dotfiles/commit/73631434bff8f14a497e52849280d65c72217891))
-* sync package-lock.json with package.json ([0853dfe](https://github.com/garywu/dotfiles/commit/0853dfe6afbcf6670c70df288d6230b401f85544))
-
-
-### Features
-
-* add developer productivity CLI tools ([#10](https://github.com/garywu/dotfiles/issues/10)) ([fbba0bc](https://github.com/garywu/dotfiles/commit/fbba0bc58aafc79319f3fd88f6d22ad9c77bd5fd))
-* add linting infrastructure and Cloudflare CLI tools ([#6](https://github.com/garywu/dotfiles/issues/6), [#7](https://github.com/garywu/dotfiles/issues/7)) ([83ad63b](https://github.com/garywu/dotfiles/commit/83ad63b29a000df97ecccc81cd30dcbb145cd883))
-* complete Dotfiles Academy migration from Docusaurus to Starlight ([#12](https://github.com/garywu/dotfiles/issues/12)) ([cd75b43](https://github.com/garywu/dotfiles/commit/cd75b4342a1901d83adbffac5243a388bf0f9626))
-* implement automated release management system ([03adc6f](https://github.com/garywu/dotfiles/commit/03adc6f593a441a223afcdf5c25b012dd439b80d))
-* implement Git email privacy protection ([eadcc71](https://github.com/garywu/dotfiles/commit/eadcc7180285f98727f1b080fd7e2374ba844cb4))
-
-
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -73,62 +7,187 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- GitHub issue templates for bugs, features, documentation, and refactoring (#5)
-- Pull request template with comprehensive checklist (#5)
-- CONTRIBUTING.md with development guidelines (#5)
-- CODE_OF_CONDUCT.md for community standards (#5)
-- SECURITY.md for vulnerability reporting (#5)
-- CLAUDE.md for AI assistant session tracking and workflow (#3)
-- Issue-driven development workflow (#3)
-- GitHub labels for issue organization: priority, type, and status (#5)
-- Professional development standards and processes (#4)
-- Linting and formatting tools configuration (#6)
-  - ShellCheck, shfmt, nixpkgs-fmt, yamllint, markdownlint, taplo
-  - Configuration files for each linter
-  - Makefile for running linters and formatters
-  - Pre-commit hooks for automated checking
-  - EditorConfig for consistent coding style
-- Cloudflare command line tools (#7)
-  - cloudflared for Cloudflare Tunnel management
-  - flarectl for Cloudflare API interactions
-  - wrangler installation via npm in bootstrap.sh
+### Bug Fixes
 
-### Changed
-- Documentation structure improvements
-- Updated CONTRIBUTING.md with linting commands and requirements (#6)
+- Improve bash version warning messages in bootstrap ([edd162f](https://github.com/garywu/dotfiles/commit/edd162f48589884504050fb70ab64664a07c48f6))
+- Update documentation tests to match deployed pages ([845b987](https://github.com/garywu/dotfiles/commit/845b9879a3d885cc1b62c799c4e88df685a89bfb))
+- Resolve merge conflict in package.json - keep factual documentation name ([f4a740e](https://github.com/garywu/dotfiles/commit/f4a740eb8e6ddd00e57910d26da1ec6097787868))
+- Resolve all documentation link issues ([40cf8ed](https://github.com/garywu/dotfiles/commit/40cf8ed843350e1661b1199f8c503bf3d69fb046))
+- Resolve all documentation link issues (#23) ([5708e86](https://github.com/garywu/dotfiles/commit/5708e861ea9158c906527a9637651e534d41354d))
+- Clean up whitespace and line length in CLI tools index ([aeda44a](https://github.com/garywu/dotfiles/commit/aeda44a08301b90e727ac996aa284c2fe8b43ed9))
+- Resolve merge conflict in CLI tools index ([38ef473](https://github.com/garywu/dotfiles/commit/38ef4732e3ee5d7d2457569167496d7dfe8094e3))
+- Resolve CI/CD workflow failures ([1fe1a09](https://github.com/garywu/dotfiles/commit/1fe1a09e9a01e77751b569dedcc72b7678e8426b))
 
-### Known Issues
-- Temporarily disabled keepassxc, git-credential-keepassxc, and statix due to gpgme-1.24.2 broken package issue
+### Documentation
+
+- Add Git Flow branching strategy documentation ([6a4cd57](https://github.com/garywu/dotfiles/commit/6a4cd57a98ff1008c84a36481b11b4752869f3ee))
+- Add comprehensive CLI tool usage galleries (#12) ([1d871bc](https://github.com/garywu/dotfiles/commit/1d871bc880d5177513205b63eb4b11894e24cb31))
+- Add community patterns and CLI golf challenges (#12) ([ee372f5](https://github.com/garywu/dotfiles/commit/ee372f52d1231d20264c5759f289b5a164f2f663))
+- Change tone from academy to factual documentation ([b3f3abd](https://github.com/garywu/dotfiles/commit/b3f3abd1d3289c7797521f7f9f6a6d19a20cbc5f))
+- Remove title and make ASCII banner the main header ([3f69e55](https://github.com/garywu/dotfiles/commit/3f69e5556d5a2a12730b33598471c8bcf477a646))
+- Update CLAUDE.md with successful workflow implementation ([db9b52b](https://github.com/garywu/dotfiles/commit/db9b52b4977f1f5d48e089a1d976179b6d3cc57b))
+
+### Features
+
+- Add claude-init as submodule ([1766c12](https://github.com/garywu/dotfiles/commit/1766c12e8d5cc3dfb6ac73532bbb2a4291c5504f))
+- Implement session tracking system ([6562b5d](https://github.com/garywu/dotfiles/commit/6562b5d236405de06b8da8eaf663c2f5a94c66f0))
+- Add gum, borgbackup, and fswatch to development tools ([09c3120](https://github.com/garywu/dotfiles/commit/09c31203bdaf8a67752a6f0965a46f8eea7c7202))
+- Contribute valuable patterns from dotfiles to claude-init ([9d52454](https://github.com/garywu/dotfiles/commit/9d524545a39794c399480ba7ffeb41977bf6babe))
+- Add remaining valuable patterns to claude-init ([72b4c49](https://github.com/garywu/dotfiles/commit/72b4c49157e6fee8b98d7c11f36f1f2b3aa0feda))
+- Implement CLI tool efficiency testing framework ([c7834b8](https://github.com/garywu/dotfiles/commit/c7834b82a9f17cfbec4ca59229319a5d49eb785c))
+- Complete CI/CD setup with lint and security workflows (#9) ([156179c](https://github.com/garywu/dotfiles/commit/156179cb13fead1a98dc49c2d3c267b2dc4bf449))
+- Migrate comprehensive documentation to Dotfiles Academy (#12) ([1da4dee](https://github.com/garywu/dotfiles/commit/1da4dee29295a38e3cd47b1122cc07ffb89e7a63))
+- Add git-cliff for automated changelog generation (#4) ([0278e27](https://github.com/garywu/dotfiles/commit/0278e273412ef2a316ce7393a71b82500c866751))
+- Add documentation link testing suite ([475cdc5](https://github.com/garywu/dotfiles/commit/475cdc56a8be7a87e066b68e8545263665938c56))
+- Install GNU coreutils and improve documentation tests ([b925558](https://github.com/garywu/dotfiles/commit/b925558f733c1283511d47f3e400b1e1d47af8dd))
+- Add core documentation testing infrastructure ([a36e7e2](https://github.com/garywu/dotfiles/commit/a36e7e22069768fed67e88d3ed840468358d4164))
+- Declare adoption of three-branch Git workflow ([8929700](https://github.com/garywu/dotfiles/commit/8929700c2d941761fbe9aaadbdda9e5d70ede599))
+
+### Miscellaneous Tasks
+
+- Update workflow to support Git Flow branches ([4d5f421](https://github.com/garywu/dotfiles/commit/4d5f4214fdcefc5f301c31643643c6f51972807e))
+- Update claude-init submodule with advanced features ([e348f35](https://github.com/garywu/dotfiles/commit/e348f353cfb16a576ca893eee6c60b99168b91eb))
+- Add efficiency test results to gitignore (#20) ([800b6a2](https://github.com/garywu/dotfiles/commit/800b6a20cc6133c01a499faa4355613f93b86b40))
+- Fix linting issues for workflow declaration ([6dc0e43](https://github.com/garywu/dotfiles/commit/6dc0e435bff13c922cb417a3bcf2d6d564500f63))
+
+### Styling
+
+- Center DOTFILES banner in README ([4672958](https://github.com/garywu/dotfiles/commit/46729582e011e3888bab90cb16a63540b2becf57))
+
+## [0.2.0-beta.1] - 2025-06-19
+
+### Bug Fixes
+
+- Update docs structure and content ([df2e02d](https://github.com/garywu/dotfiles/commit/df2e02d6570f6b996a8b7f1a9b951577126fd2e5))
+- Improve text contrast in docs theme ([a9ac779](https://github.com/garywu/dotfiles/commit/a9ac779d5f4e93a68c85df8472e6256c34132ccb))
+- Revert aggressive CSS changes that broke layout ([a7bff0d](https://github.com/garywu/dotfiles/commit/a7bff0db8fd36d5b7bf5f9f25f4b49a351d8dfc5))
+- Comprehensive text contrast improvements ([eaa6e03](https://github.com/garywu/dotfiles/commit/eaa6e032890bd328664e439ac6786ed93a0fd545))
+- Force light theme as default in Starlight docs ([2016747](https://github.com/garywu/dotfiles/commit/2016747ef99aff1b72adf584268f583dab467d09))
+- Update sidebar to explicit links and package versions ([2678ffa](https://github.com/garywu/dotfiles/commit/2678ffab4be2233151a264f6e528d8e5e063ad21))
+- Sync package-lock.json for GitHub Actions deployment ([9e7853d](https://github.com/garywu/dotfiles/commit/9e7853d6fd8421e6bd3a4cc0b76cb0307263481f))
+- Resolve Starlight build and GitHub Actions deployment issues ([3fe3262](https://github.com/garywu/dotfiles/commit/3fe32621cb39cfa03530e065c760fd6a09053472))
+- Add CI mode support to bootstrap and unbootstrap scripts ([374604e](https://github.com/garywu/dotfiles/commit/374604eef8a300f2b48d3d5e589a08c9be472338))
+- Allow bootstrap.sh to continue in CI mode instead of exiting ([17c4c9c](https://github.com/garywu/dotfiles/commit/17c4c9c608ff467f58871f3ea5961bfc75bc644b))
+- Export PATH to GITHUB_PATH for environment persistence in CI ([07de5e5](https://github.com/garywu/dotfiles/commit/07de5e54690952a2ce39fe31638f5e89617a134f))
+- Use relative path to source ci-helpers.sh in CI environment ([b20d853](https://github.com/garywu/dotfiles/commit/b20d85366fc5b281df61c1b5dd819736a58cc9fa))
+- Ensure Nix commands are available after installation in CI ([09d4261](https://github.com/garywu/dotfiles/commit/09d4261897ce27954c32fee87653b031da346c54))
+- Use correct Nix profile script for macOS (nix-daemon.sh) ([9b618f7](https://github.com/garywu/dotfiles/commit/9b618f7ee5fffd6e5bc69eddc97486ebeb4c0885))
+- Use relative paths for Home Manager configuration in CI ([a8d631e](https://github.com/garywu/dotfiles/commit/a8d631e258934914f39dca9183ed27c6fd858e69))
+- Add execute permissions to unbootstrap.sh ([7016ceb](https://github.com/garywu/dotfiles/commit/7016cebd4f75b08d272d5259a165e1ef35d36c6c))
+- Prevent smoke test from exiting on first missing command ([f6efa80](https://github.com/garywu/dotfiles/commit/f6efa8094c60b64d4bbee41f441741fd0c1f9b21))
+- Remove -e flag from smoke test to allow checking all commands ([d549da6](https://github.com/garywu/dotfiles/commit/d549da6759c03286781f0b4062be91c895aae890))
+- Remove -e flag from cleanup test to see all remaining configs ([276fa47](https://github.com/garywu/dotfiles/commit/276fa47773a3ccf12b1ba91f4e4387ad99831d16))
+- Improve unbootstrap cleanup and test verification ([0655371](https://github.com/garywu/dotfiles/commit/065537108fbed8ce223e902d7948b19078b007ed))
+- Unbootstrap script CI mode detection and confirmation ([1bfbade](https://github.com/garywu/dotfiles/commit/1bfbade969bba8daeb172669d50312a398c6d091))
+- Handle macOS CI limitations in unbootstrap and cleanup tests ([b6b757f](https://github.com/garywu/dotfiles/commit/b6b757fc7e7c002442ef44517a5db47d524cc8fa))
+- Handle reboot requirements gracefully in CI ([2cafb16](https://github.com/garywu/dotfiles/commit/2cafb16cf338926aa2ecfdf7366b2afe03a36d3e))
+- Use ci_confirm for extra files cleanup prompt ([c635589](https://github.com/garywu/dotfiles/commit/c635589b49b776291ff19e2be8e2248064b8f327))
+- Add explicit exit 0 to prevent exit code 138 ([568f146](https://github.com/garywu/dotfiles/commit/568f14612c28b73c11316c79cb633df3f65d0b59))
+- Workaround exit code 138 in CI for macOS unbootstrap ([0a99574](https://github.com/garywu/dotfiles/commit/0a99574364812500e4fab4d7adefd100720097dc))
+- Make exit code 138 workaround work with GitHub Actions ([5657b54](https://github.com/garywu/dotfiles/commit/5657b542fc72a5e236375fb49300353f17133fba))
+- Use simpler approach to handle unbootstrap exit code ([85410bb](https://github.com/garywu/dotfiles/commit/85410bbe2346f232bc3bef0d8893a6b285a591d4))
+- Separate unbootstrap and echo commands to ensure completion message ([a0276b1](https://github.com/garywu/dotfiles/commit/a0276b12c01a4fe3ec1ab014cd94f074b575c7ca))
+- Use bash without -e flag for unbootstrap step ([3116ab6](https://github.com/garywu/dotfiles/commit/3116ab6446c805a35ac79c1c3a02296917b77fca))
+- Capture unbootstrap exit code in subshell ([16a7ef7](https://github.com/garywu/dotfiles/commit/16a7ef75cf3cce1a6a4dba46f2ad53c4a90c2257))
+- Use continue-on-error for unbootstrap step ([257b953](https://github.com/garywu/dotfiles/commit/257b953916306ac6f2abe0aa42392fa056e97aa9))
+
+### Documentation
+
+- Update CLAUDE.md with documentation commands and Issue #15 learnings ([d55d26b](https://github.com/garywu/dotfiles/commit/d55d26bfbf6c278240342b8f1776d8d85d1fdf2f))
+
+### Features
+
+- Add CI testing for bootstrap/unbootstrap process ([db0680d](https://github.com/garywu/dotfiles/commit/db0680d83314ca2fa62394a75fa181258090ec0d))
+- Create comprehensive test framework for continuous testing ([83b44ee](https://github.com/garywu/dotfiles/commit/83b44eeb1b8d29891182ed60a69246ad1579eb7d))
+
+### Miscellaneous Tasks
+
+- Clean up unnecessary files and directories ([00c451b](https://github.com/garywu/dotfiles/commit/00c451bfb4d98515a20b92f2b25c3a0d3ac482af))
+- V0.2.0 [skip ci] ([66863a7](https://github.com/garywu/dotfiles/commit/66863a7655cd1e27493d9d31e0628db319c25337))
+
+## [0.1.0] - 2025-06-17
+
+### Bug Fixes
+
+- Resolve linting issues in bootstrap.sh and config files (#8) ([7363143](https://github.com/garywu/dotfiles/commit/73631434bff8f14a497e52849280d65c72217891))
+- Apply pre-commit formatting to shell scripts ([23b71ca](https://github.com/garywu/dotfiles/commit/23b71caa530aaf70f1cd1db4da30a3b49d49598d))
+- Sync package-lock.json with package.json ([0853dfe](https://github.com/garywu/dotfiles/commit/0853dfe6afbcf6670c70df288d6230b401f85544))
+
+### Documentation
+
+- Update CLAUDE.md with completed tasks ([b2c984c](https://github.com/garywu/dotfiles/commit/b2c984cae119ebd186075c56d2ea0d159380ee29))
+- Update CLAUDE.md with new issues #8 and #9 ([009edd4](https://github.com/garywu/dotfiles/commit/009edd4b9073463ec833c007fcd8d4fdd4aeed8e))
+- Update CLAUDE.md with linting fixes completion ([007cf4a](https://github.com/garywu/dotfiles/commit/007cf4ab51bfdb1e7147852ede57aef2276fa667))
+
+### Features
+
+- Add linting infrastructure and Cloudflare CLI tools (#6, #7) ([83ad63b](https://github.com/garywu/dotfiles/commit/83ad63b29a000df97ecccc81cd30dcbb145cd883))
+- Add developer productivity CLI tools (#10) ([fbba0bc](https://github.com/garywu/dotfiles/commit/fbba0bc58aafc79319f3fd88f6d22ad9c77bd5fd))
+- Complete Dotfiles Academy migration from Docusaurus to Starlight (#12) ([cd75b43](https://github.com/garywu/dotfiles/commit/cd75b4342a1901d83adbffac5243a388bf0f9626))
+- Implement Git email privacy protection ([eadcc71](https://github.com/garywu/dotfiles/commit/eadcc7180285f98727f1b080fd7e2374ba844cb4))
+- Implement automated release management system ([03adc6f](https://github.com/garywu/dotfiles/commit/03adc6f593a441a223afcdf5c25b012dd439b80d))
+
+### Miscellaneous Tasks
+
+- V0.1.0 [skip ci] ([e52aed3](https://github.com/garywu/dotfiles/commit/e52aed3ba0d3fcacd46030b45ff494525cdb8daa))
+
+### Styling
+
+- Auto-format TOML files with taplo (#8) ([3cc294d](https://github.com/garywu/dotfiles/commit/3cc294d56f4c9220f733600149a42ec15365acc7))
+- Apply pre-commit hook formatting fixes ([51801ee](https://github.com/garywu/dotfiles/commit/51801ee37934acb4d84378165f557486722dbbab))
 
 ## [0.0.1] - 2025-06-17
 
-### Added
-- Pre-commit hooks configuration with automatic code formatting
-- Architecture documentation (ARCHITECTURE.md) explaining tool separation
-- Example Chezmoi templates for secrets management (SSH config, git config)
+### Bug Fixes
 
-### Changed
-- **BREAKING**: Separated Nix/Home Manager from Chezmoi management
-  - Moved home.nix from chezmoi/ to nix/ directory
-  - Home Manager config now directly managed, not through Chezmoi
-  - Chezmoi now only handles secrets and machine-specific templates
-- Updated bootstrap.sh to create proper Home Manager symlink
-- Simplified workflow: edit nix/home.nix directly, no more double-management
+- Remove duplicate bun entry from Brewfile (already managed by Nix) ([1dd4f76](https://github.com/garywu/dotfiles/commit/1dd4f7658b5b43daa2f245685492de5c9309d2c9))
+- Resolve bootstrap errors for future runs - Fix Home Manager config path issue - Remove problematic packages - Handle chezmoi conflict properly ([5d86570](https://github.com/garywu/dotfiles/commit/5d86570e825279ea82863b6e47c4049f9c6d3fc2))
+- Ensure modern bash takes precedence for new scripts ([15fb4d3](https://github.com/garywu/dotfiles/commit/15fb4d38c46f9a16a665c3919f2a7f2034579f6e))
+- Improve Homebrew path detection in Fish config for Apple Silicon Macs ([0e9f4fe](https://github.com/garywu/dotfiles/commit/0e9f4fe4ea53991ab349a3ade0fe01aa60459aa8))
+- Remove blocking changelog hook from pre-commit config ([9f121f4](https://github.com/garywu/dotfiles/commit/9f121f44b4cdf8f5e04cc5cd07063da94cf3dcc1))
 
-### Fixed
-- Removed blocking changelog pre-commit hook that prevented commits
-- Fixed Fish shell Homebrew path detection for Apple Silicon Macs
-  - Now checks /opt/homebrew/bin/brew first (Apple Silicon)
-  - Falls back to /usr/local/bin/brew (Intel)
-  - Uses test -e instead of test -d for more reliable detection
+### Canonicalize
 
-## [0.1.0] - 2024-03-19
+- Home Manager manages all dotfiles/configs, Chezmoi only for secrets/meta, update README and clean project ([5c58bfd](https://github.com/garywu/dotfiles/commit/5c58bfdbeda9673e24b6cbe017ca90aee91fe5b9))
 
-### Added
-- Initial project setup
-- Nix/Home Manager configuration
-- Chezmoi dotfile management
-- Fish shell configuration
-- Development environment tools
-- Documentation structure
+### Documentation
+
+- Add comprehensive philosophy section explaining Nix-first approach and improve bootstrap Home Manager detection ([7250cc2](https://github.com/garywu/dotfiles/commit/7250cc279dc3a7fa4dabc9b5eb73b32768f394aa))
+- Update README for enhanced unbootstrap script and symmetric structure - Update project structure to show unbootstrap.sh in root for symmetry - Fix path references from scripts/unbootstrap.sh to ./unbootstrap.sh - Add comprehensive safety warnings to unbootstrap script - Emphasize enhanced cleanup capabilities and safety features ([4c49eaa](https://github.com/garywu/dotfiles/commit/4c49eaa501e62f6abbdf9f74385c537f3812fa1e))
+- Add evolution.md documenting bootstrap script history and architectural decisions ([c55cd33](https://github.com/garywu/dotfiles/commit/c55cd33d6b35bb36dff31c0fb964541a0b98c565))
+
+### Features
+
+- Add robust minimal installation script with automatic repo detection ([f7c5bca](https://github.com/garywu/dotfiles/commit/f7c5bca2e8fca0180a5897a4c57cd03f46d086a1))
+- Complete setup overhaul with minimal installation and improved structure ([c385344](https://github.com/garywu/dotfiles/commit/c3853440bab6d657ed2b9a05cb7372ce5c7616aa))
+- Finalize bootstrap script with improved Homebrew detection and environment sourcing ([c334408](https://github.com/garywu/dotfiles/commit/c334408e8529b25e5c0063e02b0af5495c828025))
+- Add system state check script and improve unbootstrap - Add check.sh for comprehensive system auditing and cleanup - Improve unbootstrap.sh with official uninstall methods - Update README.md with check script documentation ([1367ed5](https://github.com/garywu/dotfiles/commit/1367ed5df7b9a0611dfbc1d753757e63164c8c24))
+- Add automatic shell management to bootstrap/unbootstrap - Bootstrap now changes default shell to fish automatically - Stores original shell in .shell_backup for restoration - Uninstall script restores original shell from backup - Adds fish to /etc/shells if needed - New terminals will use fish + starship by default ([9aef4b9](https://github.com/garywu/dotfiles/commit/9aef4b9bb0eeda4cab531fa74247daaf432dd69d))
+- Add professional development standards and GitHub templates (#5) ([345f034](https://github.com/garywu/dotfiles/commit/345f034be5a3403c39b7843265c47350e62e6017))
+
+### Miscellaneous Tasks
+
+- Enhance Nix backup file handling - Add backup file detection to check.sh for troubleshooting - Improve uninstall.sh to handle all backup file locations - Better alignment with official Nix documentation ([9215e34](https://github.com/garywu/dotfiles/commit/9215e3406890ca53b20df8d52ad6087d53187fd9))
+- Post-bootstrap, all configs and scripts up to date ([3cd3890](https://github.com/garywu/dotfiles/commit/3cd38903437c273e4f49945c91b8ed7f5ed69b6c))
+
+### Refactor
+
+- Consolidate installation scripts into single bootstrap.sh ([f25d661](https://github.com/garywu/dotfiles/commit/f25d6616ddc923390c1a3127fc010bda0fc811b7))
+- Move unbootstrap.sh to root for symmetry with bootstrap.sh - Move unbootstrap.sh symlink from scripts/ to root directory - Creates symmetric user experience: ./bootstrap.sh and ./unbootstrap.sh - Both setup and teardown scripts now easily discoverable in root ([864018a](https://github.com/garywu/dotfiles/commit/864018ac6d0595d34141ff629a247ac4a6f4b023))
+- [**breaking**] Separate Nix/Home Manager from Chezmoi management ([6ecc2d6](https://github.com/garywu/dotfiles/commit/6ecc2d695f0098813c0e49186692428efa7b9240))
+
+### Testing
+
+- Verify pre-commit hooks are working ([3646d2b](https://github.com/garywu/dotfiles/commit/3646d2b2f2c001cef58b6c9768318df05493dea8))
+
+### Enhance
+
+- Improve unbootstrap script to handle all Nix services - Fix stop_nix_daemon() to discover and stop ALL Nix-related launchd services - Add support for Determinate Systems installer services and darwin-store - Enhance process detection and pattern matching - Better error reporting and comprehensive cleanup ([74258f9](https://github.com/garywu/dotfiles/commit/74258f94cccebe5a055589485b94cb04851b1565))
+
+### Workaround
+
+- Install pnpm globally with npm if not available (Nix package broken) ([d477e88](https://github.com/garywu/dotfiles/commit/d477e884b47de7f0025c80be906cd71e4173d3af))
+
+---
+
+🤖 Generated with [git-cliff](https://git-cliff.org)
