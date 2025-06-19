@@ -11,7 +11,7 @@ When deploying Astro sites with Starlight to GitHub Pages, internal documentatio
 ### Technical Details
 
 1. **GitHub Pages URL Structure**: `https://garywu.github.io/dotfiles/`
-2. **Astro Base Configuration**: `base: '/dotfiles'` in `astro.config.mjs`  
+2. **Astro Base Configuration**: `base: '/dotfiles'` in `astro.config.mjs`
 3. **Link Resolution**: Internal links must work with this base path
 
 ## Broken Link Patterns ❌
@@ -198,7 +198,7 @@ actions: [
     variant: 'primary'
   },
   {
-    text: 'CLI Tools', 
+    text: 'CLI Tools',
     link: './03-cli-tools/modern-replacements/', // Add './'
     icon: 'external'
   }
