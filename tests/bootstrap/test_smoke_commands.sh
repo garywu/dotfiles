@@ -17,28 +17,28 @@ commands_missing=0
 
 # Source Nix environment if available
 if is_macos && [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 elif [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
-    source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+  source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
 fi
 
 if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-    source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+  source "$HOME/.nix-profile/etc/profile.d/nix.sh"
 fi
 
 # Function to check command
 check_command() {
-    local cmd=$1
-    local description=${2:-$1}
+  local cmd=$1
+  local description=${2:-$1}
 
-    if command -v "$cmd" &>/dev/null; then
-        ((commands_found++))
-        print_info "✓ $description"
-    else
-        ((commands_missing++))
-        print_error "✗ $description not found"
-        test_passed=false
-    fi
+  if command -v "$cmd" &>/dev/null; then
+    ((commands_found++))
+    print_info "✓ $description"
+  else
+    ((commands_missing++))
+    print_error "✗ $description not found"
+    test_passed=false
+  fi
 }
 
 # Core Tools
@@ -49,8 +49,8 @@ check_command "chezmoi" "Chezmoi dotfiles manager"
 
 # Platform-specific
 if is_macos; then
-    print_section "macOS Tools"
-    check_command "brew" "Homebrew"
+  print_section "macOS Tools"
+  check_command "brew" "Homebrew"
 fi
 
 # Development tools from home.nix
@@ -155,9 +155,9 @@ echo "Commands found: $commands_found"
 echo "Commands missing: $commands_missing"
 
 if [[ "$test_passed" == "true" ]]; then
-    print_success "All commands are available!"
-    exit 0
+  print_success "All commands are available!"
+  exit 0
 else
-    print_error "Some commands are missing!"
-    exit 1
+  print_error "Some commands are missing!"
+  exit 1
 fi

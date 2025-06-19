@@ -28,10 +28,10 @@
 [![Linting](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/lint.yml?branch=main&label=lint&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/lint.yml)
 [![Security](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/security.yml?branch=main&label=security&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/security.yml)
 
-<!-- Release Channels -->
-[![Stable](https://img.shields.io/badge/channel-stable-green?style=flat-square)](https://github.com/garywu/dotfiles/releases/latest)
-[![Beta](https://img.shields.io/badge/channel-beta-orange?style=flat-square)](https://github.com/garywu/dotfiles/releases?q=prerelease%3Atrue)
-[![Nightly](https://img.shields.io/badge/channel-nightly-red?style=flat-square)](https://github.com/garywu/dotfiles/actions)
+<!-- Release Channels - Three-Branch Git Workflow -->
+[![Stable](https://img.shields.io/badge/stable-production_releases-green?style=flat-square)](https://github.com/garywu/dotfiles/tree/stable)
+[![Beta](https://img.shields.io/badge/beta-weekly_testing-orange?style=flat-square)](https://github.com/garywu/dotfiles/tree/beta)
+[![Main](https://img.shields.io/badge/main-active_development-red?style=flat-square)](https://github.com/garywu/dotfiles/tree/main)
 
 <!-- Technology Stack -->
 [![Nix](https://img.shields.io/badge/Nix-5277C3?style=flat-square&logo=nixos&logoColor=white)](https://nixos.org/)
@@ -47,6 +47,22 @@
 
 This repository provides a fully automated, reproducible development environment using Nix, Home Manager, Chezmoi,
 and Homebrew (macOS).
+
+## 🔄 Git Workflow
+
+This repository follows the **Claude-Init Three-Branch Strategy** for consistent release management:
+
+- **🔴 `main`** - Active development (latest features)
+- **🟠 `beta`** - Weekly releases for testing (stable but experimental)
+- **🟢 `stable`** - Production releases (thoroughly tested)
+
+**Development Flow:**
+1. Feature work happens on `main`
+2. Weekly beta releases from `main`
+3. Stable releases promote tested betas
+4. Automated sync keeps branches aligned
+
+See [Issue #24](https://github.com/garywu/dotfiles/issues/24) for migration details.
 
 ## 🚀 Quick Start
 

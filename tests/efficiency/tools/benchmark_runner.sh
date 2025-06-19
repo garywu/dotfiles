@@ -41,26 +41,26 @@ mkdir -p "$LATEST_DIR" "$HISTORICAL_DIR"
 
 # Logging function with context preservation
 log() {
-    local level="$1"
-    shift
-    local message="$*"
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
+  local level="$1"
+  shift
+  local message="$*"
+  local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
-    case "$level" in
-        INFO) echo -e "${GREEN}[INFO]${NC} ${timestamp}: $message" ;;
-        WARN) echo -e "${YELLOW}[WARN]${NC} ${timestamp}: $message" ;;
-        ERROR) echo -e "${RED}[ERROR]${NC} ${timestamp}: $message" ;;
-        DEBUG) echo -e "${BLUE}[DEBUG]${NC} ${timestamp}: $message" ;;
-        HEADER) echo -e "${PURPLE}[EXEC]${NC} ${timestamp}: $message" ;;
-    esac
+  case "$level" in
+  INFO) echo -e "${GREEN}[INFO]${NC} ${timestamp}: $message" ;;
+  WARN) echo -e "${YELLOW}[WARN]${NC} ${timestamp}: $message" ;;
+  ERROR) echo -e "${RED}[ERROR]${NC} ${timestamp}: $message" ;;
+  DEBUG) echo -e "${BLUE}[DEBUG]${NC} ${timestamp}: $message" ;;
+  HEADER) echo -e "${PURPLE}[EXEC]${NC} ${timestamp}: $message" ;;
+  esac
 
-    # Also log to file for historical tracking
-    echo "[$level] $timestamp: $message" >> "$LATEST_DIR/benchmark_execution.log"
+  # Also log to file for historical tracking
+  echo "[$level] $timestamp: $message" >>"$LATEST_DIR/benchmark_execution.log"
 }
 
 # Display usage information
 usage() {
-    cat << EOF
+  cat <<EOF
 ${PURPLE}CLI Tool Efficiency Benchmark Runner${NC}
 
 ${BLUE}PURPOSE:${NC}
@@ -107,46 +107,46 @@ EOF
 
 # Archive previous results for historical comparison
 archive_previous_results() {
-    if [[ -d "$LATEST_DIR" ]] && [[ "$(ls -A "$LATEST_DIR" 2>/dev/null)" ]]; then
-        local archive_name="results_$(date +%Y%m%d_%H%M%S)"
-        log INFO "Archiving previous results to $archive_name"
+  if [[ -d "$LATEST_DIR" ]] && [[ "$(ls -A "$LATEST_DIR" 2>/dev/null)" ]]; then
+    local archive_name="results_$(date +%Y%m%d_%H%M%S)"
+    log INFO "Archiving previous results to $archive_name"
 
-        mkdir -p "$HISTORICAL_DIR"
-        mv "$LATEST_DIR" "$HISTORICAL_DIR/$archive_name"
-        mkdir -p "$LATEST_DIR"
-    fi
+    mkdir -p "$HISTORICAL_DIR"
+    mv "$LATEST_DIR" "$HISTORICAL_DIR/$archive_name"
+    mkdir -p "$LATEST_DIR"
+  fi
 }
 
 # Run search benchmarks
 run_search_benchmarks() {
-    log HEADER "Running search tool efficiency benchmarks"
+  log HEADER "Running search tool efficiency benchmarks"
 
-    local benchmark_script="$BENCHMARKS_DIR/search_benchmarks.sh"
+  local benchmark_script="$BENCHMARKS_DIR/search_benchmarks.sh"
 
-    if [[ -x "$benchmark_script" ]]; then
-        log INFO "Executing search benchmarks: rg vs grep vs ag"
-        if "$benchmark_script"; then
-            log INFO "Search benchmarks completed successfully"
-        else
-            log ERROR "Search benchmarks failed"
-            return 1
-        fi
+  if [[ -x "$benchmark_script" ]]; then
+    log INFO "Executing search benchmarks: rg vs grep vs ag"
+    if "$benchmark_script"; then
+      log INFO "Search benchmarks completed successfully"
     else
-        log ERROR "Search benchmark script not found or not executable: $benchmark_script"
-        return 1
+      log ERROR "Search benchmarks failed"
+      return 1
     fi
+  else
+    log ERROR "Search benchmark script not found or not executable: $benchmark_script"
+    return 1
+  fi
 }
 
 # Run file operation benchmarks (to be implemented)
 run_file_operation_benchmarks() {
-    log HEADER "Running file operation efficiency benchmarks"
+  log HEADER "Running file operation efficiency benchmarks"
 
-    # TODO: Implement file operation benchmarks
-    # This will test: eza vs ls, fd vs find, bat vs cat
-    log WARN "File operation benchmarks not yet implemented (TODO for future)"
+  # TODO: Implement file operation benchmarks
+  # This will test: eza vs ls, fd vs find, bat vs cat
+  log WARN "File operation benchmarks not yet implemented (TODO for future)"
 
-    # Create placeholder for now
-    cat > "$LATEST_DIR/file_ops_placeholder.md" << EOF
+  # Create placeholder for now
+  cat >"$LATEST_DIR/file_ops_placeholder.md" <<EOF
 # File Operation Benchmarks - TODO
 
 **Status**: Not yet implemented
@@ -165,19 +165,19 @@ This placeholder ensures we don't lose track of planned file operation
 benchmarks in future Claude CLI sessions.
 EOF
 
-    log INFO "File operation benchmarks placeholder created"
+  log INFO "File operation benchmarks placeholder created"
 }
 
 # Run data processing benchmarks (to be implemented)
 run_data_processing_benchmarks() {
-    log HEADER "Running data processing efficiency benchmarks"
+  log HEADER "Running data processing efficiency benchmarks"
 
-    # TODO: Implement data processing benchmarks
-    # This will test: jq vs manual parsing, yq vs manual YAML, sd vs sed
-    log WARN "Data processing benchmarks not yet implemented (TODO for future)"
+  # TODO: Implement data processing benchmarks
+  # This will test: jq vs manual parsing, yq vs manual YAML, sd vs sed
+  log WARN "Data processing benchmarks not yet implemented (TODO for future)"
 
-    # Create placeholder for context preservation
-    cat > "$LATEST_DIR/data_processing_placeholder.md" << EOF
+  # Create placeholder for context preservation
+  cat >"$LATEST_DIR/data_processing_placeholder.md" <<EOF
 # Data Processing Benchmarks - TODO
 
 **Status**: Not yet implemented
@@ -195,19 +195,19 @@ text manipulation approaches.
 Placeholder to preserve implementation context for future sessions.
 EOF
 
-    log INFO "Data processing benchmarks placeholder created"
+  log INFO "Data processing benchmarks placeholder created"
 }
 
 # Run interactive tool benchmarks (to be implemented)
 run_interactive_benchmarks() {
-    log HEADER "Running interactive tool efficiency benchmarks"
+  log HEADER "Running interactive tool efficiency benchmarks"
 
-    # TODO: Implement interactive tool benchmarks
-    # This will test: gum vs read, fzf integration patterns
-    log WARN "Interactive tool benchmarks not yet implemented (TODO for future)"
+  # TODO: Implement interactive tool benchmarks
+  # This will test: gum vs read, fzf integration patterns
+  log WARN "Interactive tool benchmarks not yet implemented (TODO for future)"
 
-    # Create placeholder for context preservation
-    cat > "$LATEST_DIR/interactive_placeholder.md" << EOF
+  # Create placeholder for context preservation
+  cat >"$LATEST_DIR/interactive_placeholder.md" <<EOF
 # Interactive Tool Benchmarks - TODO
 
 **Status**: Not yet implemented
@@ -225,14 +225,14 @@ significant human efficiency improvements. Need special testing approach.
 Preserve intent to measure interactive tool benefits in future sessions.
 EOF
 
-    log INFO "Interactive tool benchmarks placeholder created"
+  log INFO "Interactive tool benchmarks placeholder created"
 }
 
 # Generate comprehensive summary report
 generate_summary_report() {
-    log HEADER "Generating comprehensive efficiency summary report"
+  log HEADER "Generating comprehensive efficiency summary report"
 
-    cat > "$LATEST_DIR/efficiency_summary_report.md" << EOF
+  cat >"$LATEST_DIR/efficiency_summary_report.md" <<EOF
 # CLI Tool Efficiency Analysis - Summary Report
 
 **Generated**: $(date)
@@ -263,9 +263,9 @@ $(if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
     echo "**Status**: Completed"
     echo "**Key Finding**: ripgrep (rg) shows significant efficiency advantages"
     echo "**Details**: See search_efficiency_report.md"
-else
+  else
     echo "**Status**: Not executed this run"
-fi)
+  fi)
 
 ### File Operations ⏳
 **Status**: Planned for future implementation
@@ -287,9 +287,9 @@ $(if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
     echo "- ✅ Default to \`rg pattern\` instead of \`grep -r pattern .\`"
     echo "- ✅ Use ripgrep for all text search operations"
     echo "- ✅ Leverage ripgrep's sensible defaults"
-else
+  else
     echo "Pending completion of benchmark execution"
-fi)
+  fi)
 
 ### Future Recommendations
 - Will be updated as additional benchmarks are implemented
@@ -331,122 +331,122 @@ proof of benefits. This framework provides that proof systematically.
 
 EOF
 
-    log INFO "Summary report generated: efficiency_summary_report.md"
+  log INFO "Summary report generated: efficiency_summary_report.md"
 }
 
 # Main execution function
 main() {
-    local run_search=false
-    local run_file_ops=false
-    local run_data=false
-    local run_interactive=false
-    local quick_mode=false
-    local report_only=false
-    local run_all=true
+  local run_search=false
+  local run_file_ops=false
+  local run_data=false
+  local run_interactive=false
+  local quick_mode=false
+  local report_only=false
+  local run_all=true
 
-    # Parse command line arguments
-    while [[ $# -gt 0 ]]; do
-        case $1 in
-            --all)
-                run_all=true
-                shift
-                ;;
-            --search)
-                run_search=true
-                run_all=false
-                shift
-                ;;
-            --file-ops)
-                run_file_ops=true
-                run_all=false
-                shift
-                ;;
-            --data)
-                run_data=true
-                run_all=false
-                shift
-                ;;
-            --interactive)
-                run_interactive=true
-                run_all=false
-                shift
-                ;;
-            --quick)
-                quick_mode=true
-                shift
-                ;;
-            --report-only)
-                report_only=true
-                shift
-                ;;
-            --help)
-                usage
-                exit 0
-                ;;
-            *)
-                log ERROR "Unknown option: $1"
-                usage
-                exit 1
-                ;;
-        esac
-    done
+  # Parse command line arguments
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+    --all)
+      run_all=true
+      shift
+      ;;
+    --search)
+      run_search=true
+      run_all=false
+      shift
+      ;;
+    --file-ops)
+      run_file_ops=true
+      run_all=false
+      shift
+      ;;
+    --data)
+      run_data=true
+      run_all=false
+      shift
+      ;;
+    --interactive)
+      run_interactive=true
+      run_all=false
+      shift
+      ;;
+    --quick)
+      quick_mode=true
+      shift
+      ;;
+    --report-only)
+      report_only=true
+      shift
+      ;;
+    --help)
+      usage
+      exit 0
+      ;;
+    *)
+      log ERROR "Unknown option: $1"
+      usage
+      exit 1
+      ;;
+    esac
+  done
 
-    # Set defaults
-    if [[ "$run_all" == "true" ]]; then
-        run_search=true
-        run_file_ops=true
-        run_data=true
-        run_interactive=true
+  # Set defaults
+  if [[ "$run_all" == "true" ]]; then
+    run_search=true
+    run_file_ops=true
+    run_data=true
+    run_interactive=true
+  fi
+
+  log HEADER "Starting $SCRIPT_NAME"
+  log INFO "Issue: $ISSUE_REFERENCE"
+  log INFO "Purpose: $PURPOSE"
+  log INFO "Quick mode: $quick_mode"
+  log INFO "Report only: $report_only"
+
+  # Archive previous results unless report-only
+  if [[ "$report_only" == "false" ]]; then
+    archive_previous_results
+  fi
+
+  # Execute benchmarks based on options
+  if [[ "$report_only" == "false" ]]; then
+    if [[ "$run_search" == "true" ]]; then
+      run_search_benchmarks || log ERROR "Search benchmarks failed"
     fi
 
-    log HEADER "Starting $SCRIPT_NAME"
-    log INFO "Issue: $ISSUE_REFERENCE"
-    log INFO "Purpose: $PURPOSE"
-    log INFO "Quick mode: $quick_mode"
-    log INFO "Report only: $report_only"
-
-    # Archive previous results unless report-only
-    if [[ "$report_only" == "false" ]]; then
-        archive_previous_results
+    if [[ "$run_file_ops" == "true" ]]; then
+      run_file_operation_benchmarks
     fi
 
-    # Execute benchmarks based on options
-    if [[ "$report_only" == "false" ]]; then
-        if [[ "$run_search" == "true" ]]; then
-            run_search_benchmarks || log ERROR "Search benchmarks failed"
-        fi
-
-        if [[ "$run_file_ops" == "true" ]]; then
-            run_file_operation_benchmarks
-        fi
-
-        if [[ "$run_data" == "true" ]]; then
-            run_data_processing_benchmarks
-        fi
-
-        if [[ "$run_interactive" == "true" ]]; then
-            run_interactive_benchmarks
-        fi
+    if [[ "$run_data" == "true" ]]; then
+      run_data_processing_benchmarks
     fi
 
-    # Always generate summary report
-    generate_summary_report
-
-    log HEADER "Efficiency benchmark execution complete!"
-    log INFO "Results available in: $LATEST_DIR"
-    log INFO "Summary report: $LATEST_DIR/efficiency_summary_report.md"
-    log INFO "Execution log: $LATEST_DIR/benchmark_execution.log"
-
-    # Show quick summary if search benchmarks were run
-    if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
-        log INFO "Quick preview: Search benchmarks show ripgrep efficiency advantages"
-        log INFO "View details: cat '$LATEST_DIR/search_efficiency_report.md'"
+    if [[ "$run_interactive" == "true" ]]; then
+      run_interactive_benchmarks
     fi
+  fi
+
+  # Always generate summary report
+  generate_summary_report
+
+  log HEADER "Efficiency benchmark execution complete!"
+  log INFO "Results available in: $LATEST_DIR"
+  log INFO "Summary report: $LATEST_DIR/efficiency_summary_report.md"
+  log INFO "Execution log: $LATEST_DIR/benchmark_execution.log"
+
+  # Show quick summary if search benchmarks were run
+  if [[ -f "$LATEST_DIR/search_efficiency_report.md" ]]; then
+    log INFO "Quick preview: Search benchmarks show ripgrep efficiency advantages"
+    log INFO "View details: cat '$LATEST_DIR/search_efficiency_report.md'"
+  fi
 }
 
 # Execute main function if script is run directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    main "$@"
+  main "$@"
 fi
 
 # Context preservation comments for future Claude CLI sessions:

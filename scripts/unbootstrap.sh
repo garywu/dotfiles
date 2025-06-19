@@ -11,8 +11,8 @@ DOTFILES_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Source CI helpers if available
 if [[ -f "${SCRIPT_DIR}/ci-helpers.sh" ]]; then
-    # shellcheck source=/dev/null
-    source "${SCRIPT_DIR}/ci-helpers.sh"
+  # shellcheck source=/dev/null
+  source "${SCRIPT_DIR}/ci-helpers.sh"
 fi
 
 # Colors for output

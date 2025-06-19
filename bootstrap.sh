@@ -2,42 +2,42 @@
 
 # Check for old Bash and handle compatibility
 if [[ -n "${BASH_VERSION}" ]]; then
-    BASH_MAJOR_VERSION=$(echo "${BASH_VERSION}" | cut -d. -f1)
-    if [[ "${BASH_MAJOR_VERSION}" -lt 4 ]]; then
-        # Check if modern bash is already available
-        MODERN_BASH_AVAILABLE=false
-        if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
-            MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-            if [[ -n "$MODERN_BASH_VERSION" ]]; then
-                MODERN_BASH_AVAILABLE=true
-            fi
-        fi
-
-        if [[ "$MODERN_BASH_AVAILABLE" == "true" ]]; then
-            echo "ℹ️  Bootstrap is running with system Bash ${BASH_VERSION}"
-            echo "   ✅ Modern Bash ${MODERN_BASH_VERSION} is already installed at ~/.nix-profile/bin/bash"
-            echo "   Your shell sessions will use the modern version."
-            echo ""
-        else
-            echo "⚠️  Bootstrap is running with system Bash ${BASH_VERSION}"
-            echo "   macOS ships with Bash 3.2 (2007) due to GPL licensing."
-            echo ""
-            echo "🔧 This bootstrap will install modern Bash 5.2+ via Nix."
-            echo "   After completion, new shells will use the modern version."
-            echo ""
-        fi
+  BASH_MAJOR_VERSION=$(echo "${BASH_VERSION}" | cut -d. -f1)
+  if [[ "${BASH_MAJOR_VERSION}" -lt 4 ]]; then
+    # Check if modern bash is already available
+    MODERN_BASH_AVAILABLE=false
+    if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
+      MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+      if [[ -n "$MODERN_BASH_VERSION" ]]; then
+        MODERN_BASH_AVAILABLE=true
+      fi
     fi
+
+    if [[ "$MODERN_BASH_AVAILABLE" == "true" ]]; then
+      echo "ℹ️  Bootstrap is running with system Bash ${BASH_VERSION}"
+      echo "   ✅ Modern Bash ${MODERN_BASH_VERSION} is already installed at ~/.nix-profile/bin/bash"
+      echo "   Your shell sessions will use the modern version."
+      echo ""
+    else
+      echo "⚠️  Bootstrap is running with system Bash ${BASH_VERSION}"
+      echo "   macOS ships with Bash 3.2 (2007) due to GPL licensing."
+      echo ""
+      echo "🔧 This bootstrap will install modern Bash 5.2+ via Nix."
+      echo "   After completion, new shells will use the modern version."
+      echo ""
+    fi
+  fi
 fi
 
 # Setup logging
 # Source CI helpers if available
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [[ -f "${SCRIPT_DIR}/scripts/ci-helpers.sh" ]]; then
-    # shellcheck source=/dev/null
-    source "${SCRIPT_DIR}/scripts/ci-helpers.sh"
+  # shellcheck source=/dev/null
+  source "${SCRIPT_DIR}/scripts/ci-helpers.sh"
 elif [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
-    # shellcheck source=/dev/null
-    source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
+  # shellcheck source=/dev/null
+  source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
 fi
 
 BOOTSTRAP_LOG="${SCRIPT_DIR}/logs/bootstrap-$(date +%Y%m%d-%H%M%S).log"
@@ -45,7 +45,7 @@ mkdir -p "$(dirname "${BOOTSTRAP_LOG}")"
 
 # Function to log and display
 log_and_echo() {
-    echo "$1" | tee -a "${BOOTSTRAP_LOG}"
+  echo "$1" | tee -a "${BOOTSTRAP_LOG}"
 }
 
 echo "Bootstrap started at $(date)" | tee "${BOOTSTRAP_LOG}"
@@ -64,223 +64,223 @@ NC='\033[0m' # No Color
 
 # Function to print status messages
 print_status() {
-    echo -e "${GREEN}==>${NC} $1"
+  echo -e "${GREEN}==>${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}Error:${NC} $1"
-    exit 1
+  echo -e "${RED}Error:${NC} $1"
+  exit 1
 }
 
 print_warning() {
-    echo -e "${YELLOW}Warning:${NC} $1"
+  echo -e "${YELLOW}Warning:${NC} $1"
 }
 
 # Check if a command exists
 command_exists() {
-    command -v "$1" >/dev/null 2>&1
+  command -v "$1" >/dev/null 2>&1
 }
 
 # Function to handle previous Nix installation remnants following official documentation
 handle_nix_remnants() {
-    print_status "Checking for previous Nix installation remnants..."
+  print_status "Checking for previous Nix installation remnants..."
 
-    local found_backups=false
+  local found_backups=false
 
-    # Official backup files that the Nix installer creates (per official docs)
-    local official_backups=(
-        "/etc/zshrc.backup-before-nix"
-        "/etc/zsh/zshrc.backup-before-nix"
-        "/etc/bashrc.backup-before-nix"
-        "/etc/bash.bashrc.backup-before-nix"
-    )
+  # Official backup files that the Nix installer creates (per official docs)
+  local official_backups=(
+    "/etc/zshrc.backup-before-nix"
+    "/etc/zsh/zshrc.backup-before-nix"
+    "/etc/bashrc.backup-before-nix"
+    "/etc/bash.bashrc.backup-before-nix"
+  )
 
-    # Check for backup files that block installation
-    for backup_file in "${official_backups[@]}"; do
+  # Check for backup files that block installation
+  for backup_file in "${official_backups[@]}"; do
+    if [[ -f "${backup_file}" ]]; then
+      found_backups=true
+      print_warning "Found Nix backup file: ${backup_file}"
+    fi
+  done
+
+  if [[ "${found_backups}" = true ]]; then
+    echo ""
+    echo "According to the official Nix documentation, these backup files contain"
+    echo "your original system configuration and should be restored."
+    echo ""
+    echo "The Nix installer cannot proceed with these backup files present."
+    echo "Following official documentation, the recommended action is to restore"
+    echo "the backup files to their original locations."
+    echo ""
+    printf "Restore backup files as recommended by official Nix docs? [Y/n]: "
+    if command -v is_ci &>/dev/null && is_ci; then
+      response="Y"
+      echo "Y [auto-confirmed in CI]"
+    else
+      read -r response
+    fi
+
+    case "${response}" in
+    [nN] | [nN][oO])
+      print_warning "Moving backup files to /tmp (you can restore them later)"
+      local timestamp=$(date +%s)
+      for backup_file in "${official_backups[@]}"; do
         if [[ -f "${backup_file}" ]]; then
-            found_backups=true
-            print_warning "Found Nix backup file: ${backup_file}"
+          local basename=$(basename "${backup_file}")
+          sudo mv "${backup_file}" "/tmp/${basename}.${timestamp}" 2>/dev/null &&
+            echo "  → Moved ${backup_file} to /tmp/${basename}.${timestamp}"
         fi
-    done
+      done
+      ;;
+    *)
+      print_status "Restoring backup files (following official Nix documentation)..."
 
-    if [[ "${found_backups}" = true ]]; then
-        echo ""
-        echo "According to the official Nix documentation, these backup files contain"
-        echo "your original system configuration and should be restored."
-        echo ""
-        echo "The Nix installer cannot proceed with these backup files present."
-        echo "Following official documentation, the recommended action is to restore"
-        echo "the backup files to their original locations."
-        echo ""
-        printf "Restore backup files as recommended by official Nix docs? [Y/n]: "
-        if command -v is_ci &>/dev/null && is_ci; then
-            response="Y"
-            echo "Y [auto-confirmed in CI]"
-        else
-            read -r response
-        fi
+      # Follow exact commands from official docs
+      if [[ -f "/etc/zshrc.backup-before-nix" ]]; then
+        sudo mv /etc/zshrc.backup-before-nix /etc/zshrc &&
+          print_status "  → Restored /etc/zshrc"
+      fi
 
-        case "${response}" in
-            [nN]|[nN][oO])
-                print_warning "Moving backup files to /tmp (you can restore them later)"
-                local timestamp=$(date +%s)
-                for backup_file in "${official_backups[@]}"; do
-                    if [[ -f "${backup_file}" ]]; then
-                        local basename=$(basename "${backup_file}")
-                        sudo mv "${backup_file}" "/tmp/${basename}.${timestamp}" 2>/dev/null && \
-                            echo "  → Moved ${backup_file} to /tmp/${basename}.${timestamp}"
-                    fi
-                done
-                ;;
-            *)
-                print_status "Restoring backup files (following official Nix documentation)..."
+      if [[ -f "/etc/zsh/zshrc.backup-before-nix" ]]; then
+        sudo mv /etc/zsh/zshrc.backup-before-nix /etc/zsh/zshrc &&
+          print_status "  → Restored /etc/zsh/zshrc"
+      fi
 
-                # Follow exact commands from official docs
-                if [[ -f "/etc/zshrc.backup-before-nix" ]]; then
-                    sudo mv /etc/zshrc.backup-before-nix /etc/zshrc && \
-                        print_status "  → Restored /etc/zshrc"
-                fi
+      if [[ -f "/etc/bashrc.backup-before-nix" ]]; then
+        sudo mv /etc/bashrc.backup-before-nix /etc/bashrc &&
+          print_status "  → Restored /etc/bashrc"
+      fi
 
-                if [[ -f "/etc/zsh/zshrc.backup-before-nix" ]]; then
-                    sudo mv /etc/zsh/zshrc.backup-before-nix /etc/zsh/zshrc && \
-                        print_status "  → Restored /etc/zsh/zshrc"
-                fi
+      if [[ -f "/etc/bash.bashrc.backup-before-nix" ]]; then
+        sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc &&
+          print_status "  → Restored /etc/bash.bashrc"
+      fi
 
-                if [[ -f "/etc/bashrc.backup-before-nix" ]]; then
-                    sudo mv /etc/bashrc.backup-before-nix /etc/bashrc && \
-                        print_status "  → Restored /etc/bashrc"
-                fi
+      print_status "Backup files restored per official documentation."
+      print_status "System is now clean for a fresh Nix installation."
+      ;;
+    esac
+  fi
 
-                if [[ -f "/etc/bash.bashrc.backup-before-nix" ]]; then
-                    sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc && \
-                        print_status "  → Restored /etc/bash.bashrc"
-                fi
+  # Clean up other remnants (also from official docs)
+  if [[ -f "/etc/nix/nix.conf" ]]; then
+    print_warning "Removing leftover Nix configuration..."
+    sudo rm -rf /etc/nix 2>/dev/null || print_warning "Could not remove /etc/nix"
+  fi
 
-                print_status "Backup files restored per official documentation."
-                print_status "System is now clean for a fresh Nix installation."
-                ;;
-        esac
-    fi
+  if [[ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]]; then
+    print_warning "Removing leftover Nix daemon service..."
+    sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
+    sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null ||
+      print_warning "Could not remove daemon plist"
+  fi
 
-    # Clean up other remnants (also from official docs)
-    if [[ -f "/etc/nix/nix.conf" ]]; then
-        print_warning "Removing leftover Nix configuration..."
-        sudo rm -rf /etc/nix 2>/dev/null || print_warning "Could not remove /etc/nix"
-    fi
+  if [[ -f "/Library/LaunchDaemons/org.nixos.darwin-store.plist" ]]; then
+    print_warning "Removing leftover Darwin store service..."
+    sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || true
+    sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null ||
+      print_warning "Could not remove darwin-store plist"
+  fi
 
-    if [[ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]]; then
-        print_warning "Removing leftover Nix daemon service..."
-        sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
-        sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || \
-            print_warning "Could not remove daemon plist"
-    fi
-
-    if [[ -f "/Library/LaunchDaemons/org.nixos.darwin-store.plist" ]]; then
-        print_warning "Removing leftover Darwin store service..."
-        sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || true
-        sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || \
-            print_warning "Could not remove darwin-store plist"
-    fi
-
-    print_status "Cleanup completed following official documentation"
+  print_status "Cleanup completed following official documentation"
 }
 
 # Check if we're in a fresh shell with Nix environment
 if ! command_exists nix; then
-    handle_nix_remnants
+  handle_nix_remnants
 
-    print_status "Installing Nix..."
-    curl -L https://nixos.org/nix/install > /tmp/nix-install.sh
-    sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
-    rm /tmp/nix-install.sh
+  print_status "Installing Nix..."
+  curl -L https://nixos.org/nix/install >/tmp/nix-install.sh
+  sh /tmp/nix-install.sh --daemon || print_error "Failed to install Nix"
+  rm /tmp/nix-install.sh
 
-    if command -v is_ci &>/dev/null && is_ci; then
-        print_status "Nix installed! Continuing in CI mode..."
-        # In CI, source nix immediately to make it available
-        if [[ "$(uname)" == "Darwin" ]]; then
-            # macOS uses nix-daemon.sh for multi-user installation
-            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-                # shellcheck source=/dev/null
-                source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-            fi
-        else
-            # Linux uses nix.sh
-            if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
-                # shellcheck source=/dev/null
-                source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
-            fi
-        fi
-        # Also try user profile
-        if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
-            # shellcheck source=/dev/null
-            source "$HOME/.nix-profile/etc/profile.d/nix.sh"
-        fi
-        # Ensure PATH includes Nix binaries
-        export PATH="/nix/var/nix/profiles/default/bin:$HOME/.nix-profile/bin:$PATH"
-        # Export PATH to GitHub Actions for subsequent steps
-        if [[ -n "${GITHUB_PATH}" ]]; then
-            echo "/nix/var/nix/profiles/default/bin" >> "${GITHUB_PATH}"
-            echo "$HOME/.nix-profile/bin" >> "${GITHUB_PATH}"
-        fi
+  if command -v is_ci &>/dev/null && is_ci; then
+    print_status "Nix installed! Continuing in CI mode..."
+    # In CI, source nix immediately to make it available
+    if [[ "$(uname)" == "Darwin" ]]; then
+      # macOS uses nix-daemon.sh for multi-user installation
+      if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+        # shellcheck source=/dev/null
+        source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+      fi
     else
-        print_status "Nix installed! Please restart your terminal and run this script again."
-        exit 0
+      # Linux uses nix.sh
+      if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
+        # shellcheck source=/dev/null
+        source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+      fi
     fi
+    # Also try user profile
+    if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
+      # shellcheck source=/dev/null
+      source "$HOME/.nix-profile/etc/profile.d/nix.sh"
+    fi
+    # Ensure PATH includes Nix binaries
+    export PATH="/nix/var/nix/profiles/default/bin:$HOME/.nix-profile/bin:$PATH"
+    # Export PATH to GitHub Actions for subsequent steps
+    if [[ -n "${GITHUB_PATH}" ]]; then
+      echo "/nix/var/nix/profiles/default/bin" >>"${GITHUB_PATH}"
+      echo "$HOME/.nix-profile/bin" >>"${GITHUB_PATH}"
+    fi
+  else
+    print_status "Nix installed! Please restart your terminal and run this script again."
+    exit 0
+  fi
 fi
 
 # Check if Home Manager is installed
 if ! command_exists home-manager; then
-    print_status "Installing Home Manager..."
-    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-    nix-channel --update
-    export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
+  print_status "Installing Home Manager..."
+  nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+  nix-channel --update
+  export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 
-    # Install Home Manager
-    nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
+  # Install Home Manager
+  nix-shell '<home-manager>' -A install || print_error "Failed to install Home Manager"
 
-    if command -v is_ci &>/dev/null && is_ci; then
-        print_status "Home Manager installed! Continuing in CI mode..."
-        # In CI, source the home-manager script to make it available immediately
-        if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
-            # shellcheck source=/dev/null
-            source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-        fi
-        # Export PATH to GitHub Actions for subsequent steps (in case paths changed)
-        if [[ -n "${GITHUB_PATH}" ]]; then
-            echo "/nix/var/nix/profiles/default/bin" >> "${GITHUB_PATH}"
-            echo "$HOME/.nix-profile/bin" >> "${GITHUB_PATH}"
-        fi
-    else
-        print_status "Home Manager installed! Please restart your terminal and run this script again."
-        exit 0
+  if command -v is_ci &>/dev/null && is_ci; then
+    print_status "Home Manager installed! Continuing in CI mode..."
+    # In CI, source the home-manager script to make it available immediately
+    if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+      # shellcheck source=/dev/null
+      source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
     fi
+    # Export PATH to GitHub Actions for subsequent steps (in case paths changed)
+    if [[ -n "${GITHUB_PATH}" ]]; then
+      echo "/nix/var/nix/profiles/default/bin" >>"${GITHUB_PATH}"
+      echo "$HOME/.nix-profile/bin" >>"${GITHUB_PATH}"
+    fi
+  else
+    print_status "Home Manager installed! Please restart your terminal and run this script again."
+    exit 0
+  fi
 fi
 
 # Set NIX_PATH if not set (needed for home-manager to work properly)
 if [[ -z "${NIX_PATH}" ]]; then
-    export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
+  export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 fi
 
 # Setup Home Manager configuration link
 print_status "Setting up Home Manager configuration..."
 mkdir -p ~/.config/home-manager
 if [[ -f ~/.config/home-manager/home.nix ]] && [[ ! -L ~/.config/home-manager/home.nix ]]; then
-    print_warning "Backing up existing home.nix..."
-    mv ~/.config/home-manager/home.nix ~/.config/home-manager/home.nix.backup
+  print_warning "Backing up existing home.nix..."
+  mv ~/.config/home-manager/home.nix ~/.config/home-manager/home.nix.backup
 fi
 ln -sf "${SCRIPT_DIR}/nix/home.nix" ~/.config/home-manager/home.nix
 
 # Install chezmoi temporarily to get dotfiles, then Home Manager will manage it
 if ! command_exists chezmoi; then
-    print_status "Installing chezmoi temporarily..."
-    nix-env -iA nixpkgs.chezmoi || print_error "Failed to install chezmoi"
+  print_status "Installing chezmoi temporarily..."
+  nix-env -iA nixpkgs.chezmoi || print_error "Failed to install chezmoi"
 fi
 
 # Get the repository URL
 if [[ -d .git ]]; then
-    REPO_URL=$(git remote get-url origin 2>/dev/null) || print_error "Not a git repository or no remote 'origin' found"
+  REPO_URL=$(git remote get-url origin 2>/dev/null) || print_error "Not a git repository or no remote 'origin' found"
 else
-    print_error "Not a git repository"
+  print_error "Not a git repository"
 fi
 
 print_status "Using repository: ${REPO_URL}"
@@ -314,16 +314,16 @@ NIX_PROFILE_PATH="${HOME}/.nix-profile/bin"
 
 # Add to shell configuration files to ensure proper PATH ordering
 for shell_config in "${HOME}/.zprofile" "${HOME}/.bash_profile" "${HOME}/.profile"; do
-    if [[ -f "${shell_config}" ]] || [[ "${shell_config}" = "${HOME}/.zprofile" ]]; then
-        # Remove any existing nix profile path entries to avoid duplicates
-        if [[ -f "${shell_config}" ]]; then
-            grep -v "/.nix-profile/bin" "${shell_config}" > "${shell_config}.tmp" && mv "${shell_config}.tmp" "${shell_config}"
-        fi
-        # Add nix profile path at the beginning (prepend to PATH)
-        echo "# Nix package manager - ensure modern tools take precedence" >> "${shell_config}"
-        echo "export PATH=\"${NIX_PROFILE_PATH}:\$PATH\"" >> "${shell_config}"
-        print_status "  → Updated ${shell_config}"
+  if [[ -f "${shell_config}" ]] || [[ "${shell_config}" = "${HOME}/.zprofile" ]]; then
+    # Remove any existing nix profile path entries to avoid duplicates
+    if [[ -f "${shell_config}" ]]; then
+      grep -v "/.nix-profile/bin" "${shell_config}" >"${shell_config}.tmp" && mv "${shell_config}.tmp" "${shell_config}"
     fi
+    # Add nix profile path at the beginning (prepend to PATH)
+    echo "# Nix package manager - ensure modern tools take precedence" >>"${shell_config}"
+    echo "export PATH=\"${NIX_PROFILE_PATH}:\$PATH\"" >>"${shell_config}"
+    print_status "  → Updated ${shell_config}"
+  fi
 done
 
 # Configure fish shell specifically for Nix environment
@@ -363,14 +363,14 @@ print_status "Setting up fish as default shell..."
 # Store current shell for restoration (used by uninstall script)
 if [[ ! -f "${HOME}/.dotfiles/.shell_backup" ]]; then
   CURRENT_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
-  echo "ORIGINAL_SHELL=$CURRENT_SHELL" > "$HOME/.dotfiles/.shell_backup"
+  echo "ORIGINAL_SHELL=$CURRENT_SHELL" >"$HOME/.dotfiles/.shell_backup"
 fi
 
 # Add Nix fish to /etc/shells if not already there
 FISH_PATH="$HOME/.nix-profile/bin/fish"
 if ! grep -q "$FISH_PATH" /etc/shells; then
-    print_status "Adding fish to /etc/shells..."
-    echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
+  print_status "Adding fish to /etc/shells..."
+  echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
 fi
 
 # Change default shell to fish
@@ -380,99 +380,99 @@ chsh -s "$FISH_PATH" || print_warning "Failed to change default shell to fish"
 # Verify the change
 NEW_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
 if [[ "${NEW_SHELL}" = "${FISH_PATH}" ]]; then
-    print_status "✅ Default shell changed to fish successfully"
-    print_status "New terminals will use fish with starship prompt"
+  print_status "✅ Default shell changed to fish successfully"
+  print_status "New terminals will use fish with starship prompt"
 else
-    print_warning "Shell change may not have taken effect immediately"
+  print_warning "Shell change may not have taken effect immediately"
 fi
 
 # On macOS, install Homebrew if not present and then install GUI apps
 if [ "$(uname)" = "Darwin" ]; then
-    # Check if Homebrew is installed and working
-    if [ -f "/opt/homebrew/bin/brew" ] || [ -f "/usr/local/bin/brew" ]; then
-        print_status "Homebrew is already installed"
-        # Source Homebrew environment
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-        # Install GUI apps via Brewfile
-        print_status "Installing GUI apps via Brewfile..."
-        brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
+  # Check if Homebrew is installed and working
+  if [ -f "/opt/homebrew/bin/brew" ] || [ -f "/usr/local/bin/brew" ]; then
+    print_status "Homebrew is already installed"
+    # Source Homebrew environment
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    # Install GUI apps via Brewfile
+    print_status "Installing GUI apps via Brewfile..."
+    brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
+  else
+    print_status "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    # Add Homebrew to PATH
+    print_status "Configuring Homebrew in PATH..."
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >>~/.zprofile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    if command -v is_ci &>/dev/null && is_ci; then
+      print_status "Homebrew installed! Continuing in CI mode..."
+      # Export Homebrew PATH to GitHub Actions for subsequent steps
+      if [[ -n "${GITHUB_PATH}" ]]; then
+        echo "/opt/homebrew/bin" >>"${GITHUB_PATH}"
+        echo "/usr/local/bin" >>"${GITHUB_PATH}"
+      fi
+      # Install GUI apps via Brewfile
+      brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
     else
-        print_status "Installing Homebrew..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-        # Add Homebrew to PATH
-        print_status "Configuring Homebrew in PATH..."
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-
-        if command -v is_ci &>/dev/null && is_ci; then
-            print_status "Homebrew installed! Continuing in CI mode..."
-            # Export Homebrew PATH to GitHub Actions for subsequent steps
-            if [[ -n "${GITHUB_PATH}" ]]; then
-                echo "/opt/homebrew/bin" >> "${GITHUB_PATH}"
-                echo "/usr/local/bin" >> "${GITHUB_PATH}"
-            fi
-            # Install GUI apps via Brewfile
-            brew bundle --file="$HOME/.dotfiles/brew/Brewfile" || print_warning "brew bundle failed"
-        else
-            print_status "Homebrew installed! Please restart your terminal and run this script again."
-            exit 0
-        fi
+      print_status "Homebrew installed! Please restart your terminal and run this script again."
+      exit 0
     fi
+  fi
 fi
 
 # Ensure Nix experimental features are enabled for flakes and nix-command
 mkdir -p "$HOME/.config/nix"
 if ! grep -q 'experimental-features = nix-command flakes' "$HOME/.config/nix/nix.conf" 2>/dev/null; then
-  echo 'experimental-features = nix-command flakes' >> "$HOME/.config/nix/nix.conf"
+  echo 'experimental-features = nix-command flakes' >>"$HOME/.config/nix/nix.conf"
   print_status "Enabled Nix experimental features: nix-command flakes in ~/.config/nix/nix.conf"
 fi
 
 # Ensure pnpm is available (workaround for broken Nix package)
 if ! command -v pnpm >/dev/null 2>&1; then
-    print_status "pnpm not found via Nix; installing globally with npm as a workaround..."
-    npm install -g pnpm
+  print_status "pnpm not found via Nix; installing globally with npm as a workaround..."
+  npm install -g pnpm
 else
-    print_status "pnpm is already installed."
+  print_status "pnpm is already installed."
 fi
 
 # Install Cloudflare Wrangler via npm (Nix package has large downloads)
 print_status "Installing Cloudflare Wrangler..."
 if ! command -v wrangler >/dev/null 2>&1; then
-    npm install -g wrangler@latest
-    print_status "Wrangler installed successfully"
+  npm install -g wrangler@latest
+  print_status "Wrangler installed successfully"
 else
-    print_status "Wrangler is already installed"
+  print_status "Wrangler is already installed"
 fi
 
 # Optional: Set up OpenHands (AI coding assistant)
 if [[ "${SETUP_OPENHANDS:-}" == "true" ]]; then
-    print_status "Setting up OpenHands AI coding assistant..."
-    if [[ -x "$HOME/.dotfiles/scripts/setup-openhands.sh" ]]; then
-        "$HOME/.dotfiles/scripts/setup-openhands.sh" install
-        print_status "OpenHands setup complete!"
-        print_status "Access at: http://localhost:3030"
-        print_status "Remember to add your API keys in ~/.config/openhands/config.env"
-    else
-        print_warning "OpenHands setup script not found or not executable"
-    fi
+  print_status "Setting up OpenHands AI coding assistant..."
+  if [[ -x "$HOME/.dotfiles/scripts/setup-openhands.sh" ]]; then
+    "$HOME/.dotfiles/scripts/setup-openhands.sh" install
+    print_status "OpenHands setup complete!"
+    print_status "Access at: http://localhost:3030"
+    print_status "Remember to add your API keys in ~/.config/openhands/config.env"
+  else
+    print_warning "OpenHands setup script not found or not executable"
+  fi
 else
-    print_status "Tip: Set SETUP_OPENHANDS=true to install OpenHands AI coding assistant"
+  print_status "Tip: Set SETUP_OPENHANDS=true to install OpenHands AI coding assistant"
 fi
 
 print_status "Bootstrap completed!"
 
 # Final bash check if we were running with old bash
 if [[ -n "${BASH_VERSION}" ]] && [[ "${BASH_MAJOR_VERSION}" -lt 4 ]]; then
-    if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
-        MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-        if [[ -n "$MODERN_BASH_VERSION" ]]; then
-            echo ""
-            echo "🎉 Modern Bash ${MODERN_BASH_VERSION} is now available!"
-            echo "   New terminal sessions will automatically use it."
-            echo "   To use it in the current session: exec $HOME/.nix-profile/bin/bash"
-        fi
+  if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
+    MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
+    if [[ -n "$MODERN_BASH_VERSION" ]]; then
+      echo ""
+      echo "🎉 Modern Bash ${MODERN_BASH_VERSION} is now available!"
+      echo "   New terminal sessions will automatically use it."
+      echo "   To use it in the current session: exec $HOME/.nix-profile/bin/bash"
     fi
+  fi
 fi
 
 print_status "Your system is now fully configured. Enjoy!"

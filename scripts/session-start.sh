@@ -22,36 +22,37 @@ mkdir -p "${HISTORY_DIR}"
 
 # Function to get git status summary
 get_git_status() {
-    cd "$DOTFILES_ROOT"
-    local branch=$(git branch --show-current)
-    local changes=$(git status --porcelain | wc -l | tr -d ' ')
-    local ahead_behind=$(git status -sb | grep -oE '(ahead|behind) [0-9]+' || echo "up to date")
-    echo "{\"branch\": \"$branch\", \"changes\": $changes, \"sync\": \"$ahead_behind\"}"
+  cd "$DOTFILES_ROOT"
+  local branch=$(git branch --show-current)
+  local changes=$(git status --porcelain | wc -l | tr -d ' ')
+  local ahead_behind=$(git status -sb | grep -oE '(ahead|behind) [0-9]+' || echo "up to date")
+  echo "{\"branch\": \"$branch\", \"changes\": $changes, \"sync\": \"$ahead_behind\"}"
 }
 
 # Function to get system info
 get_system_info() {
-    local os=$(uname -s)
-    local arch=$(uname -m)
-    local shell=$(basename "$SHELL")
-    local nix_version=$(nix --version 2>/dev/null | cut -d' ' -f3 || echo "not installed")
-    echo "{\"os\": \"$os\", \"arch\": \"$arch\", \"shell\": \"$shell\", \"nix\": \"$nix_version\"}"
+  local os=$(uname -s)
+  local arch=$(uname -m)
+  local shell=$(basename "$SHELL")
+  local nix_version=$(nix --version 2>/dev/null | cut -d' ' -f3 || echo "not installed")
+  echo "{\"os\": \"$os\", \"arch\": \"$arch\", \"shell\": \"$shell\", \"nix\": \"$nix_version\"}"
 }
 
 # Initialize or update session file
 if [[ -f "$SESSION_FILE" ]]; then
-    # Read existing session
-    EXISTING_SESSION=$(cat "$SESSION_FILE")
-    EXISTING_ID=$(echo "$EXISTING_SESSION" | jq -r '.id // empty')
+  # Read existing session
+  EXISTING_SESSION=$(cat "$SESSION_FILE")
+  EXISTING_ID=$(echo "$EXISTING_SESSION" | jq -r '.id // empty')
 else
-    EXISTING_ID=""
+  EXISTING_ID=""
 fi
 
 # Generate new session ID
 SESSION_ID="${NOW}_$$"
 
 # Create session data
-SESSION_DATA=$(cat <<EOF
+SESSION_DATA=$(
+  cat <<EOF
 {
   "id": "$SESSION_ID",
   "started": "$NOW",
@@ -67,13 +68,13 @@ EOF
 )
 
 # Write session file
-echo "$SESSION_DATA" | jq '.' > "$SESSION_FILE"
+echo "$SESSION_DATA" | jq '.' >"$SESSION_FILE"
 
 # Create or append to daily history log
 HISTORY_FILE="${HISTORY_DIR}/${TODAY}.md"
 
 if [[ ! -f "$HISTORY_FILE" ]]; then
-    cat > "$HISTORY_FILE" <<EOF
+  cat >"$HISTORY_FILE" <<EOF
 # Dotfiles Session Log - ${TODAY}
 
 ## Sessions
@@ -82,7 +83,7 @@ EOF
 fi
 
 # Append session start to history
-cat >> "$HISTORY_FILE" <<EOF
+cat >>"$HISTORY_FILE" <<EOF
 
 ### Session Started: ${NOW}
 
@@ -109,9 +110,9 @@ echo "• Last commit: $(git log -1 --pretty=format:'%h %s' 2>/dev/null || echo 
 
 # Show recent todos if any
 if command -v rg &>/dev/null && rg -q "TODO|FIXME" .; then
-    echo ""
-    echo -e "${YELLOW}Recent TODOs:${NC}"
-    rg "TODO|FIXME" . --type-add 'config:*.{nix,sh,fish}' -t config -m 3 || true
+  echo ""
+  echo -e "${YELLOW}Recent TODOs:${NC}"
+  rg "TODO|FIXME" . --type-add 'config:*.{nix,sh,fish}' -t config -m 3 || true
 fi
 
 echo ""
