@@ -9,6 +9,7 @@ enable=all
 
 # Disable specific checks if needed
 # disable=SC2034  # Example: Disable "appears unused" warning
+disable=SC1091,SC2250  # Can't follow sourced files, brace style preference
 
 # Exclude certain file patterns
 # exclude=SC1090,SC1091  # Can't follow sourced files

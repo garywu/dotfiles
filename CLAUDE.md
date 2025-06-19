@@ -170,6 +170,39 @@ npm run preview         # Preview built site
 npx astro sync          # Sync content collections if pages missing
 ```
 
+## Current Session (2025-06-19)
+
+### Focus: Claude-Init Knowledge Transfer
+
+1. **Analyzed dotfiles for valuable learnings**:
+   - Extracted debugging experiences from Issue #15 (Astro docs)
+   - Captured CI/CD platform-specific knowledge
+   - Documented testing framework patterns
+
+2. **Created comprehensive documentation for claude-init**:
+   - Added 7 new documentation guides
+   - Captured 3.5 hours of Astro debugging into guide
+   - Documented platform-specific CI gotchas
+   - Created meta-guide on learning from mistakes
+
+3. **Transformed claude-init philosophy**:
+   - Shifted from prescriptive scripts to information resource
+   - Added "information over implementation" principle
+   - Made debugging-to-documentation process explicit
+
+4. **Key Contributions**:
+   - `docs/debugging-and-troubleshooting.md` - Common issues
+   - `docs/testing-framework-guide.md` - Complete test patterns
+   - `docs/github-actions-multi-platform.md` - CI/CD guide
+   - `docs/documentation-site-setup.md` - Astro lessons
+   - `docs/learning-from-mistakes.md` - Knowledge capture process
+
+### Commits
+
+- Added linting/formatting reference documentation
+- Added core design principle of information over implementation
+- Added comprehensive debugging knowledge from real-world experience
+
 ## Current Session (2025-06-18)
 
 ### Completed
@@ -203,16 +236,18 @@ npx astro sync          # Sync content collections if pages missing
 4. Created GitHub Issue #4 - Setup Professional Development Processes and Standards
 5. Created GitHub Issue #5 - Phase 1: GitHub Repository Setup
 6. Established project decisions:
-  - Version: Starting at 0.0.1
-  - Commit format: Conventional Commits
-  - Versioning: Semantic Versioning
+
+   - Version: Starting at 0.0.1
+   - Commit format: Conventional Commits
+   - Versioning: Semantic Versioning
 
 7. Implemented Phase 1 (Issue #5):
-  - Created all GitHub labels
-  - Created issue templates (bug, feature, docs, refactor)
-  - Created pull request template
-  - Created CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md
-  - Updated CHANGELOG.md for v0.0.1
+
+   - Created all GitHub labels
+   - Created issue templates (bug, feature, docs, refactor)
+   - Created pull request template
+   - Created CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md
+   - Updated CHANGELOG.md for v0.0.1
 
 8. Committed changes and created v0.0.1 tag
 

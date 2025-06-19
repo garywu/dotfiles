@@ -161,3 +161,9 @@ public
 
 # Local Netlify folder
 .netlify .shell_backup
+
+# Claude session tracking
+.claude/history/
+.claude/session.json
+.claude/context/local/
+.claude/snippets/local/
