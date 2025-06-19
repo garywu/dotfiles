@@ -1,13 +1,32 @@
-# Modern Development Environment Setup
+```text
+    ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
+    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+
+    ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
+    ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
+    ██║  ██║██║   ██║   ██║   █████╗  ██║██║     █████╗  ███████╗
+    ██║  ██║██║   ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
+    ██████╔╝╚██████╔╝   ██║   ██║     ██║███████╗███████╗███████║
+    ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
+
+                    ∙∙∙ Don't Leave Home Without It ∙∙∙
+    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+    ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
+```
 
 <!-- Badges -->
 <div align="center">
 
 [![Release](https://img.shields.io/github/v/release/garywu/dotfiles?include_prereleases&sort=semver&display_name=tag&style=flat-square)](https://github.com/garywu/dotfiles/releases/latest)
-[![CI/CD](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/deploy-docs.yml?branch=main&label=docs&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/deploy-docs.yml)
 [![License](https://img.shields.io/github/license/garywu/dotfiles?style=flat-square)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/garywu/dotfiles?style=flat-square)](https://github.com/garywu/dotfiles/commits/main)
 [![Commit Activity](https://img.shields.io/github/commit-activity/w/garywu/dotfiles?style=flat-square)](https://github.com/garywu/dotfiles/graphs/commit-activity)
+
+<!-- GitHub Actions Status -->
+[![Documentation](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/deploy-docs.yml?branch=main&label=docs&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/deploy-docs.yml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/test-docs.yml?branch=main&label=tests&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/test-docs.yml)
+[![Linting](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/lint.yml?branch=main&label=lint&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/lint.yml)
+[![Security](https://img.shields.io/github/actions/workflow/status/garywu/dotfiles/security.yml?branch=main&label=security&style=flat-square)](https://github.com/garywu/dotfiles/actions/workflows/security.yml)
 
 <!-- Release Channels -->
 [![Stable](https://img.shields.io/badge/channel-stable-green?style=flat-square)](https://github.com/garywu/dotfiles/releases/latest)
@@ -26,7 +45,8 @@
 
 </div>
 
-This repository provides a fully automated, reproducible development environment using Nix, Home Manager, Chezmoi, and Homebrew (macOS).
+This repository provides a fully automated, reproducible development environment using Nix, Home Manager, Chezmoi,
+and Homebrew (macOS).
 
 ## 🚀 Quick Start
 
@@ -39,11 +59,14 @@ cd ~/.dotfiles
 - After each major step, restart your terminal and re-run `./bootstrap.sh` if prompted.
 
 ### 🔒 Privacy Note
-This repository uses GitHub's privacy-protecting email (`username@users.noreply.github.com`) to prevent email exposure in public commits. See [Git Email Privacy](https://garywu.github.io/dotfiles/98-troubleshooting/git-email-privacy/) for details.
+
+This repository uses GitHub's privacy-protecting email (`username@users.noreply.github.com`) to prevent email
+exposure in public commits. See [Git Email Privacy](https://garywu.github.io/dotfiles/98-troubleshooting/git-email-privacy/)
+for details.
 
 ## 📁 Project Structure
 
-```
+```text
 ~/.dotfiles/
 ├── bootstrap.sh      # Main installation script
 ├── unbootstrap.sh    # Complete removal script
@@ -53,8 +76,34 @@ This repository uses GitHub's privacy-protecting email (`username@users.noreply.
 └── README.md         # This file
 ```
 
+## 🧪 Testing & Quality Assurance
+
+This repository includes comprehensive testing infrastructure to prevent documentation link issues and ensure reliable deployments:
+
+- **Link Pattern Validation**: Prevents GitHub Pages + Astro base path issues
+- **Automated Testing**: Pre-deployment validation and post-deployment verification
+- **Cross-Platform Testing**: Validates builds on multiple platforms
+- **Production Verification**: Tests live site links after deployment
+
+Run tests locally:
+
+```bash
+# Test documentation patterns
+./tests/docs/test_link_patterns.sh
+
+# Test production links
+./tests/docs/test_production_links.sh
+
+# Full test suite
+cd docs && npm test
+```
+
+See [`tests/docs/README.md`](tests/docs/README.md) for comprehensive testing documentation.
+
 ## 📝 Documentation
 
 For full documentation, philosophy, architecture, and advanced usage, see:
-- `notes/` (in this repo)
-- or `docs/` (if using the Docusaurus site)
+
+- **📘 [Complete Documentation](https://garywu.github.io/dotfiles/)** - Comprehensive guides and reference
+- **🔧 [Getting Started](https://garywu.github.io/dotfiles/01-introduction/getting-started/)** - Step-by-step setup
+- **⚡ [CLI Tools](https://garywu.github.io/dotfiles/03-cli-tools/modern-replacements/)** - Modern command-line tools
