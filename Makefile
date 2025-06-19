@@ -1,16 +1,22 @@
 # Makefile for dotfiles linting and formatting
 
-.PHONY: all help lint format lint-shell format-shell lint-nix format-nix lint-yaml lint-markdown lint-toml format-toml lint-fish format-fish check fix
+.PHONY: all help lint format lint-shell format-shell lint-nix format-nix lint-yaml lint-markdown lint-toml format-toml lint-fish format-fish check fix session-start session-end session-status session-log
 
 # Default target
 all: help
 
 # Help target
 help:
-	@echo "Dotfiles Linting and Formatting"
-	@echo "==============================="
+	@echo "Dotfiles Management"
+	@echo "==================="
 	@echo ""
-	@echo "Available targets:"
+	@echo "Session Management:"
+	@echo "  make session-start  - Start a new development session"
+	@echo "  make session-end    - End current session and archive"
+	@echo "  make session-status - Show current session status"
+	@echo "  make session-log    - Add entry to session log (use with MSG=)"
+	@echo ""
+	@echo "Linting & Formatting:"
 	@echo "  make lint       - Run all linters"
 	@echo "  make format     - Run all formatters"
 	@echo "  make check      - Same as 'make lint'"
@@ -95,3 +101,21 @@ lint-fish:
 format-fish:
 	@echo "🎨 Formatting Fish scripts..."
 	@find . -type f -name "*.fish" | grep -v node_modules | xargs -r fish_indent -w || true
+
+# Session Management
+session-start:
+	@./scripts/session-start.sh
+
+session-end:
+	@./scripts/session-end.sh
+
+session-status:
+	@./scripts/session-status.sh
+
+session-log:
+	@if [ -z "$(MSG)" ]; then \
+		echo "Usage: make session-log MSG=\"your log message\""; \
+		exit 1; \
+	else \
+		./scripts/session-log.sh "$(MSG)"; \
+	fi
