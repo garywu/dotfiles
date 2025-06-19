@@ -16,7 +16,7 @@ echo "Testing Production Documentation Links"
 echo "====================================="
 echo ""
 
-# List of pages to test (based on build output)
+# List of pages to test (based on current site structure)
 PAGES=(
     "/"
     "/01-introduction/getting-started/"
@@ -24,6 +24,7 @@ PAGES=(
     "/02-platform-setup/macos/"
     "/02-platform-setup/ubuntu/"
     "/02-platform-setup/wsl2/"
+    "/03-cli-tools/"
     "/03-cli-tools/modern-replacements/"
     "/03-cli-tools/password-management/"
     "/03-cli-tools/efficiency-testing/"
@@ -35,8 +36,6 @@ PAGES=(
     "/04-terminal-workflow/tmux/"
     "/05-ai-development/ollama/"
     "/05-ai-development/chatblade/"
-    "/05-cli-tools-academy/"
-    "/05-cli-tools-academy/modern-replacements/"
     "/06-ai-tools/"
     "/06-ai-tools/ollama/"
     "/06-ai-tools/openhands/"

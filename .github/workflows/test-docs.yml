@@ -1,0 +1,195 @@
+name: Test Documentation
+
+on:
+  pull_request:
+    paths: ['docs/**', 'tests/docs/**']
+  push:
+    branches: [develop]
+    paths: ['docs/**', 'tests/docs/**']
+  workflow_dispatch:
+
+# Ensure docs workflow only affects docs directory for build steps
+defaults:
+  run:
+    working-directory: docs
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test-patterns:
+    name: Test Link Patterns
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate link patterns
+        working-directory: .
+        run: |
+          chmod +x tests/docs/test_link_patterns.sh
+          tests/docs/test_link_patterns.sh
+
+  test-build:
+    name: Test Build Process
+    runs-on: ubuntu-latest
+    needs: test-patterns
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test build
+        run: npm run build
+
+      - name: Check critical files
+        run: |
+          if [[ ! -f dist/index.html ]]; then
+            echo "❌ Homepage not generated"
+            exit 1
+          fi
+          echo "✅ Build completed successfully"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-build
+          path: docs/dist
+          retention-days: 1
+
+  test-links:
+    name: Test Internal Links
+    runs-on: ubuntu-latest
+    needs: test-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-build
+          path: docs/dist
+
+      - name: Test internal links
+        working-directory: .
+        run: |
+          chmod +x tests/docs/test_links.sh
+          # Install timeout for local testing
+          if ! command -v timeout >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y coreutils
+          fi
+          tests/docs/test_links.sh local
+
+  test-cross-platform:
+    name: Test Cross-Platform Build
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node-version: ['18', '20']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: |
+          # Handle cross-platform package-lock issues
+          rm -f package-lock.json
+          npm install
+
+      - name: Test build on ${{ matrix.os }} with Node ${{ matrix.node-version }}
+        run: npm run build
+
+      - name: Validate base path in build
+        run: |
+          if grep -q '/dotfiles/' dist/index.html 2>/dev/null; then
+            echo "✅ Base path correctly applied"
+          else
+            echo "❌ Base path not found in build"
+            exit 1
+          fi
+
+  comment-results:
+    name: Comment Test Results
+    runs-on: ubuntu-latest
+    needs: [test-patterns, test-build, test-links]
+    if: always() && github.event_name == 'pull_request'
+    steps:
+      - name: Create comment body
+        id: comment
+        run: |
+          if [[ "${{ needs.test-patterns.result }}" == "success" && "${{ needs.test-build.result }}" == "success" && "${{ needs.test-links.result }}" == "success" ]]; then
+            echo "status=✅ All documentation tests passed!" >> $GITHUB_OUTPUT
+            echo "body=✅ **Documentation Tests Passed**
+
+          All link patterns are valid and the documentation builds successfully.
+
+          - ✅ Link patterns validated
+          - ✅ Build process completed
+          - ✅ Internal links verified
+
+          The documentation is ready for deployment." >> $GITHUB_OUTPUT
+          else
+            echo "status=❌ Documentation tests failed" >> $GITHUB_OUTPUT
+            echo "body=❌ **Documentation Tests Failed**
+
+          Please check the failed jobs and fix the issues:
+
+          - Pattern validation: ${{ needs.test-patterns.result }}
+          - Build process: ${{ needs.test-build.result }}
+          - Link testing: ${{ needs.test-links.result }}
+
+          See the [troubleshooting guide](../blob/main/docs/troubleshooting/github-pages-astro-links.md) for common fixes." >> $GITHUB_OUTPUT
+          fi
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'Documentation Tests'
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.comment.outputs.body }}
+          edit-mode: replace
