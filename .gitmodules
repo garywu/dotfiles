@@ -1,0 +1,3 @@
+[submodule "external/claude-init"]
+  path = external/claude-init
+  url = https://github.com/garywu/claude-init.git
