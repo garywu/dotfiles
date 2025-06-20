@@ -17,11 +17,12 @@ EXPECTED_SHELLS=(
     "bash"
 )
 
-EXPECTED_CONFIGS=(
-    "$HOME/.config/home-manager/home.nix"
-    "$HOME/.config/fish/config.fish"
-    "$HOME/.local/share/chezmoi"
-)
+# TODO: Future use - validate specific config files
+# EXPECTED_CONFIGS=(
+#     "$HOME/.config/home-manager/home.nix"
+#     "$HOME/.config/fish/config.fish"
+#     "$HOME/.local/share/chezmoi"
+# )
 
 EXPECTED_ENV_VARS=(
     "PATH"
@@ -274,6 +275,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --debug)
+            # shellcheck disable=SC2154  # LOG_DEBUG defined in sourced file
             export LOG_LEVEL=$LOG_DEBUG
             shift
             ;;

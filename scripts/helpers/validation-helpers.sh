@@ -138,7 +138,7 @@ get_package_manager() {
 # Check for duplicate package installations
 check_duplicate_package() {
     local package="$1"
-    local preferred_manager="${2:-nix}"
+    # local preferred_manager="${2:-nix}"  # Reserved for future use
     local managers=()
 
     # Check in Nix

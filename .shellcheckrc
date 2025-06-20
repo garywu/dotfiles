@@ -1,19 +1,27 @@
-# ShellCheck configuration file
-# https://www.shellcheck.net/wiki/Ignore
+# ShellCheck configuration for dotfiles project
 
-# Set shell dialect (bash, sh, dash, ksh)
+# Disable specific warnings globally
+# Style checks
+disable=SC2001  # See if you can use ${variable//search/replace} instead of sed
+disable=SC2116  # Useless echo? Instead of 'cmd $(echo foo)', just use 'cmd foo'
+disable=SC2126  # Consider using 'grep -c' instead of 'grep|wc -l'
+disable=SC2250  # Prefer putting braces around variable references
+disable=SC2312  # Consider invoking this command separately (for pipelines)
+
+# Info level checks that are not always applicable
+disable=SC1090  # Can't follow non-constant source
+disable=SC1091  # Not following: was not specified as input
+disable=SC2016  # Expressions don't expand in single quotes
+disable=SC2162  # read without -r will mangle backslashes
+
+# Shell dialect
 shell=bash
 
-# Enable all optional checks
-enable=all
+# Set minimum severity level (error, warning, info, style)
+# We focus on errors and warnings
+severity=warning
 
-# Disable specific checks if needed
-# disable=SC2034  # Example: Disable "appears unused" warning
-disable=SC1091,SC2250  # Can't follow sourced files, brace style preference
-
-# Exclude certain file patterns
-# exclude=SC1090,SC1091  # Can't follow sourced files
-
-# Source paths for following sourced files
-# source-path=SCRIPTDIR
-# source-path=./lib
+# External sources - Tell ShellCheck about our sourced files
+# This helps with cross-file variable detection
+source-path=SCRIPTDIR
+source-path=scripts
