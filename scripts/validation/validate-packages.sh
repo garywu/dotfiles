@@ -5,7 +5,7 @@ set -euo pipefail
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DOTFILES_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+# DOTFILES_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"  # Reserved for future use
 
 # Source helpers
 # shellcheck source=/dev/null
@@ -191,7 +191,7 @@ validate_package() {
     # Read locations into array
     while IFS= read -r line; do
         [[ -n "$line" ]] && locations+=("$line")
-    done < <(check_package_location "$package")
+    done < <(check_package_location "$package" || true)
 
     if [[ ${#locations[@]} -eq 0 ]]; then
         log_debug "$package: Not installed"
@@ -292,7 +292,9 @@ main() {
     print_section "Checking Nix-Preferred Packages"
 
     for package in "${NIX_PREFERRED[@]}"; do
-        if [[ ! " ${CRITICAL_PACKAGES[@]} " =~ " ${package} " ]]; then
+        # Using literal match (not regex) to check if package is in array
+        # shellcheck disable=SC2076  # We want literal match, not regex
+        if [[ ! " ${CRITICAL_PACKAGES[*]} " =~ " ${package} " ]]; then
             validate_package "$package" "nix"
         fi
     done
@@ -303,7 +305,7 @@ main() {
 
         for package in "${HOMEBREW_ONLY[@]}"; do
             local locations
-            locations=($(check_package_location "$package"))
+            mapfile -t locations < <(check_package_location "$package")
 
             if [[ ${#locations[@]} -eq 0 ]]; then
                 log_debug "$package: Not installed (GUI app)"
@@ -327,9 +329,11 @@ main() {
         local path="${PATH_ARRAY[$i]}"
         if [[ "$path" =~ \.nix-profile|/nix/store ]] && [[ "$nix_found" == false ]]; then
             nix_found=true
+            # shellcheck disable=SC2154  # GREEN and NC defined in sourced file
             log_info "  $((i+1)). $path ${GREEN}[Nix]${NC}"
         elif [[ "$path" =~ /opt/homebrew|/usr/local ]] && [[ "$brew_found" == false ]]; then
             brew_found=true
+            # shellcheck disable=SC2154  # YELLOW defined in sourced file
             log_info "  $((i+1)). $path ${YELLOW}[Homebrew]${NC}"
         elif [[ $i -lt 5 ]]; then
             log_info "  $((i+1)). $path"
@@ -356,6 +360,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --debug)
+            # shellcheck disable=SC2154  # LOG_DEBUG defined in sourced file
             export LOG_LEVEL=$LOG_DEBUG
             shift
             ;;

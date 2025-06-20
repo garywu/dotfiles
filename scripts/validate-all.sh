@@ -49,12 +49,11 @@ run_validation() {
 
     # Run the script and capture results
     local exit_code=0
-    local output
     local temp_file
     temp_file=$(mktemp)
 
     # Pass through any arguments (like --fix, --debug)
-    if output=$("$script_path" "$@" 2>&1 | tee "$temp_file"); then
+    if "$script_path" "$@" 2>&1 | tee "$temp_file"; then
         exit_code=0
         PASSED_SCRIPTS+=("$script_name")
         log_success "$script_name completed successfully"
@@ -84,7 +83,7 @@ run_validation() {
     fi
 
     rm -f "$temp_file"
-    return $exit_code
+    return "$exit_code"
 }
 
 # Function to generate summary report
@@ -95,7 +94,9 @@ generate_report() {
     print_section "VALIDATION SUMMARY REPORT"
 
     echo "Timestamp: $timestamp"
-    echo "Host: $(hostname)"
+    local host
+    host=$(hostname)
+    echo "Host: $host"
     echo "User: $USER"
     echo
 
@@ -143,7 +144,8 @@ save_report() {
     local report_dir="$DOTFILES_ROOT/logs/validation"
     mkdir -p "$report_dir"
 
-    local report_file="$report_dir/validation-$(date +%Y%m%d-%H%M%S).log"
+    local report_file
+    report_file="$report_dir/validation-$(date +%Y%m%d-%H%M%S).log"
 
     {
         generate_report
@@ -170,7 +172,8 @@ main() {
 
     # Run all validation scripts
     for script in "${VALIDATION_SCRIPTS[@]}"; do
-        run_validation "$script" "$@" || true  # Continue even if one fails
+        # Continue even if one fails
+        run_validation "$script" "$@" || true
     done
 
     # Generate and save report
