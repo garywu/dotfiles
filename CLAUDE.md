@@ -120,6 +120,23 @@ make format-toml     # Format TOML files
 make format-fish     # Format Fish scripts
 ```
 
+### Environment Validation
+
+```bash
+# Run comprehensive validation
+./scripts/validate-all.sh
+
+# Run with auto-fix mode
+./scripts/validate-all.sh --fix
+
+# Individual validation scripts
+./scripts/validation/validate-packages.sh    # Check for duplicate packages
+./scripts/validation/validate-environment.sh  # Check environment health
+
+# View validation reports
+ls -la logs/validation/
+```
+
 ### Productivity Tools
 
 ```bash

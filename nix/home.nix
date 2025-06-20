@@ -41,6 +41,9 @@
     awscli2
     google-cloud-sdk
 
+    # Python package management
+    pipx  # Install Python CLI tools in isolated environments
+
     # Cloudflare tools
     cloudflared # Cloudflare Tunnel daemon and toolkit
     # wrangler        # Cloudflare Workers CLI (temporarily disabled - large download)
@@ -148,6 +151,7 @@
     yamllint # YAML linter
     nodePackages.markdownlint-cli # Markdown linter
     taplo # TOML formatter and linter
+    pre-commit # Git hook framework for code quality
     # Note: fish_indent is included with fish package
 
     # Security and Quality Tools
