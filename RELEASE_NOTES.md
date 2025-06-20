@@ -1,46 +1,42 @@
-## [0.2.1] - 2025-06-19
+## [0.3.0] - 2025-06-20
 
 ### Bug Fixes
 
-- Improve bash version warning messages in bootstrap ([edd162f](https://github.com/garywu/dotfiles/commit/edd162f48589884504050fb70ab64664a07c48f6))
-- Update documentation tests to match deployed pages ([845b987](https://github.com/garywu/dotfiles/commit/845b9879a3d885cc1b62c799c4e88df685a89bfb))
-- Resolve merge conflict in package.json - keep factual documentation name ([f4a740e](https://github.com/garywu/dotfiles/commit/f4a740eb8e6ddd00e57910d26da1ec6097787868))
-- Resolve all documentation link issues ([40cf8ed](https://github.com/garywu/dotfiles/commit/40cf8ed843350e1661b1199f8c503bf3d69fb046))
-- Resolve all documentation link issues (#23) ([5708e86](https://github.com/garywu/dotfiles/commit/5708e861ea9158c906527a9637651e534d41354d))
-- Clean up whitespace and line length in CLI tools index ([aeda44a](https://github.com/garywu/dotfiles/commit/aeda44a08301b90e727ac996aa284c2fe8b43ed9))
-- Resolve merge conflict in CLI tools index ([38ef473](https://github.com/garywu/dotfiles/commit/38ef4732e3ee5d7d2457569167496d7dfe8094e3))
+- Resolve CI/CD workflow failures ([1fe1a09](https://github.com/garywu/dotfiles/commit/1fe1a09e9a01e77751b569dedcc72b7678e8426b))
+- Properly center DOTFILES banner alignment ([40014dd](https://github.com/garywu/dotfiles/commit/40014dda76cd11549e18ecfa92d6c7eb5bb30655))
+- Increase banner indentation for proper centering ([b200a1a](https://github.com/garywu/dotfiles/commit/b200a1af110222153f5c93d28c578bf2a8233d00))
+- Use HTML pre tags for properly centered banner ([2caf426](https://github.com/garywu/dotfiles/commit/2caf426e1b94bba9eb146dfb689983db0ffae046))
+- Resolve security workflow issues ([d407a99](https://github.com/garywu/dotfiles/commit/d407a9976ac13a5c77d810ebfafc871444b25eb6))
+- Center tagline and remove privacy note ([903f7be](https://github.com/garywu/dotfiles/commit/903f7beeaaa078e5ab1bf0fda2fc4d5fbf3cac83))
+- Better center tagline in banner ([e8ef54d](https://github.com/garywu/dotfiles/commit/e8ef54d751505dbaf8717d9a96655c6699006506))
+- Reduce tagline spacing for proper centering ([d06f6df](https://github.com/garywu/dotfiles/commit/d06f6df0907ae5e8415e68820291f951dd192374))
+- Reduce tagline spacing by 6 more spaces ([7a9bd93](https://github.com/garywu/dotfiles/commit/7a9bd938d9921773c870e95e92ee17b1f8115a88))
+- Reduce tagline spacing by 2 more spaces for perfect centering ([47ab8e6](https://github.com/garywu/dotfiles/commit/47ab8e6f27c6fb9e151c71c030f7a8a3b71d1c47))
+- Reduce tagline spacing by 4 more spaces ([5a86c24](https://github.com/garywu/dotfiles/commit/5a86c245c7146460872c5cf7fa6115b50aefdb2a))
+- Remove all spacing from tagline for left alignment ([0d38d00](https://github.com/garywu/dotfiles/commit/0d38d00e5ff21dcb0061499f685764a18e040283))
 
 ### Documentation
 
-- Add Git Flow branching strategy documentation ([6a4cd57](https://github.com/garywu/dotfiles/commit/6a4cd57a98ff1008c84a36481b11b4752869f3ee))
-- Add comprehensive CLI tool usage galleries (#12) ([1d871bc](https://github.com/garywu/dotfiles/commit/1d871bc880d5177513205b63eb4b11894e24cb31))
-- Add community patterns and CLI golf challenges (#12) ([ee372f5](https://github.com/garywu/dotfiles/commit/ee372f52d1231d20264c5759f289b5a164f2f663))
-- Change tone from academy to factual documentation ([b3f3abd](https://github.com/garywu/dotfiles/commit/b3f3abd1d3289c7797521f7f9f6a6d19a20cbc5f))
-- Remove title and make ASCII banner the main header ([3f69e55](https://github.com/garywu/dotfiles/commit/3f69e5556d5a2a12730b33598471c8bcf477a646))
-- Update CLAUDE.md with successful workflow implementation (#25) ([5f10f2f](https://github.com/garywu/dotfiles/commit/5f10f2f55724b913f04872eea618621d5bbadaff))
+- Update CLAUDE.md with successful workflow implementation ([db9b52b](https://github.com/garywu/dotfiles/commit/db9b52b4977f1f5d48e089a1d976179b6d3cc57b))
 
 ### Features
 
-- Add claude-init as submodule ([1766c12](https://github.com/garywu/dotfiles/commit/1766c12e8d5cc3dfb6ac73532bbb2a4291c5504f))
-- Implement session tracking system ([6562b5d](https://github.com/garywu/dotfiles/commit/6562b5d236405de06b8da8eaf663c2f5a94c66f0))
-- Add gum, borgbackup, and fswatch to development tools ([09c3120](https://github.com/garywu/dotfiles/commit/09c31203bdaf8a67752a6f0965a46f8eea7c7202))
-- Contribute valuable patterns from dotfiles to claude-init ([9d52454](https://github.com/garywu/dotfiles/commit/9d524545a39794c399480ba7ffeb41977bf6babe))
-- Add remaining valuable patterns to claude-init ([72b4c49](https://github.com/garywu/dotfiles/commit/72b4c49157e6fee8b98d7c11f36f1f2b3aa0feda))
-- Implement CLI tool efficiency testing framework ([c7834b8](https://github.com/garywu/dotfiles/commit/c7834b82a9f17cfbec4ca59229319a5d49eb785c))
-- Complete CI/CD setup with lint and security workflows (#9) ([156179c](https://github.com/garywu/dotfiles/commit/156179cb13fead1a98dc49c2d3c267b2dc4bf449))
-- Migrate comprehensive documentation to Dotfiles Academy (#12) ([1da4dee](https://github.com/garywu/dotfiles/commit/1da4dee29295a38e3cd47b1122cc07ffb89e7a63))
-- Add git-cliff for automated changelog generation (#4) ([0278e27](https://github.com/garywu/dotfiles/commit/0278e273412ef2a316ce7393a71b82500c866751))
-- Add documentation link testing suite ([475cdc5](https://github.com/garywu/dotfiles/commit/475cdc56a8be7a87e066b68e8545263665938c56))
-- Install GNU coreutils and improve documentation tests ([b925558](https://github.com/garywu/dotfiles/commit/b925558f733c1283511d47f3e400b1e1d47af8dd))
-- Add core documentation testing infrastructure ([a36e7e2](https://github.com/garywu/dotfiles/commit/a36e7e22069768fed67e88d3ed840468358d4164))
-- Declare adoption of three-branch Git workflow ([8929700](https://github.com/garywu/dotfiles/commit/8929700c2d941761fbe9aaadbdda9e5d70ede599))
+- Improve repository description with better selling points ([70589af](https://github.com/garywu/dotfiles/commit/70589af4e80dd2fc6c0278b8d0e6d4fa984e25cb))
+- Add Windows WSL support to supported platforms ([2adde78](https://github.com/garywu/dotfiles/commit/2adde783bdf97dae5f3e10465a35120f9ebffe82))
+- Add interactive components and learning paths (#12) ([d2ceb75](https://github.com/garywu/dotfiles/commit/d2ceb75ddd2b6896189e076cb1f12033b4613ef3))
+- Implement CLI tool efficiency testing system (#20) ([68ac6e7](https://github.com/garywu/dotfiles/commit/68ac6e7bb8bfd405b06c2333643ecf4a386afbc7))
+- Update claude-init submodule with major enhancements ([94eabcc](https://github.com/garywu/dotfiles/commit/94eabcc8d3172b2c98a60bde37a088c9528b8d73))
 
 ### Miscellaneous Tasks
 
-- Update workflow to support Git Flow branches ([4d5f421](https://github.com/garywu/dotfiles/commit/4d5f4214fdcefc5f301c31643643c6f51972807e))
-- Update claude-init submodule with advanced features ([e348f35](https://github.com/garywu/dotfiles/commit/e348f353cfb16a576ca893eee6c60b99168b91eb))
-- Add efficiency test results to gitignore (#20) ([800b6a2](https://github.com/garywu/dotfiles/commit/800b6a20cc6133c01a499faa4355613f93b86b40))
-- Fix linting issues for workflow declaration ([6dc0e43](https://github.com/garywu/dotfiles/commit/6dc0e435bff13c922cb417a3bcf2d6d564500f63))
+- V0.2.1 [skip ci] ([b013ed6](https://github.com/garywu/dotfiles/commit/b013ed6ea4ce4562358e2dbf65b4a07e249f9249))
+- V0.2.1 [skip ci] ([c7daeb6](https://github.com/garywu/dotfiles/commit/c7daeb664853a1cce7161c49c2f4e39674274032))
+- V0.2.1 [skip ci] ([6cd6763](https://github.com/garywu/dotfiles/commit/6cd6763981e96bce225a798dbb24d0876ce0b9ca))
+- V0.3.0 [skip ci] ([6926076](https://github.com/garywu/dotfiles/commit/69260763188ce55058f8ecb9fd36a6911f892ff2))
+
+### Styling
+
+- Center DOTFILES banner in README ([4672958](https://github.com/garywu/dotfiles/commit/46729582e011e3888bab90cb16a63540b2becf57))
 
 ---
 

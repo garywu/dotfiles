@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Features
+
+- Add admin repository as submodule ([6c325b4](https://github.com/garywu/dotfiles/commit/6c325b4fa056f85488be6a28cf74a80c8ec0a7c9))
+- [**breaking**] Implement comprehensive environment validation system ([697a0c3](https://github.com/garywu/dotfiles/commit/697a0c34a5d1c201a269f5aab7d88364893ef3c3))
+
+## [0.3.0] - 2025-06-20
+
 ### Bug Fixes
 
 - Improve bash version warning messages in bootstrap ([edd162f](https://github.com/garywu/dotfiles/commit/edd162f48589884504050fb70ab64664a07c48f6))
@@ -68,6 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - V0.2.1 [skip ci] ([b013ed6](https://github.com/garywu/dotfiles/commit/b013ed6ea4ce4562358e2dbf65b4a07e249f9249))
 - V0.2.1 [skip ci] ([c7daeb6](https://github.com/garywu/dotfiles/commit/c7daeb664853a1cce7161c49c2f4e39674274032))
 - V0.2.1 [skip ci] ([6cd6763](https://github.com/garywu/dotfiles/commit/6cd6763981e96bce225a798dbb24d0876ce0b9ca))
+- V0.3.0 [skip ci] ([6926076](https://github.com/garywu/dotfiles/commit/69260763188ce55058f8ecb9fd36a6911f892ff2))
 
 ### Styling
 
