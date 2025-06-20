@@ -152,16 +152,3 @@ jobs:
           fi
 
   # Optional: Add problem matchers for better IDE integration
-  setup-matchers:
-    name: Setup Problem Matchers
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-
-    steps:
-      - name: Setup ShellCheck Problem Matcher
-        run: |
-          echo "::add-matcher::.github/matchers/shellcheck.json"
-
-      - name: Setup Markdownlint Problem Matcher
-        run: |
-          echo "::add-matcher::.github/matchers/markdownlint.json"
