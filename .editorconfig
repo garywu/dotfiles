@@ -1,5 +1,21 @@
 # EditorConfig is awesome: https://EditorConfig.org
 
+# GLOBAL DOTFILES CONFIGURATION
+# =============================
+# This is the machine-wide default configuration optimized for web development.
+#
+# DESIGN DECISION (Issue #39):
+# - 2-space indentation as global default (primary work is web development)
+# - Shell scripts use 2-space globally (minimal shell usage in web projects)
+# - Infrastructure projects should override with project-specific .editorconfig
+#
+# OVERRIDE STRATEGY:
+# - Web projects: Use this global config as-is
+# - Infrastructure projects: Add .editorconfig with 4-space for shells/Python
+# - Full-stack projects: Use claude-init templates for language-specific rules
+#
+# See: https://github.com/garywu/claude-init for project-specific templates
+
 # top-most EditorConfig file
 root = true
 
