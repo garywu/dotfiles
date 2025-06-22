@@ -6,6 +6,7 @@ cask "insomnia"                  # REST client
 cask "tableplus"                 # Database GUI
 cask "dbeaver-community"         # Database tool
 cask "webtorrent"                # BitTorrent client
+cask "libreoffice"               # Open source office suite (Writer, Calc, Impress, etc.)
 
 # AI/ML GUI Applications
 cask "chatgpt"                   # Desktop application for ChatGPT
