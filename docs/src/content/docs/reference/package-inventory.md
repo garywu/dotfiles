@@ -5,7 +5,7 @@ description: Comprehensive list of all packages installed via Nix and Homebrew
 
 # Package Inventory
 
-Last updated: 2025-06-22 14:57:31 UTC
+Last updated: 2025-06-22 15:29:51 UTC
 
 ## Nix Packages
 
@@ -147,6 +147,7 @@ Last updated: 2025-06-22 14:57:31 UTC
 
 | Package | Installed Version | Source | Description |
 |---------|-------------------|--------|-------------|
+| pandoc | 3.6 | Nix | Universal document converter (Markdown, HTML, PDF, DOCX, etc.) |
 
 ### Backup and filesystem monitoring tools
 
@@ -189,6 +190,7 @@ Last updated: 2025-06-22 14:57:31 UTC
 | tableplus | unknown | Brew Cask | Database GUI |
 | dbeaver-community | unknown | Brew Cask | Database tool |
 | webtorrent | unknown | Brew Cask | BitTorrent client |
+| libreoffice | unknown | Brew Cask | Open source office suite (Writer, Calc, Impress, etc.) |
 | chatgpt | unknown | Brew Cask | Desktop application for ChatGPT |
 | cherry-studio | unknown | Brew Cask | Desktop client for multiple LLM providers |
 | lm-studio | unknown | Brew Cask | GUI for running local LLMs |
@@ -213,9 +215,9 @@ Last updated: 2025-06-22 14:57:31 UTC
 
 ## Summary
 
-- **Total Nix packages**: ~131
-- **Total Homebrew packages**: 18
-- **Total packages**: ~149
+- **Total Nix packages**: ~132
+- **Total Homebrew packages**: 19
+- **Total packages**: ~151
 
 ## Notes
 
