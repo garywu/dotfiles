@@ -3,7 +3,7 @@ name: Deploy Docs to GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['docs/**']
+    paths: ['docs/**', 'nix/**', 'brew/**', 'scripts/generate-package-inventory.sh']
   workflow_dispatch:
 
 # Ensure docs workflow only affects docs directory

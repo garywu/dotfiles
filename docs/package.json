@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro sync && astro check && astro build",
+    "build": "npm run update-inventory && astro sync && astro check && astro build",
+    "update-inventory": "../scripts/generate-package-inventory.sh",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",

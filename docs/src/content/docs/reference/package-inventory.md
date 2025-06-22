@@ -5,7 +5,7 @@ description: Comprehensive list of all packages installed via Nix and Homebrew
 
 # Package Inventory
 
-Last updated: 2025-06-22 15:29:51 UTC
+Last updated: 2025-06-22 18:10:01 UTC
 
 ## Nix Packages
 
@@ -176,6 +176,8 @@ Last updated: 2025-06-22 15:29:51 UTC
 | gitleaks | 8.27.1 | Nix | Detect secrets in git repos |
 | tokei | 13.0.0 | Nix | Count lines of code |
 | hyperfine | 1.19.0 | Nix | Command-line benchmarking tool |
+| libreoffice | unknown | Nix |  |
+| unoconv | unknown | Nix |  |
 
 ## Homebrew Packages
 
@@ -215,9 +217,9 @@ Last updated: 2025-06-22 15:29:51 UTC
 
 ## Summary
 
-- **Total Nix packages**: ~132
+- **Total Nix packages**: ~135
 - **Total Homebrew packages**: 19
-- **Total packages**: ~151
+- **Total packages**: ~154
 
 ## Notes
 
