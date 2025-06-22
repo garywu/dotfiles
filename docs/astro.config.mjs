@@ -30,7 +30,7 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Learning Paths',
-          link: '/learning-paths',
+          link: './learning-paths/',
         },
         {
           label: 'Getting Started',
