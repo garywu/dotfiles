@@ -9,7 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Features
 
+- Implement PyUNO integration for unoserver on macOS (#45) ([86802c3](https://github.com/garywu/dotfiles/commit/86802c3f3045256e04a548879821aa0ecd3bc139))
+
+## [1.2.0] - 2025-06-22
+
+### Features
+
 - Implement permanent solution for documentation testing (fixes #49) ([fe9aef4](https://github.com/garywu/dotfiles/commit/fe9aef41e16dedbbc0ad72ebc1aa74dcdd3d57ad))
+
+### Miscellaneous Tasks
+
+- V1.2.0 [skip ci] ([c95a933](https://github.com/garywu/dotfiles/commit/c95a9336e0b740ba8a915f166e30f08b16637cd6))
 
 ## [1.1.2] - 2025-06-22
 
