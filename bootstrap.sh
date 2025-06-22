@@ -81,6 +81,106 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
+# Function to set up PyUNO integration for unoserver on macOS
+setup_pyuno_macos() {
+  # Only run on macOS when LibreOffice is available
+  if [[ "$OSTYPE" == darwin* ]] && command_exists soffice; then
+    print_status "Setting up PyUNO integration for unoserver..."
+
+    # 1. Remove broken pipx installation if it exists
+    if command_exists pipx && pipx list | grep -q unoserver; then
+      print_status "  → Removing broken pipx unoserver installation..."
+      pipx uninstall unoserver 2>/dev/null || true
+    fi
+
+    # 2. Create dedicated virtual environment
+    LIBREOFFICE_VENV="$HOME/.local/libreoffice-venv"
+    if [[ ! -d "$LIBREOFFICE_VENV" ]]; then
+      print_status "  → Creating dedicated LibreOffice Python environment..."
+      python3 -m venv "$LIBREOFFICE_VENV"
+    fi
+
+    # 3. Install unoserver in the dedicated environment
+    print_status "  → Installing unoserver with LibreOffice integration..."
+    source "$LIBREOFFICE_VENV/bin/activate"
+    pip install --upgrade pip >/dev/null 2>&1
+    pip install unoserver >/dev/null 2>&1
+    deactivate
+
+    # 4. Create wrapper scripts for seamless execution
+    create_uno_wrappers
+
+    print_status "  ✅ PyUNO integration setup complete"
+  else
+    if [[ "$OSTYPE" != darwin* ]]; then
+      print_status "  → Skipping PyUNO setup (not macOS)"
+    elif ! command_exists soffice; then
+      print_warning "  → LibreOffice not found, skipping PyUNO setup"
+    fi
+  fi
+}
+
+# Function to create transparent wrapper scripts for unoserver commands
+create_uno_wrappers() {
+  local wrapper_dir="$HOME/.local/bin"
+  mkdir -p "$wrapper_dir"
+
+  # Find LibreOffice UNO Python paths
+  local libreoffice_resources_path=""
+  local libreoffice_frameworks_path=""
+
+  if [[ -d "/Applications/LibreOffice.app/Contents/Resources" ]]; then
+    libreoffice_resources_path="/Applications/LibreOffice.app/Contents/Resources"
+    libreoffice_frameworks_path="/Applications/LibreOffice.app/Contents/Frameworks"
+  elif [[ -d "/opt/homebrew/Caskroom/libreoffice" ]]; then
+    # Find the latest LibreOffice version directory
+    local latest_version
+    latest_version=$(ls -1 /opt/homebrew/Caskroom/libreoffice/ | sort -V | tail -1)
+    if [[ -n "$latest_version" && -d "/opt/homebrew/Caskroom/libreoffice/$latest_version/LibreOffice.app/Contents/Resources" ]]; then
+      libreoffice_resources_path="/opt/homebrew/Caskroom/libreoffice/$latest_version/LibreOffice.app/Contents/Resources"
+      libreoffice_frameworks_path="/opt/homebrew/Caskroom/libreoffice/$latest_version/LibreOffice.app/Contents/Frameworks"
+    fi
+  fi
+
+  if [[ -z "$libreoffice_resources_path" ]]; then
+    print_warning "  → Could not find LibreOffice UNO paths, wrappers may not work"
+    libreoffice_resources_path="/Applications/LibreOffice.app/Contents/Resources"
+    libreoffice_frameworks_path="/Applications/LibreOffice.app/Contents/Frameworks"
+  fi
+
+  # Create unoserver wrapper
+  cat > "$wrapper_dir/unoserver" << EOF
+#!/bin/bash
+# Transparent wrapper for unoserver with PyUNO integration
+export PYTHONPATH="$libreoffice_resources_path:$libreoffice_frameworks_path:\$PYTHONPATH"
+source "$HOME/.local/libreoffice-venv/bin/activate"
+exec "$HOME/.local/libreoffice-venv/bin/unoserver" "\$@"
+EOF
+
+  # Create unoconvert wrapper
+  cat > "$wrapper_dir/unoconvert" << EOF
+#!/bin/bash
+# Transparent wrapper for unoconvert with PyUNO integration
+export PYTHONPATH="$libreoffice_resources_path:$libreoffice_frameworks_path:\$PYTHONPATH"
+source "$HOME/.local/libreoffice-venv/bin/activate"
+exec "$HOME/.local/libreoffice-venv/bin/unoconvert" "\$@"
+EOF
+
+  # Create unocompare wrapper (bonus utility)
+  cat > "$wrapper_dir/unocompare" << EOF
+#!/bin/bash
+# Transparent wrapper for unocompare with PyUNO integration
+export PYTHONPATH="$libreoffice_resources_path:$libreoffice_frameworks_path:\$PYTHONPATH"
+source "$HOME/.local/libreoffice-venv/bin/activate"
+exec "$HOME/.local/libreoffice-venv/bin/unocompare" "\$@"
+EOF
+
+  # Make wrappers executable
+  chmod +x "$wrapper_dir/unoserver" "$wrapper_dir/unoconvert" "$wrapper_dir/unocompare"
+
+  print_status "  → Created transparent wrapper scripts in ~/.local/bin/"
+}
+
 # Function to handle previous Nix installation remnants following official documentation
 handle_nix_remnants() {
   print_status "Checking for previous Nix installation remnants..."
@@ -420,6 +520,9 @@ if [ "$(uname)" = "Darwin" ]; then
     fi
   fi
 fi
+
+# Set up PyUNO integration for unoserver (macOS with LibreOffice)
+setup_pyuno_macos
 
 # Ensure Nix experimental features are enabled for flakes and nix-command
 mkdir -p "$HOME/.config/nix"

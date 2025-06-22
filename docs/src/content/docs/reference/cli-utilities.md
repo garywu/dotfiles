@@ -242,13 +242,25 @@ pip install unoserver
 # - unoconvert wrapper
 
 # 4. Set PYTHONPATH to LibreOffice UNO libraries
-export PYTHONPATH="/Applications/LibreOffice.app/Contents/MacOS:$PYTHONPATH"
+export PYTHONPATH="/Applications/LibreOffice.app/Contents/Resources:/Applications/LibreOffice.app/Contents/Frameworks:$PYTHONPATH"
 ```
 
 #### Requirements:
 - LibreOffice installed via Homebrew (`brew install --cask libreoffice`)
 - Python 3 available via Nix
 - `~/.local/bin` in PATH (handled by Nix configuration)
+
+#### Verification:
+```bash
+# Verify installation
+unoconvert --version
+# Should output: unoconvert 3.2
+
+# Usage workflow
+unoserver &                           # Start server in background
+unoconvert document.docx document.pdf # Convert document
+killall unoserver                     # Stop server when done
+```
 
 #### Benefits:
 - ✅ **Zero user complexity** - commands work like native tools
