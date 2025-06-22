@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Features
+
+- Implement permanent solution for documentation testing (fixes #49) ([fe9aef4](https://github.com/garywu/dotfiles/commit/fe9aef41e16dedbbc0ad72ebc1aa74dcdd3d57ad))
+
+## [1.1.2] - 2025-06-22
+
 ### Bug Fixes
 
 - Change sidebar link from absolute to relative path for GitHub Pages compatibility ([79eafd2](https://github.com/garywu/dotfiles/commit/79eafd2e87f4f5076dddd0d6be6b2cd8cb16170d))
@@ -23,6 +29,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Features
 
 - Automate package inventory updates in documentation builds ([5fa61d9](https://github.com/garywu/dotfiles/commit/5fa61d9b6105d7ca453f9b698b34ffcf54ff8c93))
+
+### Miscellaneous Tasks
+
+- V1.1.2 [skip ci] ([8c75bbc](https://github.com/garywu/dotfiles/commit/8c75bbce8457fcb0e8b4b7fd2fb5b24319849c79))
 
 ### Testing
 
