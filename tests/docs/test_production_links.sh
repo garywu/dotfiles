@@ -48,6 +48,9 @@ PAGES=(
   "/98-troubleshooting/homebrew-fish-config/"
   "/98-troubleshooting/git-email-privacy/"
   "/99-reference/command-cheatsheets/"
+  "/learning-paths/"
+  "/reference/cli-utilities/"
+  "/reference/package-inventory/"
 )
 
 FAILED=0
@@ -56,14 +59,15 @@ PASSED=0
 for page in "${PAGES[@]}"; do
   url="${BASE_URL}${page}"
   printf "Testing %s..." "$page"
-  status_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url" || echo "000")
+  # Use true to prevent exit on curl failure due to set -e
+  status_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url" 2>/dev/null || echo "000")
 
   if [[ "$status_code" == "200" ]]; then
     printf "\r%b✓%b %-50s\n" "$GREEN" "$NC" "$page"
-    ((PASSED++))
+    ((PASSED++)) || true
   else
     printf "\r%b✗%b %-50s (HTTP %s)\n" "$RED" "$NC" "$page" "$status_code"
-    ((FAILED++))
+    ((FAILED++)) || true
   fi
 done
 
