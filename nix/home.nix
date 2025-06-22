@@ -141,6 +141,7 @@
     # git-credential-keepassxc  # Git credential helper for KeePassXC (temporarily disabled due to gpgme dependency issue)
 
     # Documentation tools
+    pandoc # Universal document converter (Markdown, HTML, PDF, DOCX, etc.)
     # Note: Mintlify is not available in nixpkgs, using nodejs for npx access
 
     # Backup and filesystem monitoring tools
