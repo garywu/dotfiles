@@ -5,7 +5,7 @@ description: Comprehensive list of all packages installed via Nix and Homebrew
 
 # Package Inventory
 
-Last updated: 2025-06-22 18:10:01 UTC
+Last updated: 2025-06-22 19:50:12 UTC
 
 ## Nix Packages
 
