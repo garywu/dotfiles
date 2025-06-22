@@ -91,18 +91,21 @@ jobs:
 
       # Run efficiency benchmarks
       - name: Run benchmarks
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TEST_CATEGORY: ${{ github.event.inputs.test_category }}
         run: |
           # Determine which tests to run
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            TEST_FLAG="--${{ github.event.inputs.test_category }}"
-          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            TEST_FLAG="--$TEST_CATEGORY"
+          elif [ "$EVENT_NAME" = "pull_request" ]; then
             TEST_FLAG="--quick"
           else
             TEST_FLAG="--all"
           fi
 
           echo "Running benchmarks with flag: $TEST_FLAG"
-          ./tests/efficiency/tools/benchmark_runner.sh $TEST_FLAG
+          ./tests/efficiency/tools/benchmark_runner.sh "$TEST_FLAG"
 
       # Upload results as artifacts
       - name: Upload benchmark results

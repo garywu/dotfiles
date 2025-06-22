@@ -40,11 +40,13 @@ jobs:
           npm install
 
       - name: Validate link patterns
+        working-directory: .
         run: |
           chmod +x tests/docs/test_link_patterns.sh
           tests/docs/test_link_patterns.sh
 
       - name: Test local build and links
+        working-directory: .
         run: |
           chmod +x tests/docs/test_links.sh
           tests/docs/test_links.sh local
@@ -100,6 +102,7 @@ jobs:
         run: sleep 30
 
       - name: Test production links
+        working-directory: .
         run: |
           chmod +x tests/docs/test_production_links.sh
           tests/docs/test_production_links.sh
