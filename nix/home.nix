@@ -126,6 +126,7 @@
 
     # Multimedia processing tools
     imagemagick # Image manipulation and conversion
+    ffmpeg # Audio/video processing and conversion
 
     # Environment Variables & Secrets Management
     sops # Secrets management with encryption
