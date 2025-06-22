@@ -21,7 +21,7 @@
   home.extraOutputsToInstall = [ "info" "man" ];
 
   # Define packages to be installed
-  home.packages = with pkgs; [
+  home.packages = with pkgs; ([
     # Development tools
     git
     python311
@@ -178,7 +178,15 @@
     hyperfine # Command-line benchmarking tool
     # gocyclo # Go cyclomatic complexity analyzer
     # lizard # Code complexity analyzer (multiple languages)
-  ];
+  ] ++ (
+    # Platform-specific packages
+    if pkgs.stdenv.isLinux then [
+      # Office suite (Linux only - macOS users typically use native apps)
+      libreoffice
+      # Document converter using LibreOffice engine (Linux only)
+      unoconv
+    ] else []
+  ));
 
   # Configure basic programs
   programs = {

@@ -115,7 +115,7 @@ jobs:
     name: Test Cross-Platform Build
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         node-version: ['18', '20']
     runs-on: ${{ matrix.os }}
     steps:

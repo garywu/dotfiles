@@ -7,9 +7,9 @@ name: CLI Tool Efficiency Tests
 # over time and ensure modern CLI tools maintain their efficiency advantages.
 
 on:
-  # Run weekly on Sunday at 2 AM UTC
+  # Run monthly on the 1st at 2 AM UTC (reduced from weekly to save on Mac runner costs)
   schedule:
-    - cron: '0 2 * * 0'
+    - cron: '0 2 1 * *'
 
   # Allow manual triggering
   workflow_dispatch:
@@ -24,6 +24,11 @@ on:
           - search
           - file-ops
           - quick
+      include_macos:
+        description: 'Include macOS runners (costs apply)'
+        required: false
+        type: boolean
+        default: false
 
   # Run on PRs that modify efficiency tests
   pull_request:
@@ -38,7 +43,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: ${{ fromJson((github.event_name == 'workflow_dispatch' && github.event.inputs.include_macos == 'true') && '["ubuntu-latest", "macos-latest"]' || '["ubuntu-latest"]') }}
       fail-fast: false
 
     steps:

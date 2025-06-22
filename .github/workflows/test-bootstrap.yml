@@ -28,11 +28,16 @@ on:
         description: 'Enable debug mode'
         required: false
         default: false
+      test_macos:
+        type: boolean
+        description: 'Test on macOS (costs apply)'
+        required: false
+        default: false
 
 jobs:
-  test-macos:
-    name: Test on macOS
-    runs-on: macos-latest
+  test-bootstrap:
+    name: Test Bootstrap Process
+    runs-on: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.test_macos == 'true') && 'macos-latest' || 'ubuntu-latest' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,7 +45,11 @@ jobs:
       - name: System Information
         run: |
           echo "=== System Info ==="
-          sw_vers
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            sw_vers
+          else
+            lsb_release -a || cat /etc/os-release || true
+          fi
           echo "Shell: $SHELL"
           echo "User: $(whoami)"
           echo "PATH: $PATH"

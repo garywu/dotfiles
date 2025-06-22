@@ -1,4 +1,5 @@
 # Mac GUI Applications (not available in Nix or Mac-specific)
+# Note: Prefer Nix for Python - avoid brew packages that install Python as dependency
 cask "docker"                    # Docker Desktop for Mac
 cask "iterm2"                    # Terminal emulator
 cask "postman"                   # API testing tool
