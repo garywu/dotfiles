@@ -1,4 +1,14 @@
 # EditorConfig is awesome: https://EditorConfig.org
+#
+# GLOBAL DOTFILES CONFIGURATION
+# This configuration is optimized for web development (primary workflow).
+# For project-specific overrides, see: https://garywu.github.io/dotfiles/reference/editorconfig-strategy/
+# Project templates available in: external/claude-init/templates/
+#
+# Hierarchical strategy:
+# 1. Global dotfiles (this file) - web development optimized defaults
+# 2. claude-init templates - project-specific overrides for different technologies
+# 3. Local project .editorconfig - final overrides when needed
 
 # top-most EditorConfig file
 root = true
