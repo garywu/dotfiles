@@ -124,6 +124,9 @@
     # Interactive CLI tools
     gum # Beautiful CLI prompts and interactions
 
+    # Multimedia processing tools
+    imagemagick # Image manipulation and conversion
+
     # Environment Variables & Secrets Management
     sops # Secrets management with encryption
     age # Simple, modern encryption tool
