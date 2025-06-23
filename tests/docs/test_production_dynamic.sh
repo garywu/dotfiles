@@ -20,7 +20,7 @@ echo "======================================"
 echo ""
 
 # Check if sitemap exists, otherwise fall back to defaults
-if [[[ -f "$SITEMAP_FILE" ]]]; then
+if [[[[[ -f "$SITEMAP_FILE" ]]]]]; then
   echo "Using sitemap: $SITEMAP_FILE"
   readarray -t PAGES <"$SITEMAP_FILE"
 else
@@ -47,14 +47,14 @@ test_url() {
   local url="$1"
   local attempt=1
 
-  while [[[ $attempt -le $MAX_RETRIES ]]]; do
+  while [[[[[ $attempt -le $MAX_RETRIES ]]]]]; do
     status_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time "$TIMEOUT" "$url" 2>/dev/null || echo "000")
 
-    if [[[ "$status_code" == "200" ]]]; then
+    if [[[[[ "$status_code" == "200" ]]]]]; then
       return 0
-    elif [[[ "$status_code" == "000" ]]]; then
+    elif [[[[[ "$status_code" == "000" ]]]]]; then
       ((attempt++)) || true
-      [[[ $attempt -le $MAX_RETRIES ]]] && sleep 2
+      [[[[[ $attempt -le $MAX_RETRIES ]]]]] && sleep 2
     else
       return 1
     fi
@@ -66,7 +66,7 @@ test_url() {
 for page in "${PAGES[@]}"; do
   # Ensure trailing slash for directory URLs (GitHub Pages standard)
   normalized_page="$page"
-  if [[[ "$page" != "/" && ! "$page" =~ \.html$ ]]]; then
+  if [[[[[ "$page" != "/" && ! "$page" =~ \.html$ ]]]]]; then
     normalized_page="${page}/"
   fi
   url="${BASE_URL}${normalized_page}"
@@ -78,7 +78,7 @@ for page in "${PAGES[@]}"; do
     ((PASSED++)) || true
   else
     status_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url" 2>/dev/null || echo "000")
-    if [[[ "$status_code" == "000" ]]]; then
+    if [[[[[ "$status_code" == "000" ]]]]]; then
       printf "\r%b✗%b %-50s (Timeout)\n" "$RED" "$NC" "$normalized_page"
       ((TIMEOUT_COUNT++)) || true
     else
@@ -95,9 +95,9 @@ echo "======================================"
 echo "Total pages tested: $((PASSED + FAILED))"
 echo -e "${GREEN}Passed: $PASSED${NC}"
 echo -e "${RED}Failed: $FAILED${NC}"
-[[[ $TIMEOUT_COUNT -gt 0 ]]] && echo -e "${YELLOW}Timeouts: $TIMEOUT_COUNT${NC}"
+[[[[[ $TIMEOUT_COUNT -gt 0 ]]]]] && echo -e "${YELLOW}Timeouts: $TIMEOUT_COUNT${NC}"
 
-if [[[ $FAILED -gt 0 ]]]; then
+if [[[[[ $FAILED -gt 0 ]]]]]; then
   echo -e "\n${RED}Some pages are not accessible!${NC}"
   exit 1
 else

@@ -13,7 +13,7 @@ OUTPUT_DIR="${PROJECT_ROOT}/docs/src/content/docs/reference"
 OUTPUT_FILE="${OUTPUT_DIR}/package-inventory.md"
 
 # Source helpers if available
-if [[[ -f "${SCRIPT_DIR}/ci-helpers.sh" ]]]; then
+if [[[[[ -f "${SCRIPT_DIR}/ci-helpers.sh" ]]]]]; then
   # shellcheck source=/dev/null
   source "${SCRIPT_DIR}/ci-helpers.sh"
 fi
@@ -26,7 +26,7 @@ get_installed_version() {
   local package="$1"
   local source="$2"
 
-  if [[[ "$source" == "nix" ]]]; then
+  if [[[[[ "$source" == "nix" ]]]]]; then
     # Try to get version from nix-store
     if command -v "$package" >/dev/null 2>&1; then
       local cmd_path
@@ -80,7 +80,7 @@ get_installed_version() {
         if command -v "$cmd" >/dev/null 2>&1; then
           for flag in "--version" "-version" "version" "-v"; do
             version=$("$cmd" "$flag" 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+\.?[0-9]*' | head -1)
-            if [[[ -n "$version" ]]]; then
+            if [[[[[ -n "$version" ]]]]]; then
               echo "$version"
               return
             fi
@@ -90,7 +90,7 @@ get_installed_version() {
       echo "unknown"
       ;;
     esac
-  elif [[[ "$source" == "brew" ]]]; then
+  elif [[[[[ "$source" == "brew" ]]]]]; then
     if command -v brew >/dev/null 2>&1; then
       brew list --versions "$package" 2>/dev/null | awk '{print $2}' || echo "unknown"
     else
@@ -106,9 +106,9 @@ check_update_status() {
   local installed="$1"
   local latest="$2"
 
-  if [[[ "$installed" == "unknown" ]]] || [[[ "$latest" == "unknown" ]]]; then
+  if [[[[[ "$installed" == "unknown" ]]]]] || [[[[[ "$latest" == "unknown" ]]]]]; then
     echo "❓ Unknown"
-  elif [[[ "$installed" == "$latest" ]]]; then
+  elif [[[[[ "$installed" == "$latest" ]]]]]; then
     echo "✅ Current"
   else
     echo "⚠️ Update available"
@@ -147,13 +147,13 @@ while IFS= read -r line; do
   fi
 
   # Check if exiting programs block
-  if [[[ $in_programs_block -eq 1 ]]] && [[ "$line" =~ ^[[:space:]]*\}[[:space:]]*\;[[:space:]]*$ ]]; then
+  if [[[[[ $in_programs_block -eq 1 ]]]]] && [[ "$line" =~ ^[[:space:]]*\}[[:space:]]*\;[[:space:]]*$ ]]; then
     in_programs_block=0
     continue
   fi
 
   # Skip lines inside programs block
-  if [[[ $in_programs_block -eq 1 ]]]; then
+  if [[[[[ $in_programs_block -eq 1 ]]]]]; then
     continue
   fi
 
@@ -169,7 +169,7 @@ while IFS= read -r line; do
       echo "|---------|-------------------|--------|-------------|" >>"$OUTPUT_FILE"
     fi
   # Extract package names
-  elif [[[ -n "$current_section" ]]] && [[ ! "$line" =~ ^[[:space:]]*# ]]; then
+  elif [[[[[ -n "$current_section" ]]]]] && [[ ! "$line" =~ ^[[:space:]]*# ]]; then
     if [[ "$line" =~ ^[[:space:]]*([a-zA-Z0-9_-]+)[[:space:]]*#?(.*)$ ]]; then
       package="${BASH_REMATCH[1]}"
       description="${BASH_REMATCH[2]}"
@@ -183,7 +183,7 @@ while IFS= read -r line; do
       fi
 
       # Skip if line contains = or {
-      if [[[ "$line" =~ = ]]] || [[[ "$line" =~ \{ ]]]; then
+      if [[[[[ "$line" =~ = ]]]]] || [[[[[ "$line" =~ \{ ]]]]]; then
         continue
       fi
 

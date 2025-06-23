@@ -19,7 +19,7 @@ TODAY=$(date +%Y-%m-%d)
 NOW=$(date +%Y-%m-%d_%H:%M:%S)
 
 # Check if session exists
-if [[[ ! -f "$SESSION_FILE" ]]]; then
+if [[[[[ ! -f "$SESSION_FILE" ]]]]]; then
   echo -e "${RED}✗ No active session found${NC}"
   exit 1
 fi
@@ -53,7 +53,7 @@ echo "$UPDATED_SESSION" >"${ARCHIVE_DIR}/session_${SESSION_ID}.json"
 
 # Update history log
 HISTORY_FILE="${HISTORY_DIR}/${TODAY}.md"
-if [[[ -f "$HISTORY_FILE" ]]]; then
+if [[[[[ -f "$HISTORY_FILE" ]]]]]; then
   cat >>"$HISTORY_FILE" <<EOF
 
 ### Session Ended: ${NOW}
@@ -67,14 +67,14 @@ if [[[ -f "$HISTORY_FILE" ]]]; then
 EOF
 
   # Add commit summary if any
-  if [[[ $COMMITS_COUNT -gt 0 ]]]; then
+  if [[[[[ $COMMITS_COUNT -gt 0 ]]]]]; then
     echo "**Commits made during session:**" >>"$HISTORY_FILE"
     git log --oneline --since="$SESSION_START" --pretty="- %h %s" >>"$HISTORY_FILE"
     echo "" >>"$HISTORY_FILE"
   fi
 
   # Add file changes summary if any
-  if [[[ $CHANGES_COUNT -gt 0 ]]]; then
+  if [[[[[ $CHANGES_COUNT -gt 0 ]]]]]; then
     echo "**Files with pending changes:**" >>"$HISTORY_FILE"
     git status --porcelain | awk '{print "- " $2}' >>"$HISTORY_FILE"
     echo "" >>"$HISTORY_FILE"
@@ -93,7 +93,7 @@ echo -e "${BLUE}Pending changes:${NC} $CHANGES_COUNT files"
 echo ""
 
 # Show pending changes if any
-if [[[ $CHANGES_COUNT -gt 0 ]]]; then
+if [[[[[ $CHANGES_COUNT -gt 0 ]]]]]; then
   echo -e "${YELLOW}Pending changes:${NC}"
   git status -s
   echo ""

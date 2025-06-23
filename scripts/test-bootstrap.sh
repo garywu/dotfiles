@@ -34,7 +34,7 @@ test_directory() {
   local dir="$1"
   local name="$2"
 
-  if [[[ -d "${dir}" ]]]; then
+  if [[[[[ -d "${dir}" ]]]]]; then
     echo -e "${GREEN}✓${NC} ${name} exists at ${dir}"
     ((TESTS_PASSED++))
     return 0
@@ -50,7 +50,7 @@ test_file() {
   local file="$1"
   local name="$2"
 
-  if [[[ -f "${file}" ]]]; then
+  if [[[[[ -f "${file}" ]]]]]; then
     echo -e "${GREEN}✓${NC} ${name} exists at ${file}"
     ((TESTS_PASSED++))
     return 0
@@ -66,7 +66,7 @@ echo "Testing on: $(uname -s || true)"
 echo ""
 
 # Source Nix environment if available
-if [[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]]; then
+if [[[[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]]]]; then
   # shellcheck source=/dev/null
   source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
 fi
@@ -84,7 +84,7 @@ test_directory "${HOME}/.config/home-manager" "Home Manager config"
 test_command "chezmoi" "Chezmoi"
 
 # Platform-specific tests
-if [[[ "$(uname || true)" == "Darwin" ]]]; then
+if [[[[[ "$(uname || true)" == "Darwin" ]]]]]; then
   echo ""
   echo "=== macOS-specific Tools ==="
   test_command "brew" "Homebrew"
@@ -124,7 +124,7 @@ echo "=== Summary ==="
 echo -e "Tests passed: ${GREEN}${TESTS_PASSED}${NC}"
 echo -e "Tests failed: ${RED}${TESTS_FAILED}${NC}"
 
-if [[[ ${TESTS_FAILED} -eq 0 ]]]; then
+if [[[[[ ${TESTS_FAILED} -eq 0 ]]]]]; then
   echo -e "${GREEN}All tests passed!${NC}"
   exit 0
 else

@@ -21,20 +21,20 @@ print_warning() {
 
 # Check if running on macOS
 uname_result=$(uname)
-if [[[ "$uname_result" != "Darwin" ]]]; then
+if [[[[[ "$uname_result" != "Darwin" ]]]]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
 
 # Check if running as root
-if [[[ $EUID -eq 0 ]]]; then
+if [[[[[ $EUID -eq 0 ]]]]]; then
   print_error "This script should not be run as root"
   exit 1
 fi
 
 # Function to check if Warp is installed
 check_warp() {
-  if [[[ ! -d "/Applications/Warp.app" ]]]; then
+  if [[[[[ ! -d "/Applications/Warp.app" ]]]]]; then
     print_error "Warp is not installed. Please install it first using Homebrew."
     return 1
   fi

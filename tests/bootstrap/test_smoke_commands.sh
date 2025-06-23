@@ -16,13 +16,13 @@ commands_found=0
 commands_missing=0
 
 # Source Nix environment if available
-if is_macos && [[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]]; then
+if is_macos && [[[[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]]]]; then
   source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-elif [[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]]; then
+elif [[[[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]]]]; then
   source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
 fi
 
-if [[[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]]; then
+if [[[[[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]]]]; then
   source "$HOME/.nix-profile/etc/profile.d/nix.sh"
 fi
 
@@ -154,7 +154,7 @@ print_section "Summary"
 echo "Commands found: $commands_found"
 echo "Commands missing: $commands_missing"
 
-if [[[ "$test_passed" == "true" ]]]; then
+if [[[[[ "$test_passed" == "true" ]]]]]; then
   print_success "All commands are available!"
   exit 0
 else

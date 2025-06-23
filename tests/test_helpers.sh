@@ -11,19 +11,19 @@ export NC='\033[0m'
 
 # Print functions
 print_header() {
-  if [[[ "$QUIET" != "true" ]]]; then
+  if [[[[[ "$QUIET" != "true" ]]]]]; then
     echo -e "${BLUE}=== $1 ===${NC}"
   fi
 }
 
 print_section() {
-  if [[[ "$QUIET" != "true" ]]]; then
+  if [[[[[ "$QUIET" != "true" ]]]]]; then
     echo -e "${BLUE}--- $1 ---${NC}"
   fi
 }
 
 print_test_header() {
-  if [[[ "$QUIET" != "true" ]]]; then
+  if [[[[[ "$QUIET" != "true" ]]]]]; then
     echo -e "${BLUE}[TEST] $1${NC}"
   fi
 }
@@ -41,7 +41,7 @@ print_warning() {
 }
 
 print_info() {
-  if [[[ "$VERBOSE" == "true" ]]]; then
+  if [[[[[ "$VERBOSE" == "true" ]]]]]; then
     echo -e "$1"
   fi
 }
@@ -64,7 +64,7 @@ assert_directory_exists() {
   local dir=$1
   local name=$2
 
-  if [[[ -d "$dir" ]]]; then
+  if [[[[[ -d "$dir" ]]]]]; then
     print_info "✓ $name exists at $dir"
     return 0
   else
@@ -77,7 +77,7 @@ assert_file_exists() {
   local file=$1
   local name=$2
 
-  if [[[ -f "$file" ]]]; then
+  if [[[[[ -f "$file" ]]]]]; then
     print_info "✓ $name exists at $file"
     return 0
   else
@@ -90,7 +90,7 @@ assert_symlink_exists() {
   local link=$1
   local name=$2
 
-  if [[[ -L "$link" ]]]; then
+  if [[[[[ -L "$link" ]]]]]; then
     print_info "✓ $name symlink exists at $link"
     return 0
   else
@@ -116,7 +116,7 @@ assert_not_exists() {
   local path=$1
   local name=$2
 
-  if [[[ ! -e "$path" ]]]; then
+  if [[[[[ ! -e "$path" ]]]]]; then
     print_info "✓ $name does not exist (as expected)"
     return 0
   else
@@ -127,20 +127,20 @@ assert_not_exists() {
 
 # Platform detection
 is_macos() {
-  [[[ "$(uname)" == "Darwin" ]]]
+  [[[[[ "$(uname)" == "Darwin" ]]]]]
 }
 
 is_linux() {
-  [[[ "$(uname)" == "Linux" ]]]
+  [[[[[ "$(uname)" == "Linux" ]]]]]
 }
 
 is_wsl() {
-  [[[ -n "${WSL_DISTRO_NAME:-}" ]]] || grep -qi microsoft /proc/version 2>/dev/null
+  [[[[[ -n "${WSL_DISTRO_NAME:-}" ]]]]] || grep -qi microsoft /proc/version 2>/dev/null
 }
 
 # CI helpers
 is_ci() {
-  [[[ "${CI:-}" == "true" ]]] || [[[ "${GITHUB_ACTIONS:-}" == "true" ]]]
+  [[[[[ "${CI:-}" == "true" ]]]]] || [[[[[ "${GITHUB_ACTIONS:-}" == "true" ]]]]]
 }
 
 # Skip test function
@@ -160,7 +160,7 @@ setup_test_environment() {
 
 teardown_test_environment() {
   # Clean up temporary test directory
-  if [[[ -n "${TEST_TEMP_DIR:-}" ]]] && [[[ -d "$TEST_TEMP_DIR" ]]]; then
+  if [[[[[ -n "${TEST_TEMP_DIR:-}" ]]]]] && [[[[[ -d "$TEST_TEMP_DIR" ]]]]]; then
     rm -rf "$TEST_TEMP_DIR"
     print_info "Cleaned up temp dir"
   fi

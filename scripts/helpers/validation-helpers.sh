@@ -24,21 +24,21 @@ VALIDATION_FIXED=0
 
 # Log functions
 log_error() {
-  [[[ $LOG_LEVEL -ge $LOG_ERROR ]]] && echo -e "${RED}[ERROR]${NC} $*" >&2
+  [[[[[ $LOG_LEVEL -ge $LOG_ERROR ]]]]] && echo -e "${RED}[ERROR]${NC} $*" >&2
   ((VALIDATION_ERRORS++))
 }
 
 log_warn() {
-  [[[ $LOG_LEVEL -ge $LOG_WARN ]]] && echo -e "${YELLOW}[WARN]${NC} $*" >&2
+  [[[[[ $LOG_LEVEL -ge $LOG_WARN ]]]]] && echo -e "${YELLOW}[WARN]${NC} $*" >&2
   ((VALIDATION_WARNINGS++))
 }
 
 log_info() {
-  [[[ $LOG_LEVEL -ge $LOG_INFO ]]] && echo -e "${BLUE}[INFO]${NC} $*"
+  [[[[[ $LOG_LEVEL -ge $LOG_INFO ]]]]] && echo -e "${BLUE}[INFO]${NC} $*"
 }
 
 log_debug() {
-  [[[ $LOG_LEVEL -ge $LOG_DEBUG ]]] && echo -e "[DEBUG] $*"
+  [[[[[ $LOG_LEVEL -ge $LOG_DEBUG ]]]]] && echo -e "[DEBUG] $*"
 }
 
 log_success() {
@@ -68,12 +68,12 @@ print_summary() {
   echo
   echo -e "  Errors:   ${RED}${VALIDATION_ERRORS}${NC}"
   echo -e "  Warnings: ${YELLOW}${VALIDATION_WARNINGS}${NC}"
-  if [[[ $VALIDATION_FIXED -gt 0 ]]]; then
+  if [[[[[ $VALIDATION_FIXED -gt 0 ]]]]]; then
     echo -e "  Fixed:    ${GREEN}${VALIDATION_FIXED}${NC}"
   fi
   echo
 
-  if [[[ $VALIDATION_ERRORS -eq 0 && $VALIDATION_WARNINGS -eq 0 ]]]; then
+  if [[[[[ $VALIDATION_ERRORS -eq 0 && $VALIDATION_WARNINGS -eq 0 ]]]]]; then
     echo -e "  ${GREEN}All validation checks passed!${NC}"
     return 0
   else
@@ -84,12 +84,12 @@ print_summary() {
 
 # Check if running in fix mode
 is_fix_mode() {
-  [[[ "${FIX_MODE:-false}" == "true" ]]]
+  [[[[[ "${FIX_MODE:-false}" == "true" ]]]]]
 }
 
 # Check if running in CI
 is_ci() {
-  [[[ -n "${CI:-}" ]]] || [[[ -n "${GITHUB_ACTIONS:-}" ]]]
+  [[[[[ -n "${CI:-}" ]]]]] || [[[[[ -n "${GITHUB_ACTIONS:-}" ]]]]]
 }
 
 # Safe command execution with error handling
@@ -116,19 +116,19 @@ get_package_manager() {
   local cmd_path
 
   cmd_path=$(command -v "$cmd" 2>/dev/null)
-  if [[[ -z "$cmd_path" ]]]; then
+  if [[[[[ -z "$cmd_path" ]]]]]; then
     echo "not-installed"
     return
   fi
 
   # Check if it's from Nix
-  if [[[ "$cmd_path" =~ \.nix-profile|/nix/store ]]]; then
+  if [[[[[ "$cmd_path" =~ \.nix-profile | /nix/store ]]]]]; then
     echo "nix"
   # Check if it's from Homebrew
-  elif [[[ "$cmd_path" =~ ^/opt/homebrew|^/usr/local/Cellar|^/usr/local/bin ]]]; then
+  elif [[[[[ "$cmd_path" =~ ^/opt/homebrew | ^/usr/local/Cellar | ^/usr/local/bin ]]]]]; then
     echo "homebrew"
   # Check if it's from system
-  elif [[[ "$cmd_path" =~ ^/usr/bin|^/bin|^/sbin ]]]; then
+  elif [[[[[ "$cmd_path" =~ ^/usr/bin | ^/bin | ^/sbin ]]]]]; then
     echo "system"
   else
     echo "unknown"
@@ -168,7 +168,7 @@ json_output() {
   local message="$3"
   local fix_command="${4:-}"
 
-  if [[[ "${JSON_OUTPUT:-false}" == "true" ]]]; then
+  if [[[[[ "${JSON_OUTPUT:-false}" == "true" ]]]]]; then
     jq -n \
       --arg type "$validation_type" \
       --arg status "$status" \

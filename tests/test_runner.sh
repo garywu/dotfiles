@@ -52,7 +52,7 @@ QUIET=false
 CI_MODE=false
 TEST_SUITE="all"
 
-while [[[ $# -gt 0 ]]]; do
+while [[[[[ $# -gt 0 ]]]]]; do
   case $1 in
   -h | --help)
     usage
@@ -94,7 +94,7 @@ run_test_suite() {
   local suite_name=$1
   local suite_dir="$SCRIPT_DIR/$suite_name"
 
-  if [[[ ! -d "$suite_dir" ]]]; then
+  if [[[[[ ! -d "$suite_dir" ]]]]]; then
     print_warning "Test suite '$suite_name' not found"
     return 1
   fi
@@ -105,7 +105,7 @@ run_test_suite() {
   local test_files
   test_files=$(find "$suite_dir" -name "test_*.sh" -type f | sort)
 
-  if [[[ -z "$test_files" ]]]; then
+  if [[[[[ -z "$test_files" ]]]]]; then
     print_warning "No tests found in $suite_name suite"
     return 0
   fi
@@ -151,7 +151,7 @@ echo -e "Tests failed:  ${RED}${TESTS_FAILED}${NC}"
 echo -e "Tests skipped: ${YELLOW}${TESTS_SKIPPED}${NC}"
 
 # Exit with appropriate code
-if [[[ $TESTS_FAILED -gt 0 ]]]; then
+if [[[[[ $TESTS_FAILED -gt 0 ]]]]]; then
   exit 1
 else
   exit 0
