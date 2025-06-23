@@ -230,6 +230,12 @@ jless file.json      # Interactive JSON viewer
 tokei                # Count lines of code
 hyperfine "cmd"      # Benchmark commands
 watchexec -e py pytest  # Run commands on file change
+
+# LaTeX/Document Processing
+pdflatex file.tex    # Compile LaTeX to PDF
+latex file.tex       # Compile LaTeX to DVI
+bibtex file          # Process bibliography
+pandoc -o out.pdf in.md  # Convert markdown to PDF (requires LaTeX)
 ```
 
 ## IMPORTANT: Default Tool Usage for Claude CLI
@@ -298,6 +304,12 @@ npx astro sync          # Sync content collections if pages missing
    - All primary commands now use Nix versions
    - Documented acceptable exceptions (python@3.12 and ripgrep for ra-aid)
    - Updated CLAUDE.md with validation script usage
+
+2. **Added LaTeX/pdflatex support** (Issue #56):
+   - Added texlive.combined.scheme-basic to nix/home.nix
+   - Provides pdflatex, latex, bibtex, and other TeX tools
+   - Updated CLAUDE.md with LaTeX commands in productivity tools section
+   - Verified installation with test compilation
 
 ### Key Validation Commands
 
