@@ -29,19 +29,19 @@ on:
           - beta
           - rc
 
-  # Automated releases
-  schedule:
-    # Weekly patch releases (every Monday at 9 AM UTC)
-    - cron: '0 9 * * 1'
+  # Automated releases - DISABLED for manual control
+  # schedule:
+  #   # Weekly patch releases (every Monday at 9 AM UTC)
+  #   - cron: '0 9 * * 1'
 
-  # Trigger on push to main (for continuous deployment)
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'docs/**'
-      - '*.md'
-      - '.github/workflows/deploy-docs.yml'
+  # Trigger on push to main - DISABLED for manual control
+  # push:
+  #   branches:
+  #     - main
+  #   paths-ignore:
+  #     - 'docs/**'
+  #     - '*.md'
+  #     - '.github/workflows/deploy-docs.yml'
 
 permissions:
   contents: write
