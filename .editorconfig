@@ -37,6 +37,8 @@ indent_size = 2
 # Markdown files
 [*.md]
 trim_trailing_whitespace = false
+# Disable indent size check for markdown to allow proper list alignment
+indent_size = unset
 
 # Makefile
 [Makefile]
