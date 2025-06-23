@@ -7,9 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Bug Fixes
+
+- Disable indent size enforcement for markdown files ([8f7720f](https://github.com/garywu/dotfiles/commit/8f7720f522822aca5832d000a30fd0f377741369))
+
+### Documentation
+
+- Add comprehensive EditorConfig hierarchical strategy (#39) ([e39bb5a](https://github.com/garywu/dotfiles/commit/e39bb5a7b56b358e111d854f2e24e01ca4d88b1b))
+- Update CLAUDE.md with package validation workflow ([b37dc76](https://github.com/garywu/dotfiles/commit/b37dc7692bab266edee33b49fff4f4b5f7bc7fba))
+
+### Miscellaneous Tasks
+
+- Update claude-init submodule with EditorConfig templates ([8ece520](https://github.com/garywu/dotfiles/commit/8ece5207eaebe414040b8018d8add6e8c3432945))
+
+## [1.3.0] - 2025-06-22
+
 ### Features
 
 - Implement PyUNO integration for unoserver on macOS (#45) ([86802c3](https://github.com/garywu/dotfiles/commit/86802c3f3045256e04a548879821aa0ecd3bc139))
+
+### Miscellaneous Tasks
+
+- V1.3.0 [skip ci] ([158383f](https://github.com/garywu/dotfiles/commit/158383f8cc7e917cd94b0a5e40a95fe2d65df37c))
 
 ## [1.2.0] - 2025-06-22
 
