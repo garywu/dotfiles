@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# pre-commit-autofix - Run auto-fixes before commit
+#
+# This script runs formatting tools to fix issues automatically
+
+set -euo pipefail
+
+# Only run on shell scripts that are staged
+STAGED_SH_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(sh|bash)$' || true)
+
+if [[ -n "$STAGED_SH_FILES" ]]; then
+  echo "🔧 Auto-fixing shell scripts before commit..."
+
+  # Run shfmt on staged files
+  if command -v shfmt &>/dev/null; then
+    echo "$STAGED_SH_FILES" | xargs -I {} shfmt -w {}
+    # Re-add the formatted files
+    echo "$STAGED_SH_FILES" | xargs git add
+  fi
+
+  # Run other auto-fixes if needed
+  # ...
+fi
+
+# Continue with normal pre-commit checks
+exit 0

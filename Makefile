@@ -77,6 +77,11 @@ lint: lint-shell lint-nix lint-yaml lint-markdown lint-toml lint-fish
 format: format-shell format-nix format-toml format-fish
 	@echo "✅ All formatting complete!"
 
+# Fix shell issues comprehensively (format + common fixes)
+fix-shell:
+	@echo "🔧 Fixing shell script issues..."
+	@./scripts/fix-shell-issues.sh || true
+
 # Shell linting and formatting
 lint-shell:
 	@echo "🔍 Linting shell scripts..."

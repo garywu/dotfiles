@@ -111,6 +111,9 @@ make lint
 # Run all formatters
 make format
 
+# Fix shell script issues automatically (RECOMMENDED before commit)
+make fix-shell
+
 # Individual linting commands
 make lint-shell      # Lint shell scripts
 make lint-nix        # Lint Nix files
@@ -125,6 +128,36 @@ make format-nix      # Format Nix files
 make format-toml     # Format TOML files
 make format-fish     # Format Fish scripts
 ```
+
+#### Dealing with ShellCheck Issues
+
+**IMPORTANT**: If you encounter shellcheck errors during commit:
+
+1. **Quick Fix** (Recommended):
+
+   ```bash
+   make fix-shell
+   git add -u
+   git commit
+   ```
+
+2. **Manual Fix** for specific issues:
+   - SC2310: Function in negation - separate the check:
+
+     ```bash
+     # Instead of: if ! command_exists foo; then
+     command_exists foo
+     local exists=$?
+     if [[ $exists -ne 0 ]]; then
+     ```
+
+   - SC2086: Quote variables: `"$var"` instead of `$var`
+   - SC2292: Use `[[ ]]` instead of `[ ]`
+
+3. **Permanent Prevention**:
+   - Always run `make fix-shell` before committing shell scripts
+   - Use `shellcheck <script.sh>` while developing
+   - Copy from existing scripts that already pass checks
 
 ### Environment Validation
 
