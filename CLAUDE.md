@@ -311,6 +311,14 @@ npx astro sync          # Sync content collections if pages missing
    - Updated CLAUDE.md with LaTeX commands in productivity tools section
    - Verified installation with test compilation
 
+3. **Added Calibre e-book CLI tools** (Issue #58):
+   - Added calibre to brew/Brewfile for macOS (GUI + CLI)
+   - Created scripts/setup-calibre.sh for cross-platform CLI installation
+   - Supports Linux (apt/dnf/pacman/apk), macOS (Homebrew), Windows (winget/choco)
+   - Commented out broken Nix package with explanation
+   - Bootstrap.sh automatically runs calibre setup
+   - Provides: ebook-convert, calibredb, ebook-meta, ebook-viewer
+
 ### Key Validation Commands
 
 ```bash
