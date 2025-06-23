@@ -129,6 +129,7 @@
     # Multimedia processing tools
     imagemagick # Image manipulation and conversion
     ffmpeg # Audio/video processing and conversion
+    # calibre # E-book management and conversion CLI tools (marked as broken in nixpkgs across platforms)
 
     # Environment Variables & Secrets Management
     sops # Secrets management with encryption

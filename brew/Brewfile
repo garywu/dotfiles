@@ -8,6 +8,7 @@ cask "tableplus"                 # Database GUI
 cask "dbeaver-community"         # Database tool
 cask "webtorrent"                # BitTorrent client
 cask "libreoffice"               # Open source office suite (Writer, Calc, Impress, etc.)
+cask "calibre"                   # E-book management application (GUI)
 
 # AI/ML GUI Applications
 cask "chatgpt"                   # Desktop application for ChatGPT

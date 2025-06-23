@@ -132,6 +132,12 @@ if [[ "$(uname)" = "Darwin" ]]; then
     fi
 fi
 
+# Install platform-specific tools that aren't available via Nix
+print_status "Setting up platform-specific tools..."
+if [[ -x "$HOME/.dotfiles/scripts/setup-calibre.sh" ]]; then
+    "$HOME/.dotfiles/scripts/setup-calibre.sh" || print_warning "Calibre setup failed"
+fi
+
 print_status "Bootstrap completed!"
 print_status "Your system is now fully configured. Enjoy!"
 echo "Bootstrap completed at $(date)"
