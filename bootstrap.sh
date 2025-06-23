@@ -548,6 +548,21 @@ else
   print_status "Wrangler is already installed"
 fi
 
+# Set up Python development tools using uv (ultra-fast Python package manager)
+# This installs common Python development tools in isolated environments
+print_status "Setting up Python development tools..."
+PYTHON_TOOLS_SCRIPT="$SCRIPT_DIR/scripts/setup-python-tools-uv.sh"
+if [[ -f "$PYTHON_TOOLS_SCRIPT" ]]; then
+  print_status "Running Python tools setup with uv (this may take a few minutes)..."
+  if "$PYTHON_TOOLS_SCRIPT"; then
+    print_status "Python development tools installed successfully"
+  else
+    print_warning "Python tools setup encountered issues (non-critical)"
+  fi
+else
+  print_warning "Python tools setup script not found (skipping)"
+fi
+
 # Optional: Set up OpenHands (AI coding assistant)
 if [[ "${SETUP_OPENHANDS:-}" == "true" ]]; then
   print_status "Setting up OpenHands AI coding assistant..."
