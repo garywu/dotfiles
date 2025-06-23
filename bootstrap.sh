@@ -548,6 +548,17 @@ else
   print_status "Wrangler is already installed"
 fi
 
+# Configure uv to use Nix Python (avoid Homebrew Python conflicts)
+UV_CONFIG_SCRIPT="$SCRIPT_DIR/scripts/configure-uv.sh"
+if [[ -f "$UV_CONFIG_SCRIPT" ]]; then
+  print_status "Configuring uv to use Nix Python..."
+  if "$UV_CONFIG_SCRIPT"; then
+    print_status "uv configured successfully"
+  else
+    print_warning "uv configuration failed (non-critical)"
+  fi
+fi
+
 # Set up Python development tools using uv (ultra-fast Python package manager)
 # This installs common Python development tools in isolated environments
 print_status "Setting up Python development tools..."

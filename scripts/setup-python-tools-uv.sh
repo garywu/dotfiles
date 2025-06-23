@@ -42,6 +42,20 @@ install_uv() {
     uv_version=$(uv --version)
     print_status "uv is already installed ($uv_version)"
   fi
+
+  # Configure uv to use Nix Python by default
+  print_status "Configuring uv to use Nix Python..."
+  export UV_PYTHON_PREFERENCE=only-system
+
+  # Set the default Python to Nix Python
+  if command -v python3 &> /dev/null; then
+    local nix_python
+    nix_python=$(command -v python3 | grep -E "\.nix-profile|/nix/store" | head -1)
+    if [[ -n "$nix_python" ]]; then
+      export UV_PYTHON="$nix_python"
+      print_status "Set UV_PYTHON to: $nix_python"
+    fi
+  fi
 }
 
 # Install Python tool using uv
