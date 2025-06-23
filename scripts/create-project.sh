@@ -20,7 +20,7 @@ print_warning() {
 }
 
 # Check if project name is provided
-if [ -z "$1" ]; then
+if [[ -z "$1" ]]; then
   print_error "Please provide a project name"
   echo "Usage: $0 <project-name> [project-type]"
   echo "Project types: python, node, ai, rust, go"

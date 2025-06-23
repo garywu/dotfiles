@@ -35,14 +35,14 @@ run_validation() {
   print_section "Running $script_name"
 
   local script_path="$SCRIPT_DIR/$script"
-  if [[ ! -f "$script_path" ]]; then
+  if [[[ ! -f "$script_path" ]]]; then
     log_error "Validation script not found: $script_path"
     FAILED_SCRIPTS+=("$script_name (not found)")
     ((TOTAL_ERRORS++))
     return 1
   fi
 
-  if [[ ! -x "$script_path" ]]; then
+  if [[[ ! -x "$script_path" ]]]; then
     log_warn "Making script executable: $script_path"
     chmod +x "$script_path"
   fi
@@ -123,13 +123,13 @@ generate_report() {
   echo "Total Issues Found:"
   echo "   Errors:   $TOTAL_ERRORS"
   echo "   Warnings: $TOTAL_WARNINGS"
-  if [[ $TOTAL_FIXED -gt 0 ]]; then
+  if [[[ $TOTAL_FIXED -gt 0 ]]]; then
     echo "   Fixed:    $TOTAL_FIXED"
   fi
   echo
 
   # Overall status
-  if [[ $TOTAL_ERRORS -eq 0 ]] && [[ ${#FAILED_SCRIPTS[@]} -eq 0 ]]; then
+  if [[[ $TOTAL_ERRORS -eq 0 ]]] && [[ ${#FAILED_SCRIPTS[@]} -eq 0 ]]; then
     echo "✅ Overall Status: PASSED"
     return 0
   else
@@ -186,7 +186,7 @@ main() {
   echo "Validation completed in ${elapsed}s"
 
   # Exit with appropriate code
-  if [[ $TOTAL_ERRORS -eq 0 ]] && [[ ${#FAILED_SCRIPTS[@]} -eq 0 ]]; then
+  if [[[ $TOTAL_ERRORS -eq 0 ]]] && [[ ${#FAILED_SCRIPTS[@]} -eq 0 ]]; then
     exit 0
   else
     exit 1
@@ -216,7 +216,7 @@ show_help() {
 
 # Parse arguments
 ARGS=()
-while [[ $# -gt 0 ]]; do
+while [[[ $# -gt 0 ]]]; do
   case $1 in
   -h | --help)
     show_help

@@ -55,7 +55,7 @@ check_tools() {
     if ! command -v "$tool" &>/dev/null; then
       missing_tools+=("$tool")
     else
-      if [[ "$tool" == "fd" ]]; then
+      if [[[ "$tool" == "fd" ]]]; then
         local version
         version=$(fd --version 2>/dev/null || echo "unknown")
       else
@@ -216,7 +216,7 @@ measure_runtime_efficiency() {
   local test_dir="${DATASETS_DIR}/large"
   local dir_contents
   dir_contents=$(ls -A "$test_dir" 2>/dev/null || true)
-  if [[ ! -d "$test_dir" ]] || [[ -z "$dir_contents" ]]; then
+  if [[[ ! -d "$test_dir" ]]] || [[[ -z "$dir_contents" ]]]; then
     log INFO "Creating large test dataset for benchmarks"
     mkdir -p "$test_dir"
 

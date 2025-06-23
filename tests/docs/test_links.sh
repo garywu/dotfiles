@@ -27,16 +27,16 @@ check_url() {
   local status_code
 
   # For local testing, use curl
-  if [[ "$url" =~ ^http ]]; then
+  if [[[ "$url" =~ ^http ]]]; then
     status_code=$(curl -s -o /dev/null -w "%{http_code}" "$url" || echo "000")
-    if [[ "$status_code" == "200" ]]; then
+    if [[[ "$status_code" == "200" ]]]; then
       return 0
     else
       return 1
     fi
   else
     # For file paths, check if file exists
-    if [[ -f "$url" ]]; then
+    if [[[ -f "$url" ]]]; then
       return 0
     else
       return 1
@@ -73,11 +73,11 @@ test_file_links() {
   set +e
   links=$(extract_links "$file")
   set -e
-  if [[ -z "$links" ]]; then
+  if [[[ -z "$links" ]]]; then
     links=""
   fi
 
-  if [[ -z "$links" ]]; then
+  if [[[ -z "$links" ]]]; then
     echo "  No internal links found"
     return
   fi
@@ -86,10 +86,10 @@ test_file_links() {
     ((TOTAL_LINKS++))
 
     # Handle relative links
-    if [[ "$link" =~ ^/dotfiles/ ]]; then
+    if [[[ "$link" =~ ^/dotfiles/ ]]]; then
       # Already has base path
       full_url="${BASE_URL}${link}"
-    elif [[ "$link" =~ ^/ ]]; then
+    elif [[[ "$link" =~ ^/ ]]]; then
       # Absolute path from site root - need to add base path
       full_url="${BASE_URL}${SITE_BASE}${link}"
     else
@@ -136,7 +136,7 @@ start_dev_server() {
 
 # Function to stop dev server
 stop_dev_server() {
-  if [[ -n "${SERVER_PID:-}" ]]; then
+  if [[[ -n "${SERVER_PID:-}" ]]]; then
     echo "Stopping development server..."
     kill "$SERVER_PID" 2>/dev/null || true
     wait "$SERVER_PID" 2>/dev/null || true
@@ -150,9 +150,9 @@ trap stop_dev_server EXIT
 main() {
   local mode="${1:-local}"
 
-  if [[ "$mode" == "local" ]]; then
+  if [[[ "$mode" == "local" ]]]; then
     start_dev_server
-  elif [[ "$mode" == "production" ]]; then
+  elif [[[ "$mode" == "production" ]]]; then
     BASE_URL="https://garywu.github.io/dotfiles"
     echo "Testing production site: $BASE_URL"
   fi
@@ -162,7 +162,7 @@ main() {
   echo ""
 
   # Find all HTML files in the built site
-  if [[ "$mode" == "local" ]]; then
+  if [[[ "$mode" == "local" ]]]; then
     html_files=$(find "$DOCS_DIR/dist" -name "*.html" -type f)
   else
     # For production, we need to test known pages

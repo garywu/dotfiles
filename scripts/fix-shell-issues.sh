@@ -47,7 +47,7 @@ fix_formatting() {
   done
 
   # Also format bootstrap.sh specifically
-  if [[ -f "bootstrap.sh" ]]; then
+  if [[[ -f "bootstrap.sh" ]]]; then
     shfmt -w bootstrap.sh
   fi
 }
@@ -62,7 +62,7 @@ fix_common_issues() {
 
     # Fix SC2292: Prefer [[ ]] over [ ]
     if grep -q '\[ ' "$file"; then
-      sed -E 's/\[ ([^]]+) \]/[[ \1 ]]/g' "$file" > "$tmp_file"
+      sed -E 's/\[ ([^]]+) \]/[[[ \1 ]]]/g' "$file" >"$tmp_file"
       if ! diff -q "$file" "$tmp_file" >/dev/null; then
         mv "$tmp_file" "$file"
         print_status "Fixed [ ] to [[ ]] in: $file"
@@ -98,7 +98,7 @@ check_remaining() {
     fi
   done
 
-  if [[ "$has_issues" == "false" ]]; then
+  if [[[ "$has_issues" == "false" ]]]; then
     print_status "All shell scripts pass shellcheck!"
   fi
 }

@@ -20,13 +20,13 @@ print_warning() {
 }
 
 # Check if running on macOS
-if [[ "$(uname)" != "Darwin" ]]; then
+if [[[ "$(uname)" != "Darwin" ]]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
 
 # Check if running as root
-if [[ $EUID -eq 0 ]]; then
+if [[[ $EUID -eq 0 ]]]; then
   print_error "This script should not be run as root"
   exit 1
 fi
@@ -34,7 +34,7 @@ fi
 # Function to check GPU support
 check_gpu() {
   print_status "Checking GPU support..."
-  if [[ -n "$(lspci | grep -i nvidia)" ]]; then
+  if [[[ -n "$(lspci | grep -i nvidia)" ]]]; then
     print_status "NVIDIA GPU detected"
     return 0
   else

@@ -19,7 +19,7 @@ print_section "Nix Removal"
 
 if is_macos; then
   # On macOS, /nix requires reboot to fully remove
-  if [[ -d /nix ]]; then
+  if [[[ -d /nix ]]]; then
     print_warning "⚠ /nix directory still exists (macOS requires reboot for full removal)"
     ((cleanup_warnings++))
   else
@@ -48,8 +48,8 @@ configs_to_check=(
 
 # In CI on macOS, some Nix-related items may persist due to volume/daemon issues
 for config in "${configs_to_check[@]}"; do
-  if [[ -e "$config" ]]; then
-    if is_ci && is_macos && [[ "$config" == *".nix"* ]]; then
+  if [[[ -e "$config" ]]]; then
+    if is_ci && is_macos && [[[ "$config" == *".nix"* ]]]; then
       print_warning "⚠ $config still exists (may require reboot in CI)"
       ((cleanup_warnings++))
     else
@@ -72,7 +72,7 @@ shell_configs=(
 )
 
 for config in "${shell_configs[@]}"; do
-  if [[ -f "$config" ]]; then
+  if [[[ -f "$config" ]]]; then
     if grep -q "nix" "$config" 2>/dev/null; then
       print_warning "⚠ Nix entries found in $config"
       ((cleanup_warnings++))
@@ -117,7 +117,7 @@ if is_macos; then
   fi
 
   # Check /etc/synthetic.conf
-  if [[ -f /etc/synthetic.conf ]] && grep -q "^nix" /etc/synthetic.conf 2>/dev/null; then
+  if [[[ -f /etc/synthetic.conf ]]] && grep -q "^nix" /etc/synthetic.conf 2>/dev/null; then
     print_warning "⚠ /etc/synthetic.conf still contains nix entry (requires reboot)"
     ((cleanup_warnings++))
   else
@@ -129,8 +129,8 @@ fi
 print_section "Cleanup Summary"
 echo "Warnings: $cleanup_warnings"
 
-if [[ "$test_passed" == "true" ]]; then
-  if [[ $cleanup_warnings -gt 0 ]]; then
+if [[[ "$test_passed" == "true" ]]]; then
+  if [[[ $cleanup_warnings -gt 0 ]]]; then
     print_warning "Cleanup completed with warnings (some items require reboot)"
   else
     print_success "All cleanup verification tests passed!"

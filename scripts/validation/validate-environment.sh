@@ -38,20 +38,20 @@ check_path_order() {
   IFS=':' read -ra PATH_ARRAY <<<"$PATH"
 
   for path in "${PATH_ARRAY[@]}"; do
-    if [[ "$path" =~ \.nix-profile|/nix/store ]] && [[ $nix_position -eq -1 ]]; then
+    if [[[ "$path" =~ \.nix-profile|/nix/store ]]] && [[[ $nix_position -eq -1 ]]]; then
       nix_position=$position
-    elif [[ "$path" =~ /opt/homebrew|/usr/local ]] && [[ $homebrew_position -eq -1 ]]; then
+    elif [[[ "$path" =~ /opt/homebrew|/usr/local ]]] && [[[ $homebrew_position -eq -1 ]]]; then
       homebrew_position=$position
     fi
     ((position++))
   done
 
-  if [[ $nix_position -eq -1 ]]; then
+  if [[[ $nix_position -eq -1 ]]]; then
     log_error "Nix paths not found in PATH"
     return 1
   fi
 
-  if [[ $homebrew_position -ne -1 ]] && [[ $homebrew_position -lt $nix_position ]]; then
+  if [[[ $homebrew_position -ne -1 ]]] && [[[ $homebrew_position -lt $nix_position ]]]; then
     log_warn "Homebrew paths come before Nix in PATH (positions: Homebrew=$homebrew_position, Nix=$nix_position)"
     log_info "This may cause Homebrew packages to take precedence over Nix packages"
     return 1
@@ -69,11 +69,11 @@ check_shell_config() {
   log_info "Current shell: $current_shell"
 
   # Check if fish is the default shell
-  if [[ "$current_shell" == "fish" ]]; then
+  if [[[ "$current_shell" == "fish" ]]]; then
     log_success "Fish is the default shell"
 
     # Check fish configuration
-    if [[ -f "$HOME/.config/fish/config.fish" ]]; then
+    if [[[ -f "$HOME/.config/fish/config.fish" ]]]; then
       log_success "Fish configuration exists"
 
       # Check for important fish configurations
@@ -111,15 +111,15 @@ check_home_manager() {
   log_success "Home Manager is available"
 
   # Check if home.nix is linked correctly
-  if [[ -L "$HOME/.config/home-manager/home.nix" ]]; then
+  if [[[ -L "$HOME/.config/home-manager/home.nix" ]]]; then
     local link_target
     link_target=$(readlink "$HOME/.config/home-manager/home.nix")
-    if [[ "$link_target" == "$DOTFILES_ROOT/nix/home.nix" ]]; then
+    if [[[ "$link_target" == "$DOTFILES_ROOT/nix/home.nix" ]]]; then
       log_success "home.nix is correctly linked to dotfiles"
     else
       log_error "home.nix is linked to wrong location: $link_target"
     fi
-  elif [[ -f "$HOME/.config/home-manager/home.nix" ]]; then
+  elif [[[ -f "$HOME/.config/home-manager/home.nix" ]]]; then
     log_warn "home.nix exists but is not a symlink (may cause sync issues)"
   else
     log_error "home.nix not found"
@@ -136,7 +136,7 @@ check_home_manager() {
 # Function to check environment variables
 check_env_vars() {
   for var in "${EXPECTED_ENV_VARS[@]}"; do
-    if [[ -n "${!var:-}" ]]; then
+    if [[[ -n "${!var:-}" ]]]; then
       log_success "$var is set"
       log_debug "$var=${!var}"
     else
@@ -145,19 +145,19 @@ check_env_vars() {
   done
 
   # Check specific PATH entries
-  if [[ "$PATH" =~ \.nix-profile/bin ]]; then
+  if [[[ "$PATH" =~ \.nix-profile/bin ]]]; then
     log_success "Nix profile bin is in PATH"
   else
     log_error "Nix profile bin not found in PATH"
   fi
 
-  if [[ "$PATH" =~ \.npm-global/bin ]]; then
+  if [[[ "$PATH" =~ \.npm-global/bin ]]]; then
     log_success "NPM global bin is in PATH"
   else
     log_warn "NPM global bin not in PATH (may affect npm global packages)"
   fi
 
-  if [[ "$PATH" =~ \.local/bin ]]; then
+  if [[[ "$PATH" =~ \.local/bin ]]]; then
     log_success "User local bin is in PATH"
   else
     log_warn "User local bin not in PATH (may affect pipx and other user tools)"
@@ -177,13 +177,13 @@ check_git_config() {
   git_user=$(git config --global user.name 2>/dev/null || echo "")
   git_email=$(git config --global user.email 2>/dev/null || echo "")
 
-  if [[ -n "$git_user" ]]; then
+  if [[[ -n "$git_user" ]]]; then
     log_success "Git user configured: $git_user"
   else
     log_error "Git user.name not configured"
   fi
 
-  if [[ -n "$git_email" ]]; then
+  if [[[ -n "$git_email" ]]]; then
     log_success "Git email configured: $git_email"
   else
     log_error "Git user.email not configured"
@@ -192,7 +192,7 @@ check_git_config() {
   # Check default branch
   local default_branch
   default_branch=$(git config --global init.defaultBranch 2>/dev/null || echo "")
-  if [[ "$default_branch" == "main" ]]; then
+  if [[[ "$default_branch" == "main" ]]]; then
     log_success "Git default branch is 'main'"
   else
     log_warn "Git default branch is not 'main' (current: ${default_branch:-not set})"
@@ -201,7 +201,7 @@ check_git_config() {
 
 # Function to check dotfiles repository status
 check_dotfiles_status() {
-  if [[ ! -d "$DOTFILES_ROOT/.git" ]]; then
+  if [[[ ! -d "$DOTFILES_ROOT/.git" ]]]; then
     log_error "Dotfiles directory is not a git repository"
     return 1
   fi
@@ -221,7 +221,7 @@ check_dotfiles_status() {
   # Check if we're on a known branch
   local current_branch
   current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
-  if [[ "$current_branch" =~ ^(main|stable|beta)$ ]]; then
+  if [[[ "$current_branch" =~ ^(main|stable|beta)$ ]]]; then
     log_success "On standard branch: $current_branch"
   else
     log_warn "On non-standard branch: $current_branch"
@@ -263,7 +263,7 @@ main() {
 }
 
 # Parse arguments
-while [[ $# -gt 0 ]]; do
+while [[[ $# -gt 0 ]]]; do
   case $1 in
   --fix)
     export FIX_MODE=true

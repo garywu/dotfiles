@@ -31,17 +31,17 @@ log_error() {
 
 # Detect operating system
 detect_os() {
-  if [[ "$OSTYPE" == "darwin"* ]]; then
+  if [[[ "$OSTYPE" == "darwin"* ]]]; then
     echo "macos"
   elif grep -q Microsoft /proc/version 2>/dev/null; then
     echo "wsl2"
-  elif [[ -f /etc/lsb-release ]] && grep -q Ubuntu /etc/lsb-release; then
+  elif [[[ -f /etc/lsb-release ]]] && grep -q Ubuntu /etc/lsb-release; then
     echo "ubuntu"
-  elif [[ -f /etc/debian_version ]]; then
+  elif [[[ -f /etc/debian_version ]]]; then
     echo "ubuntu" # Treat Debian as Ubuntu for our purposes
-  elif [[ -f /etc/redhat-release ]]; then
+  elif [[[ -f /etc/redhat-release ]]]; then
     echo "redhat"
-  elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  elif [[[ "$OSTYPE" == "linux-gnu"* ]]]; then
     echo "linux"
   else
     echo "unknown"
@@ -50,7 +50,7 @@ detect_os() {
 
 # Check if running with appropriate privileges
 check_privileges() {
-  if [[ $EUID -eq 0 ]]; then
+  if [[[ $EUID -eq 0 ]]]; then
     log_error "This script should not be run as root/sudo!"
     log_info "Please run as your regular user account."
     exit 1
@@ -177,12 +177,12 @@ install_nix() {
 
   log_info "Installing Nix package manager..."
 
-  if [[ $(detect_os) == "macos" ]]; then
+  if [[[ $(detect_os) == "macos" ]]]; then
     # Multi-user installation for macOS
     curl -L https://nixos.org/nix/install | sh -s -- --daemon
 
     # Source Nix profile
-    if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+    if [[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]]; then
       source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
     fi
   else
@@ -190,7 +190,7 @@ install_nix() {
     curl -L https://nixos.org/nix/install | sh
 
     # Source Nix profile
-    if [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
+    if [[[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]]; then
       source ~/.nix-profile/etc/profile.d/nix.sh
     fi
   fi
@@ -202,7 +202,7 @@ install_nix() {
 run_minimal_installer() {
   log_info "Running minimal installer..."
 
-  if [[ -f "./minimal_install.sh" ]]; then
+  if [[[ -f "./minimal_install.sh" ]]]; then
     bash ./minimal_install.sh
   else
     curl -sSL https://raw.githubusercontent.com/yourusername/dotfiles/main/minimal_install.sh | bash
@@ -215,7 +215,7 @@ run_bootstrap() {
 
   case $os in
   "macos")
-    if [[ -f "./scripts/bootstrap.sh" ]]; then
+    if [[[ -f "./scripts/bootstrap.sh" ]]]; then
       log_info "Running macOS bootstrap script..."
       bash ./scripts/bootstrap.sh
     else
@@ -292,7 +292,7 @@ main() {
   show_setup_info $os
 
   # Check if OS is supported
-  if [[ $os == "unknown" ]] || [[ $os == "redhat" ]] || [[ $os == "linux" ]]; then
+  if [[[ $os == "unknown" ]]] || [[[ $os == "redhat" ]]] || [[[ $os == "linux" ]]]; then
     log_error "Unsupported operating system detected: $os"
     log_info "Please check the templates directory for available setups."
     exit 1
