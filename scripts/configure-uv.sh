@@ -28,7 +28,7 @@ fi
 print_status "Found Nix Python at: $NIX_PYTHON"
 
 # Create uv configuration file
-cat > "$UV_CONFIG_DIR/config.toml" << EOF
+cat >"$UV_CONFIG_DIR/config.toml" <<EOF
 # uv configuration to use Nix Python
 [python]
 # Prefer system Python (Nix) over managed installations
@@ -51,7 +51,7 @@ fi
 # Add to Fish config separately
 if [[ -d "$HOME/.config/fish" ]]; then
   FISH_CONFIG="$HOME/.config/fish/conf.d/uv.fish"
-  cat > "$FISH_CONFIG" << EOF
+  cat >"$FISH_CONFIG" <<EOF
 # Configure uv to use Nix Python
 set -gx UV_PYTHON_PREFERENCE only-system
 set -gx UV_PYTHON_DOWNLOADS false
@@ -63,7 +63,7 @@ fi
 if [[ -n "$SHELL_CONFIG" ]]; then
   # Check if already configured
   if ! grep -q "UV_PYTHON_PREFERENCE" "$SHELL_CONFIG"; then
-    cat >> "$SHELL_CONFIG" << EOF
+    cat >>"$SHELL_CONFIG" <<EOF
 
 # Configure uv to use Nix Python
 export UV_PYTHON_PREFERENCE=only-system
@@ -81,6 +81,6 @@ print_status "Automatic Python downloads disabled"
 
 # Test the configuration
 print_status "Testing configuration..."
-if command -v uv &> /dev/null; then
+if command -v uv &>/dev/null; then
   uv python list
 fi

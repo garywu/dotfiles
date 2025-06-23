@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Colors for output
 RED='\033[0;31m'
@@ -8,53 +8,59 @@ NC='\033[0m' # No Color
 
 # Function to print status messages
 print_status() {
-    echo -e "${GREEN}==>${NC} $1"
+  echo -e "${GREEN}==>${NC} $1"
 }
 
 print_error() {
-    echo -e "${RED}Error:${NC} $1"
-    exit 1
+  echo -e "${RED}Error:${NC} $1"
+  exit 1
 }
 
 print_warning() {
-    echo -e "${YELLOW}Warning:${NC} $1"
+  echo -e "${YELLOW}Warning:${NC} $1"
 }
 
 # Check if a command exists
 command_exists() {
-    command -v "$1" &> /dev/null
+  command -v "$1" &>/dev/null
 }
 
 # Get the repository URL from the current git remote
 get_repo_url() {
-    if [ -d .git ]; then
-        git remote get-url origin 2>/dev/null || print_error "Not a git repository or no remote 'origin' found"
-    else
-        print_error "Not a git repository"
-    fi
+  if [[ -d .git ]]; then
+    git remote get-url origin 2>/dev/null || print_error "Not a git repository or no remote 'origin' found"
+  else
+    print_error "Not a git repository"
+  fi
 }
 
 # Install Nix if not present
 if ! command_exists nix; then
-    print_status "Installing Nix..."
-    sh <(curl -L https://nixos.org/nix/install) --daemon || print_error "Failed to install Nix"
+  print_status "Installing Nix..."
+  if ! curl -L https://nixos.org/nix/install -o /tmp/nix-install.sh; then
+    print_error "Failed to download Nix installer"
+  fi
+  if ! sh /tmp/nix-install.sh --daemon; then
+    print_error "Failed to install Nix"
+  fi
 
-    # Source Nix environment
-    if [ -f ~/.nix-profile/etc/profile.d/nix.sh ]; then
-        . ~/.nix-profile/etc/profile.d/nix.sh
-    else
-        print_warning "Nix profile not found. You may need to restart your terminal."
-    fi
+  # Source Nix environment
+  if [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
+    # shellcheck source=/dev/null
+    . ~/.nix-profile/etc/profile.d/nix.sh
+  else
+    print_warning "Nix profile not found. You may need to restart your terminal."
+  fi
 else
-    print_status "Nix is already installed"
+  print_status "Nix is already installed"
 fi
 
 # Install chezmoi using Nix if not present
 if ! command_exists chezmoi; then
-    print_status "Installing chezmoi..."
-    nix profile install nixpkgs#chezmoi || print_error "Failed to install chezmoi"
+  print_status "Installing chezmoi..."
+  nix profile install nixpkgs#chezmoi || print_error "Failed to install chezmoi"
 else
-    print_status "chezmoi is already installed"
+  print_status "chezmoi is already installed"
 fi
 
 # Get the repository URL

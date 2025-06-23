@@ -43,7 +43,11 @@ command_exists() {
 
 # Function to check Docker
 check_docker() {
-  if ! command_exists docker; then
+  # Check if docker exists (separate from condition to avoid SC2310)
+  command_exists docker
+  local docker_exists=$?
+
+  if [[ $docker_exists -ne 0 ]]; then
     print_error "Docker is not installed. Please install Docker first."
     return 1
   fi
@@ -171,7 +175,8 @@ logs_openhands() {
 
 # Function to create systemd service (Linux only)
 create_systemd_service() {
-  if [[ "$(uname)" != "Linux" ]]; then
+  uname_result=$(uname)
+  if [[ "$uname_result" != "Linux" ]]; then
     print_warning "Systemd service creation is only available on Linux"
     return 0
   fi
@@ -203,7 +208,8 @@ EOF
 
 # Function to create launchd service (macOS)
 create_launchd_service() {
-  if [[ "$(uname)" != "Darwin" ]]; then
+  uname_result=$(uname)
+  if [[ "$uname_result" != "Darwin" ]]; then
     print_warning "Launchd service creation is only available on macOS"
     return 0
   fi
@@ -263,11 +269,12 @@ uninstall_openhands() {
   rm -rf "$CONFIG_DIR"
 
   # Remove services
-  if [[ "$(uname)" == "Linux" ]] && systemctl list-unit-files | grep -q "${SERVICE_NAME}"; then
+  uname_result=$(uname)
+  if [[ "$uname_result" == "Linux" ]] && systemctl list-unit-files | grep -q "${SERVICE_NAME}"; then
     sudo systemctl disable "${SERVICE_NAME}"
     sudo rm "/etc/systemd/system/${SERVICE_NAME}.service"
     sudo systemctl daemon-reload
-  elif [[ "$(uname)" == "Darwin" ]] && [[ -f "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist" ]]; then
+  elif [[ "$uname_result" == "Darwin" ]] && [[ -f "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist" ]]; then
     launchctl unload "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist"
     rm "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist"
   fi
@@ -350,7 +357,8 @@ main() {
     ${EDITOR:-nano} "$CONFIG_DIR/config.env"
     ;;
   "service")
-    if [[ "$(uname)" == "Darwin" ]]; then
+    uname_result=$(uname)
+    if [[ "$uname_result" == "Darwin" ]]; then
       create_launchd_service
     else
       create_systemd_service

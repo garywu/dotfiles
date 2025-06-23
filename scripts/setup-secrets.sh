@@ -45,7 +45,7 @@ check_dependencies() {
     missing_tools+=("yq")
   fi
 
-  if [ ${#missing_tools[@]} -ne 0 ]; then
+  if [[ ${#missing_tools[@]} -ne 0 ]]; then
     log_error "Missing required tools: ${missing_tools[*]}"
     log_info "Please install via: nix-env -iA nixpkgs.age nixpkgs.sops nixpkgs.yq"
     log_info "Or run: home-manager switch"
@@ -74,7 +74,8 @@ setup_age_key() {
   log_warning "IMPORTANT: Back up this key file! You won't be able to decrypt secrets without it."
 
   # Display public key for sharing
-  local public_key=$(grep "public key:" "$age_key_file" | cut -d: -f2 | tr -d ' ')
+  local public_key
+  public_key=$(grep "public key:" "$age_key_file" | cut -d: -f2 | tr -d ' ' || true)
   log_info "Your public key (share with team): $public_key"
 }
 
@@ -98,7 +99,8 @@ create_sops_config() {
     return 1
   fi
 
-  local public_key=$(grep "public key:" "$age_key_file" | cut -d: -f2 | tr -d ' ')
+  local public_key
+  public_key=$(grep "public key:" "$age_key_file" | cut -d: -f2 | tr -d ' ' || true)
 
   log_info "Creating SOPS configuration..."
 

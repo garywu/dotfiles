@@ -32,7 +32,7 @@ print_warning() {
 
 # Ensure uv is installed
 install_uv() {
-  if ! command -v uv &> /dev/null; then
+  if ! command -v uv &>/dev/null; then
     print_status "Installing uv (fast Python package manager)..."
     curl -LsSf https://astral.sh/uv/install.sh | sh
     # Add to PATH for current session
@@ -48,7 +48,7 @@ install_uv() {
   export UV_PYTHON_PREFERENCE=only-system
 
   # Set the default Python to Nix Python
-  if command -v python3 &> /dev/null; then
+  if command -v python3 &>/dev/null; then
     local nix_python
     nix_python=$(command -v python3 | grep -E "\.nix-profile|/nix/store" | head -1)
     if [[ -n "$nix_python" ]]; then
@@ -61,7 +61,7 @@ install_uv() {
 # Install Python tool using uv
 install_tool() {
   local tool="$1"
-  local package="${2:-$tool}"  # Allow override for package name
+  local package="${2:-$tool}" # Allow override for package name
 
   print_status "Installing $tool..."
 
@@ -82,26 +82,26 @@ main() {
 
   # Core development tools
   print_status "Installing code quality tools..."
-  install_tool "black"           # Code formatter
-  install_tool "ruff"            # Fast Python linter
-  install_tool "mypy"            # Static type checker
+  install_tool "black" # Code formatter
+  install_tool "ruff"  # Fast Python linter
+  install_tool "mypy"  # Static type checker
 
   print_status "Installing development workflow tools..."
-  install_tool "pre-commit"      # Git hooks framework
-  install_tool "poetry"          # Modern dependency management
-  install_tool "ipython"         # Enhanced Python REPL
+  install_tool "pre-commit" # Git hooks framework
+  install_tool "poetry"     # Modern dependency management
+  install_tool "ipython"    # Enhanced Python REPL
 
   print_status "Installing testing tools..."
-  install_tool "pytest"          # Testing framework
-  install_tool "tox"             # Test automation
+  install_tool "pytest" # Testing framework
+  install_tool "tox"    # Test automation
 
   print_status "Installing documentation tools..."
-  install_tool "mkdocs"          # Documentation generator
+  install_tool "mkdocs" # Documentation generator
 
   print_status "Installing utilities..."
-  install_tool "httpie"          # User-friendly HTTP client
-  install_tool "cookiecutter"    # Project templates
-  install_tool "pip-tools"       # Pin Python dependencies
+  install_tool "httpie"       # User-friendly HTTP client
+  install_tool "cookiecutter" # Project templates
+  install_tool "pip-tools"    # Pin Python dependencies
 
   # Show installed tools
   print_status "Python development tools installation complete!"
@@ -109,7 +109,7 @@ main() {
   uv tool list
 
   # Optional: Set up global pre-commit hooks
-  if command -v pre-commit &> /dev/null; then
+  if command -v pre-commit &>/dev/null; then
     print_status "Setting up global pre-commit hooks..."
     git config --global init.templateDir ~/.git-template
     pre-commit init-templatedir ~/.git-template || true

@@ -20,7 +20,8 @@ print_warning() {
 }
 
 # Check if running on macOS
-if [[ "$(uname)" != "Darwin" ]]; then
+uname_result=$(uname)
+if [[ "$uname_result" != "Darwin" ]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
