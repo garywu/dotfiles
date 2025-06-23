@@ -408,6 +408,16 @@ home-manager switch || print_warning "home-manager switch failed"
 echo "[DEBUG] After home-manager switch:"
 ls -l ~/.config/fish/config.fish 2>&1 || echo "config.fish does not exist"
 
+# Install Go protoc plugins for gRPC development
+print_status "Installing Go protoc plugins for gRPC development..."
+if command -v go >/dev/null 2>&1; then
+  go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+  go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+  print_status "  → Installed protoc-gen-go and protoc-gen-go-grpc"
+else
+  print_warning "Go not found, skipping protoc plugin installation"
+fi
+
 # Ensure Nix tools (including modern bash) take precedence in PATH
 print_status "Configuring shell environment for Nix tools..."
 NIX_PROFILE_PATH="${HOME}/.nix-profile/bin"
@@ -487,9 +497,9 @@ else
 fi
 
 # On macOS, install Homebrew if not present and then install GUI apps
-if [ "$(uname)" = "Darwin" ]; then
+if [[ "$(uname)" = "Darwin" ]]; then
   # Check if Homebrew is installed and working
-  if [ -f "/opt/homebrew/bin/brew" ] || [ -f "/usr/local/bin/brew" ]; then
+  if [[ -f "/opt/homebrew/bin/brew" ]] || [[ -f "/usr/local/bin/brew" ]]; then
     print_status "Homebrew is already installed"
     # Source Homebrew environment
     eval "$(/opt/homebrew/bin/brew shellenv)"

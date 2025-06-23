@@ -8,10 +8,11 @@
   home.username = builtins.getEnv "USER";
   home.homeDirectory = builtins.getEnv "HOME";
 
-  # Add npm and pipx bin directories to PATH
+  # Add npm, pipx, and Go bin directories to PATH
   home.sessionPath = [
     "$HOME/.npm-global/bin"
     "$HOME/.local/bin"
+    "$HOME/go/bin"
   ];
 
   # This value determines the Home Manager release that your configuration is compatible with.
@@ -30,6 +31,7 @@
     go
     rustc
     cargo
+    protobuf # Protocol Buffer compiler (protoc) for gRPC
 
     # Version managers
     # nvm           # Not available in nixpkgs, use installer instead
