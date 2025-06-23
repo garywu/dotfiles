@@ -84,6 +84,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# tmux debug logs (created when tmux runs with -vvv or TMUX_DEBUG)
+tmux-client-*.log
+tmux-server-*.log
+
 # Runtime data
 pids
 *.pid
@@ -171,3 +175,6 @@ public
 # Efficiency test results (generated)
 tests/efficiency/results/
 tests/efficiency/datasets/
+
+# RA.Aid tool data
+.ra-aid/
