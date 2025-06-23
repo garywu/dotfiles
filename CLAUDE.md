@@ -319,6 +319,12 @@ npx astro sync          # Sync content collections if pages missing
    - Bootstrap.sh automatically runs calibre setup
    - Provides: ebook-convert, calibredb, ebook-meta, ebook-viewer
 
+4. **Added archive, PDF, and audio tools** (Issue #59):
+   - Added p7zip (7z command) for high-compression archives
+   - Added ghostscript (gs command) for PostScript/PDF processing
+   - Added lame for MP3 encoding
+   - All installed via Nix for cross-platform availability
+
 ### Key Validation Commands
 
 ```bash
