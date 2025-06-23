@@ -180,6 +180,9 @@
     hyperfine # Command-line benchmarking tool
     # gocyclo # Go cyclomatic complexity analyzer
     # lizard # Code complexity analyzer (multiple languages)
+
+    # LaTeX/TeX distribution
+    texlive.combined.scheme-basic
   ] ++ (
     # Platform-specific packages
     if pkgs.stdenv.isLinux then [
