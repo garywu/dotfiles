@@ -36,9 +36,9 @@ find "$DIST_DIR" -name "*.html" -type f | while read -r file; do
   url_path="${rel_path%/index.html}"
   [[ "$url_path" == "" ]] && url_path="/"
   echo "$url_path"
-done | sort -u > "$SITEMAP_FILE"
+done | sort -u >"$SITEMAP_FILE"
 
-PAGE_COUNT=$(wc -l < "$SITEMAP_FILE")
+PAGE_COUNT=$(wc -l <"$SITEMAP_FILE")
 echo "Found $PAGE_COUNT pages"
 echo ""
 
@@ -116,7 +116,7 @@ while IFS= read -r page; do
         break # Only report first broken link to avoid spam
       fi
     fi
-  done <<< "$internal_links"
+  done <<<"$internal_links"
 
   if [[ $broken_links -gt 0 ]]; then
     printf "\r%b⚠%b %-50s (Has broken links)\n" "$YELLOW" "$NC" "$page"
@@ -125,7 +125,7 @@ while IFS= read -r page; do
     printf "\r%b✓%b %-50s\n" "$GREEN" "$NC" "$page"
     ((PASSED++)) || true
   fi
-done < "$SITEMAP_FILE"
+done <"$SITEMAP_FILE"
 
 echo ""
 echo "================================"

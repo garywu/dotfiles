@@ -2,6 +2,12 @@
 
 ## Workflow Procedure
 
+### 0. System Health Check
+
+- **Start sessions with validation** - Run `./scripts/validation/validate-packages.sh`
+- **Fix any issues** before starting work
+- **Check after major changes** to ensure system stays clean
+
 ### 1. Planning Phase
 
 - **Always start with planning** - Never modify code without a clear plan
@@ -123,6 +129,14 @@ make format-fish     # Format Fish scripts
 ### Environment Validation
 
 ```bash
+# IMPORTANT: Run regularly to detect issues early!
+
+# Check for duplicate packages between Nix and Homebrew
+./scripts/validation/validate-packages.sh
+
+# Auto-fix duplicate package issues
+./scripts/validation/validate-packages.sh --fix
+
 # Run comprehensive validation
 ./scripts/validate-all.sh
 
@@ -136,6 +150,16 @@ make format-fish     # Format Fish scripts
 # View validation reports
 ls -la logs/validation/
 ```
+
+#### Package Management Notes
+
+- **Primary strategy**: Nix-first for all development tools
+- **Acceptable exceptions**: Dependencies required by Homebrew formulas (e.g., python@3.12 for ra-aid)
+- **Run validation after**:
+  - Installing new packages
+  - Running `brew update` or `brew upgrade`
+  - Major system updates
+  - Suspicious PATH behavior
 
 ### Productivity Tools
 
@@ -175,28 +199,34 @@ watchexec -e py pytest  # Run commands on file change
 **ALWAYS use modern CLI tools as the FIRST choice:**
 
 ### File Operations
+
 - **USE `eza -la`** instead of `ls -la`
 - **USE `fd pattern`** instead of `find . -name pattern`
 - **USE `bat file`** instead of `cat file` (when showing content to user)
 - **USE `dust`** instead of `du -sh`
 
 ### Search Operations
+
 - **USE `rg pattern`** instead of `grep -r pattern .`
 - **USE `rg -l pattern`** instead of `grep -rl pattern .`
 - **USE `fd -e txt`** instead of `find . -name "*.txt"`
 
 ### Data Processing
+
 - **USE `jq`** for JSON instead of grep/sed/awk
 - **USE `sd 'find' 'replace'`** instead of `sed 's/find/replace/g'`
 - **USE `choose 0 2`** instead of `cut -f1,3` or `awk '{print $1,$3}'`
 
 ### Interactive Tools
+
 - **USE `gum choose`** for selection menus
 - **USE `gum input`** for user input
 - **USE `gum spin`** for progress indicators
 
 ### Why This Matters
+
 The efficiency testing framework (Issue #20) proved these tools provide:
+
 - 36% fewer keystrokes (human efficiency)
 - Better defaults and discoverability
 - More consistent cross-platform behavior
@@ -221,7 +251,27 @@ npm run preview         # Preview built site
 npx astro sync          # Sync content collections if pages missing
 ```
 
-## Current Session (2025-06-19)
+## Current Session (2025-06-23)
+
+### Completed
+
+1. **Resolved duplicate package installations** (Issue #52):
+   - Removed duplicate AWS CLI, Google Cloud SDK, and Python 3.13 from Homebrew
+   - All primary commands now use Nix versions
+   - Documented acceptable exceptions (python@3.12 and ripgrep for ra-aid)
+   - Updated CLAUDE.md with validation script usage
+
+### Key Validation Commands
+
+```bash
+# Quick system health check
+./scripts/validation/validate-packages.sh
+
+# If duplicates found, auto-fix
+./scripts/validation/validate-packages.sh --fix
+```
+
+## Previous Session (2025-06-19)
 
 ### Focus: Claude-Init Knowledge Transfer
 

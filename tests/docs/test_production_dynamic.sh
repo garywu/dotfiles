@@ -22,7 +22,7 @@ echo ""
 # Check if sitemap exists, otherwise fall back to defaults
 if [[ -f "$SITEMAP_FILE" ]]; then
   echo "Using sitemap: $SITEMAP_FILE"
-  readarray -t PAGES < "$SITEMAP_FILE"
+  readarray -t PAGES <"$SITEMAP_FILE"
 else
   echo -e "${YELLOW}Warning: Sitemap not found, using default page list${NC}"
   PAGES=(

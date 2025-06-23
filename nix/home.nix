@@ -42,7 +42,7 @@
     google-cloud-sdk
 
     # Python package management
-    pipx  # Install Python CLI tools in isolated environments
+    pipx # Install Python CLI tools in isolated environments
 
     # Cloudflare tools
     cloudflared # Cloudflare Tunnel daemon and toolkit
@@ -185,7 +185,7 @@
       libreoffice
       # Document converter using LibreOffice engine (Linux only)
       unoconv
-    ] else []
+    ] else [ ]
   ));
 
   # Configure basic programs

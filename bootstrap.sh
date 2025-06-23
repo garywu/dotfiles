@@ -149,7 +149,7 @@ create_uno_wrappers() {
   fi
 
   # Create unoserver wrapper
-  cat > "$wrapper_dir/unoserver" << EOF
+  cat >"$wrapper_dir/unoserver" <<EOF
 #!/bin/bash
 # Transparent wrapper for unoserver with PyUNO integration
 export PYTHONPATH="$libreoffice_resources_path:$libreoffice_frameworks_path:\$PYTHONPATH"
@@ -158,7 +158,7 @@ exec "$HOME/.local/libreoffice-venv/bin/unoserver" "\$@"
 EOF
 
   # Create unoconvert wrapper
-  cat > "$wrapper_dir/unoconvert" << EOF
+  cat >"$wrapper_dir/unoconvert" <<EOF
 #!/bin/bash
 # Transparent wrapper for unoconvert with PyUNO integration
 export PYTHONPATH="$libreoffice_resources_path:$libreoffice_frameworks_path:\$PYTHONPATH"
@@ -167,7 +167,7 @@ exec "$HOME/.local/libreoffice-venv/bin/unoconvert" "\$@"
 EOF
 
   # Create unocompare wrapper (bonus utility)
-  cat > "$wrapper_dir/unocompare" << EOF
+  cat >"$wrapper_dir/unocompare" <<EOF
 #!/bin/bash
 # Transparent wrapper for unocompare with PyUNO integration
 export PYTHONPATH="$libreoffice_resources_path:$libreoffice_frameworks_path:\$PYTHONPATH"
