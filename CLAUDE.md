@@ -29,6 +29,7 @@
 - **Comment on progress** as work proceeds
 - **Document problems** encountered as issue comments
 - **Create new issues** for discovered technical debt or improvements
+- **Before committing shell scripts**: Run `make fix-shell` to fix issues automatically
 - **Verify completion** before closing issues
 
 ## Important Commands
@@ -58,6 +59,10 @@ chezmoi edit <file>
 ```bash
 # Check status
 git status
+
+# IMPORTANT: Before committing shell scripts, fix issues
+make fix-shell
+git add -u
 
 # Create commits with issue references
 git commit -m "fix: description (#issue-number)"
