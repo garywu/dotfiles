@@ -18,6 +18,11 @@
   # Set up environment variables for development
   home.sessionVariables = {
     PKG_CONFIG_PATH = "$HOME/.nix-profile/lib/pkgconfig";
+    # Go toolchain management (1.21+)
+    GOTOOLCHAIN = "auto";  # Enable automatic toolchain switching
+    # Rust/Cargo configuration
+    CARGO_HOME = "$HOME/.cargo";
+    RUSTUP_HOME = "$HOME/.rustup";
   };
 
   # Create wrapper scripts for additional Python versions
@@ -65,13 +70,29 @@
     # Additional Python versions with manual symlinking to avoid collisions
     # Use: python3.10, python3.12, python3.13 for specific versions
 
-    # Other development tools
-    nodejs_20
-    bun
-    go
+    # JavaScript/Node.js development
+    # nodejs_20    # Commented out - will use fnm for version management
+    fnm          # Fast Node Manager - for multiple Node.js versions
+    bun          # Fast all-in-one JavaScript runtime & package manager
+    yarn         # Classic Yarn package manager
+    nodePackages.pnpm # Fast, disk space efficient package manager
+
+    # Go development (with native toolchain management)
+    go           # Latest stable Go with built-in version management (1.21+)
+    gopls        # Go language server
+    golangci-lint # Go linter aggregator
+    delve        # Go debugger
+
+    # Rust development
     rustc
     cargo
+    rust-analyzer # Rust language server
+
     protobuf # Protocol Buffer compiler (protoc) for gRPC
+
+    # Browser automation and testing
+    playwright-test # Playwright test runner and CLI
+    # Note: Playwright browsers will be installed separately via npx playwright install
 
     # Graphics and UI development libraries
     pkg-config # Package metadata toolkit for build systems
@@ -317,6 +338,15 @@
         end
         # Ensure Nix paths take precedence over Homebrew for development tools
         set -gx PATH $HOME/.nix-profile/bin $HOME/.npm-global/bin $HOME/.local/bin $PATH
+
+        # fnm (Fast Node Manager) integration
+        if command -v fnm >/dev/null 2>&1
+          fnm env --use-on-cd | source
+        end
+
+        # Go environment
+        set -gx GOPATH $HOME/go
+        set -gx PATH $GOPATH/bin $PATH
       '';
     };
 

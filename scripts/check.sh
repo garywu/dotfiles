@@ -79,7 +79,7 @@ create_full_backup() {
 
   # Backup shell configs
   for config in ~/.zshrc ~/.bashrc ~/.bash_profile ~/.profile; do
-    if [[ -f "$config" ]]; then
+    if [[ -f $config ]]; then
       cp "$config" "$BACKUP_DIR/"
       echo "✓ Backed up $(basename $config)"
     fi
@@ -87,7 +87,7 @@ create_full_backup() {
 
   # Backup config directories
   for dir in ~/.config/fish ~/.config/zsh ~/.config/starship ~/.config/git; do
-    if [[ -d "$dir" ]]; then
+    if [[ -d $dir ]]; then
       cp -r "$dir" "$BACKUP_DIR/config-$(basename $dir)"
       echo "✓ Backed up $dir"
     fi
@@ -131,13 +131,13 @@ cleanup_found_items() {
 
   # Check for broken symlinks
   BROKEN_COUNT=$(find ~ -maxdepth 3 -type l -exec file {} \; 2>/dev/null | grep "broken" | wc -l | tr -d ' ')
-  if [[ "$BROKEN_COUNT" -gt 0 ]]; then
+  if [[ $BROKEN_COUNT -gt 0 ]]; then
     echo "• $BROKEN_COUNT broken symlinks"
   fi
 
   # Check for leftover state directories
   for dir in ~/.local/state/nix ~/.local/state/home-manager ~/.cache/nix ~/.config/home-manager; do
-    if [[ -d "$dir" ]]; then
+    if [[ -d $dir ]]; then
       echo "• $(echo $dir | sed "s|$HOME|~|")"
     fi
   done
@@ -146,7 +146,7 @@ cleanup_found_items() {
   echo -e "${RED}Are you absolutely sure you want to delete these items? (yes/no)${NC}"
   read -p "> " confirm
 
-  if [[  "$confirm" != "yes"  ]]; then
+  if [[ $confirm != "yes" ]]; then
     echo "Cleanup cancelled."
     return 0
   fi
@@ -160,7 +160,7 @@ cleanup_found_items() {
 
   # Remove leftover Nix/Home Manager directories
   for dir in ~/.local/state/nix ~/.local/state/home-manager ~/.local/share/home-manager ~/.cache/nix ~/.config/home-manager; do
-    if [[ -d "$dir" ]]; then
+    if [[ -d $dir ]]; then
       echo "Removing: $(echo $dir | sed "s|$HOME|~|")"
       rm -rf "$dir"
     fi
@@ -170,13 +170,13 @@ cleanup_found_items() {
   if [[ -d "$HOME/.config/fish" ]]; then
     FISH_FILES=$(find "$HOME/.config/fish" -type f 2>/dev/null | wc -l | tr -d ' ')
     FISH_LINKS=$(find "$HOME/.config/fish" -type l 2>/dev/null | wc -l | tr -d ' ')
-    if [[ "$FISH_FILES" -eq 0 ]] && [[ "$FISH_LINKS" -eq 0 ]]; then
+    if [[ $FISH_FILES -eq 0 ]] && [[ $FISH_LINKS -eq 0 ]]; then
       echo "Removing empty Fish config directory..."
       rmdir "$HOME/.config/fish" 2>/dev/null || true
-    elif [[ "$FISH_FILES" -eq 0 ]]; then
+    elif [[ $FISH_FILES -eq 0 ]]; then
       echo "Fish config directory contains only symlinks, checking if they're broken..."
       BROKEN_FISH=$(find "$HOME/.config/fish" -type l -exec file {} \; 2>/dev/null | grep "broken" | wc -l | tr -d ' ')
-      if [[ "$BROKEN_FISH" -eq "$FISH_LINKS" ]]; then
+      if [[ $BROKEN_FISH -eq $FISH_LINKS ]]; then
         echo "All Fish symlinks are broken, removing directory..."
         rm -rf "$HOME/.config/fish"
       fi
@@ -202,7 +202,7 @@ cleanup_found_items() {
 #########################################
 
 # Check if running on macOS
-if [[  "$(uname)" != "Darwin"  ]]; then
+if [[ "$(uname)" != "Darwin" ]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
@@ -255,7 +255,7 @@ if [[ -d "/opt/homebrew" ]]; then
     # Count packages
     BREW_PACKAGES=$(brew list --formula 2>/dev/null | wc -l | tr -d ' ')
     BREW_CASKS=$(brew list --cask 2>/dev/null | wc -l | tr -d ' ')
-    if [[ "$BREW_PACKAGES" -gt 0 ]] || [[ "$BREW_CASKS" -gt 0 ]]; then
+    if [[ $BREW_PACKAGES -gt 0 ]] || [[ $BREW_CASKS -gt 0 ]]; then
       print_found "Homebrew packages: $BREW_PACKAGES formulae, $BREW_CASKS casks"
     fi
   fi
@@ -286,20 +286,20 @@ DEFAULT_SHELL=$(dscl . -read /Users/$USER UserShell | cut -d' ' -f2)
 echo "Current shell: $CURRENT_SHELL"
 echo "Default shell: $DEFAULT_SHELL"
 
-if [[  "$DEFAULT_SHELL" == *"fish"*  ]]; then
+if [[ $DEFAULT_SHELL == *"fish"* ]]; then
   print_found "Default shell is Fish"
 fi
 
 # Check for existing shell configs
 for config in ~/.zshrc ~/.bashrc ~/.bash_profile ~/.profile ~/.config/fish/config.fish; do
-  if [[ -f "$config" ]]; then
+  if [[ -f $config ]]; then
     print_found "Shell config exists: $config"
   fi
 done
 
 # Check for shell config directories
 for dir in ~/.config/fish ~/.config/zsh; do
-  if [[ -d "$dir" ]]; then
+  if [[ -d $dir ]]; then
     print_found "Shell config directory exists: $dir"
   fi
 done
@@ -329,7 +329,7 @@ for tool in "${BOOTSTRAP_TOOLS[@]}"; do
   fi
 done
 
-if [[ "$BOOTSTRAP_TOOLS_FOUND" -eq 0 ]]; then
+if [[ $BOOTSTRAP_TOOLS_FOUND -eq 0 ]]; then
   print_clean "No bootstrap-managed tools found"
 fi
 
@@ -348,7 +348,7 @@ done
 # Check for broken symlinks (common after failed uninstalls)
 print_section "Broken Symlinks"
 BROKEN_LINKS=$(find ~ -maxdepth 3 -type l -exec file {} \; 2>/dev/null | grep "broken" | wc -l | tr -d ' ')
-if [[ "$BROKEN_LINKS" -gt 0 ]]; then
+if [[ $BROKEN_LINKS -gt 0 ]]; then
   print_found "$BROKEN_LINKS broken symlinks found in home directory"
   echo "   (Run 'find ~ -maxdepth 3 -type l -exec file {} \\; 2>/dev/null | grep broken' to see them)"
 else
@@ -359,7 +359,7 @@ fi
 print_section "Leftover State Directories"
 STATE_DIRS_FOUND=0
 for dir in ~/.local/state/nix ~/.local/state/home-manager ~/.local/share/home-manager ~/.cache/nix ~/.config/home-manager; do
-  if [[ -d "$dir" ]]; then
+  if [[ -d $dir ]]; then
     print_found "Leftover directory: $(echo $dir | sed "s|$HOME|~|")"
     STATE_DIRS_FOUND=1
   fi
@@ -373,13 +373,13 @@ LEFTOVER_FILES=(
 )
 
 for file in "${LEFTOVER_FILES[@]}"; do
-  if [[ -e "$file" ]]; then
+  if [[ -e $file ]]; then
     print_found "Leftover file/link: $(echo $file | sed "s|$HOME|~|")"
     STATE_DIRS_FOUND=1
   fi
 done
 
-if [[ "$STATE_DIRS_FOUND" -eq 0 ]]; then
+if [[ $STATE_DIRS_FOUND -eq 0 ]]; then
   print_clean "No leftover state directories found"
 fi
 
@@ -425,25 +425,25 @@ if [ ${#FOUND_ITEMS[@]} -gt 0 ]; then
   read -p "Enter your choice (1-5): " choice
 
   case $choice in
-  1)
-    create_full_backup
-    ;;
-  2)
-    create_selective_backup
-    ;;
-  3)
-    cleanup_found_items
-    ;;
-  4)
-    echo "Continuing without changes..."
-    ;;
-  5)
-    echo "Exiting..."
-    exit 0
-    ;;
-  *)
-    echo "Invalid choice. Exiting..."
-    exit 1
-    ;;
+    1)
+      create_full_backup
+      ;;
+    2)
+      create_selective_backup
+      ;;
+    3)
+      cleanup_found_items
+      ;;
+    4)
+      echo "Continuing without changes..."
+      ;;
+    5)
+      echo "Exiting..."
+      exit 0
+      ;;
+    *)
+      echo "Invalid choice. Exiting..."
+      exit 1
+      ;;
   esac
 fi

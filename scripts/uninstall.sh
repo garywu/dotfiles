@@ -28,13 +28,13 @@ print_warning() {
 }
 
 # Check if running on macOS
-if [[  "$(uname)" != "Darwin"  ]]; then
+if [[ "$(uname)" != "Darwin" ]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
 
 # Check if running as root
-if [[  $EUID -eq 0  ]]; then
+if [[ $EUID -eq 0 ]]; then
   print_error "This script should not be run as root"
   exit 1
 fi
@@ -59,9 +59,9 @@ restore_default_shell() {
 
   # Check if we have a stored original shell
   SHELL_BACKUP_FILE="$HOME/.dotfiles/.shell_backup"
-  if [[ -f "$SHELL_BACKUP_FILE" ]]; then
+  if [[ -f $SHELL_BACKUP_FILE ]]; then
     ORIGINAL_SHELL=$(grep "ORIGINAL_SHELL=" "$SHELL_BACKUP_FILE" | cut -d'=' -f2)
-    if [[ -n "$ORIGINAL_SHELL" ]] && [[ -f "$ORIGINAL_SHELL" ]]; then
+    if [[ -n $ORIGINAL_SHELL ]] && [[ -f $ORIGINAL_SHELL ]]; then
       print_status "Restoring original shell: $ORIGINAL_SHELL"
       chsh -s "$ORIGINAL_SHELL"
       if verify_shell_change "$ORIGINAL_SHELL"; then
@@ -75,7 +75,7 @@ restore_default_shell() {
   fi
 
   # Fallback: check if we're using fish and change to zsh
-  if [[  "$SHELL" == *"fish"*  ]]; then
+  if [[ $SHELL == *"fish"* ]]; then
     print_status "Changing from fish to zsh..."
     chsh -s /bin/zsh
     if ! verify_shell_change "/bin/zsh"; then
@@ -93,7 +93,7 @@ stop_nix_daemon() {
   print_status "Finding all Nix-related launchd services..."
   NIX_SERVICES=$(sudo launchctl list | grep -E "(nix|darwin-store)" | awk '{print $3}' | grep -v "^-$")
 
-  if [[ -n "$NIX_SERVICES" ]]; then
+  if [[ -n $NIX_SERVICES ]]; then
     print_status "Found Nix services: $NIX_SERVICES"
     for service in $NIX_SERVICES; do
       print_status "Stopping service: $service"
@@ -126,7 +126,7 @@ stop_nix_daemon() {
   # Kill any Nix installer repair processes
   print_status "Checking for Nix installer repair processes..."
   NIX_REPAIR_PIDS=$(ps aux | grep "nix-installer repair" | grep -v grep | awk '{print $2}')
-  if [[ -n "$NIX_REPAIR_PIDS" ]]; then
+  if [[ -n $NIX_REPAIR_PIDS ]]; then
     print_status "Found Nix installer repair processes: $NIX_REPAIR_PIDS"
     for pid in $NIX_REPAIR_PIDS; do
       print_status "Killing Nix installer repair process $pid..."
@@ -137,7 +137,7 @@ stop_nix_daemon() {
   # Kill any wait4path processes for Nix
   print_status "Checking for Nix wait4path processes..."
   NIX_WAIT_PIDS=$(ps aux | grep "wait4path.*nix" | grep -v grep | awk '{print $2}')
-  if [[ -n "$NIX_WAIT_PIDS" ]]; then
+  if [[ -n $NIX_WAIT_PIDS ]]; then
     print_status "Found Nix wait4path processes: $NIX_WAIT_PIDS"
     for pid in $NIX_WAIT_PIDS; do
       print_status "Killing Nix wait4path process $pid..."
@@ -148,7 +148,7 @@ stop_nix_daemon() {
   # Kill any shell scripts trying to start nix-daemon
   print_status "Checking for shell scripts starting nix-daemon..."
   NIX_SHELL_PIDS=$(ps aux | grep "/bin/sh.*nix-daemon" | grep -v grep | awk '{print $2}')
-  if [[ -n "$NIX_SHELL_PIDS" ]]; then
+  if [[ -n $NIX_SHELL_PIDS ]]; then
     print_status "Found shell scripts for nix-daemon: $NIX_SHELL_PIDS"
     for pid in $NIX_SHELL_PIDS; do
       print_status "Killing shell script process $pid..."
@@ -169,7 +169,7 @@ stop_nix_daemon() {
 
   # Verify no Nix services are still loaded
   REMAINING_SERVICES=$(sudo launchctl list | grep -E "(nix|darwin-store)" | awk '{print $3}' | grep -v "^-$" || true)
-  if [[ -n "$REMAINING_SERVICES" ]]; then
+  if [[ -n $REMAINING_SERVICES ]]; then
     print_warning "Some Nix services are still loaded: $REMAINING_SERVICES"
     return 1
   fi
@@ -184,11 +184,11 @@ handle_unmount_blockers() {
 
   # Get the list of processes using the Nix volume
   BLOCKERS=$(lsof +D /nix 2>/dev/null | grep -v "COMMAND" | awk '{print $2}')
-  if [[ -n "$BLOCKERS" ]]; then
+  if [[ -n $BLOCKERS ]]; then
     print_status "Found processes using Nix volume: $BLOCKERS"
     for pid in $BLOCKERS; do
       # Skip system processes (PPID 1)
-      if [[ "$(ps -o ppid= -p $pid)" = "1" ]]; then
+      if [[ "$(ps -o ppid= -p $pid)" == "1" ]]; then
         print_warning "System process $pid is using Nix volume. A restart may be required."
         continue
       fi
@@ -207,7 +207,7 @@ remove_nix_volume() {
 
   # Find the Nix volume
   NIX_VOLUME=$(diskutil list | grep "Nix Store" | awk '{print $NF}')
-  if [[ -n "$NIX_VOLUME" ]]; then
+  if [[ -n $NIX_VOLUME ]]; then
     print_status "Found Nix volume: $NIX_VOLUME"
 
     # Handle any processes preventing unmount
@@ -220,7 +220,7 @@ remove_nix_volume() {
 
       # Check what process is using it
       BLOCKING_PROCS=$(lsof "/dev/$NIX_VOLUME" 2>/dev/null | grep -v "COMMAND" || true)
-      if [[ -n "$BLOCKING_PROCS" ]]; then
+      if [[ -n $BLOCKING_PROCS ]]; then
         print_warning "Processes still using the volume:"
         echo "$BLOCKING_PROCS"
         print_error "Cannot safely remove volume while in use. Please restart and run this script again."
@@ -294,7 +294,7 @@ remove_nix_directory() {
       if ! sudo umount -f /nix; then
         print_warning "Failed to unmount /nix. Checking for blocking processes..."
         BLOCKING_PROCS=$(lsof +D /nix 2>/dev/null | grep -v "COMMAND" || true)
-        if [[ -n "$BLOCKING_PROCS" ]]; then
+        if [[ -n $BLOCKING_PROCS ]]; then
           print_warning "Processes still using /nix:"
           echo "$BLOCKING_PROCS"
           print_error "Cannot safely remove /nix while in use. Please restart and run this script again."
@@ -398,7 +398,7 @@ cleanup_nix_files() {
 
   # Remove Nix from shell configurations
   for file in ~/.bash_profile ~/.bashrc ~/.zshrc ~/.profile; do
-    if [[ -f "$file" ]]; then
+    if [[ -f $file ]]; then
       sed -i '' '/nix/d' "$file" 2>/dev/null || true
     fi
   done
@@ -569,7 +569,7 @@ verify_cleanup() {
 
   # Scan for residual Nix APFS volumes
   NIX_VOLUMES=$(diskutil list | grep "Nix Store" 2>/dev/null || true)
-  if [[ -n "$NIX_VOLUMES" ]]; then
+  if [[ -n $NIX_VOLUMES ]]; then
     print_warning "Nix APFS volume(s) still present:"
     echo "$NIX_VOLUMES"
     failed=1
@@ -607,7 +607,7 @@ verify_cleanup() {
 
   # Check for Nix in shell configuration
   for file in ~/.zshrc ~/.bashrc ~/.bash_profile ~/.profile; do
-    if [[ -f "$file" ]] && grep -q "nix" "$file" 2>/dev/null; then
+    if [[ -f $file ]] && grep -q "nix" "$file" 2>/dev/null; then
       print_warning "Nix entries found in $file"
       failed=1
     fi
@@ -621,7 +621,7 @@ verify_cleanup() {
 
   if [[ $failed -eq 1 ]]; then
     print_warning "Some components were not fully removed"
-    if [[ "$NEEDS_REBOOT" -eq 1 ]]; then
+    if [[ $NEEDS_REBOOT -eq 1 ]]; then
       print_warning "A system restart is required to complete the cleanup"
       print_warning "Please restart your computer and run this script again"
     fi
@@ -648,7 +648,7 @@ uninstall() {
   echo ""
   print_warning "Are you absolutely sure you want to continue? (y/N) "
   read -r response
-  if [[ ! "$response" =~ ^[Yy]$ ]]; then
+  if [[ ! $response =~ ^[Yy]$ ]]; then
     print_status "Uninstallation cancelled"
     exit 0
   fi
@@ -669,7 +669,7 @@ uninstall() {
   cleanup_env
 
   # If a reboot is required (e.g., synthetic mount was removed), inform the user and skip further verification
-  if [[ "$NEEDS_REBOOT" -eq 1 ]]; then
+  if [[ $NEEDS_REBOOT -eq 1 ]]; then
     print_warning "A system restart is required to finish removing /nix."
     print_warning "Please reboot your computer, then run this script again to complete cleanup."
     exit 0

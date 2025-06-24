@@ -55,13 +55,13 @@ check_staged_files() {
   local staged_files
   staged_files=$(git diff --cached --name-only --diff-filter=ACM)
 
-  if [[  -z "$staged_files"  ]]; then
+  if [[ -z $staged_files ]]; then
     echo "No staged files to check."
     return 0
   fi
 
   while IFS= read -r file; do
-    if [[  ! -f "$file"  ]]; then
+    if [[ ! -f $file ]]; then
       continue
     fi
 
@@ -73,7 +73,7 @@ check_staged_files() {
     # Check for email patterns
     for pattern in "${EMAIL_PATTERNS[@]}"; do
       matches=$(grep -nE "$pattern" "$file" 2>/dev/null || true)
-      if [[  -n "$matches"  ]]; then
+      if [[ -n $matches ]]; then
         while IFS= read -r match; do
           # Extract the email from the match
           email=$(echo "$match" | grep -oE "$pattern" | head -1)
@@ -99,13 +99,13 @@ check_commit_message() {
 
   echo "Checking commit message for email addresses..."
 
-  if [[  ! -f "$commit_msg_file"  ]]; then
+  if [[ ! -f $commit_msg_file ]]; then
     return 0
   fi
 
   for pattern in "${EMAIL_PATTERNS[@]}"; do
     matches=$(grep -nE "$pattern" "$commit_msg_file" 2>/dev/null || true)
-    if [[  -n "$matches"  ]]; then
+    if [[ -n $matches ]]; then
       while IFS= read -r match; do
         email=$(echo "$match" | grep -oE "$pattern" | head -1)
         if ! is_allowed_email "$email"; then
@@ -126,19 +126,19 @@ main() {
   local found_issues=0
 
   case "$mode" in
-  "files")
-    check_staged_files || found_issues=1
-    ;;
-  "commit-msg")
-    check_commit_message "${2:-}" || found_issues=1
-    ;;
-  *)
-    echo "Usage: $0 [files|commit-msg] [commit-msg-file]"
-    exit 1
-    ;;
+    "files")
+      check_staged_files || found_issues=1
+      ;;
+    "commit-msg")
+      check_commit_message "${2:-}" || found_issues=1
+      ;;
+    *)
+      echo "Usage: $0 [files|commit-msg] [commit-msg-file]"
+      exit 1
+      ;;
   esac
 
-  if [[  $found_issues -eq 1  ]]; then
+  if [[ $found_issues -eq 1 ]]; then
     echo -e "\n${YELLOW}⚠️  Warning: Potential email exposure detected!${NC}"
     echo "Consider using GitHub's privacy email: username@users.noreply.github.com"
     echo "Or add the email to ALLOWED_PATTERNS in this script if it's intentional."

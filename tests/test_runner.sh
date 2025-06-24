@@ -94,7 +94,7 @@ run_test_suite() {
   local suite_name=$1
   local suite_dir="$SCRIPT_DIR/$suite_name"
 
-  if [[ ! -d "$suite_dir" ]]; then
+  if [[ ! -d $suite_dir ]]; then
     print_warning "Test suite '$suite_name' not found"
     return 1
   fi
@@ -105,7 +105,7 @@ run_test_suite() {
   local test_files
   test_files=$(find "$suite_dir" -name "test_*.sh" -type f | sort)
 
-  if [[ -z "$test_files" ]]; then
+  if [[ -z $test_files ]]; then
     print_warning "No tests found in $suite_name suite"
     return 0
   fi

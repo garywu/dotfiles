@@ -36,11 +36,11 @@ log() {
   timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   case "$level" in
-  INFO) echo -e "${GREEN}[INFO]${NC} ${timestamp}: $message" ;;
-  WARN) echo -e "${YELLOW}[WARN]${NC} ${timestamp}: $message" ;;
-  ERROR) echo -e "${RED}[ERROR]${NC} ${timestamp}: $message" ;;
-  DEBUG) echo -e "${BLUE}[DEBUG]${NC} ${timestamp}: $message" ;;
-  *) echo -e "[UNKNOWN] ${timestamp}: $message" ;;
+    INFO) echo -e "${GREEN}[INFO]${NC} ${timestamp}: $message" ;;
+    WARN) echo -e "${YELLOW}[WARN]${NC} ${timestamp}: $message" ;;
+    ERROR) echo -e "${RED}[ERROR]${NC} ${timestamp}: $message" ;;
+    DEBUG) echo -e "${BLUE}[DEBUG]${NC} ${timestamp}: $message" ;;
+    *) echo -e "[UNKNOWN] ${timestamp}: $message" ;;
   esac
 }
 
@@ -55,7 +55,7 @@ check_tools() {
     if ! command -v "$tool" &>/dev/null; then
       missing_tools+=("$tool")
     else
-      if [[  "$tool" == "bat"  ]]; then
+      if [[ $tool == "bat" ]]; then
         local version
         version=$(bat --version 2>/dev/null || echo "unknown")
       else
@@ -225,7 +225,7 @@ measure_runtime_efficiency() {
   mkdir -p "$test_dir"
 
   # Small code file
-  if [[  ! -f "$test_dir/small_code.py"  ]]; then
+  if [[ ! -f "$test_dir/small_code.py" ]]; then
     cat >"$test_dir/small_code.py" <<'EOF'
 #!/usr/bin/env python3
 """Example Python script for benchmarking."""
@@ -261,7 +261,7 @@ EOF
   fi
 
   # Large log file
-  if [[  ! -f "$test_dir/large_log.txt"  ]]; then
+  if [[ ! -f "$test_dir/large_log.txt" ]]; then
     log INFO "Creating large log file for benchmarks"
     for i in {1..10000}; do
       echo "[$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ || true)] INFO: Processing request $i from user_$((i % 100))" >>"$test_dir/large_log.txt"
@@ -435,7 +435,7 @@ main() {
 }
 
 # Script execution guard
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+if [[ ${BASH_SOURCE[0]} == "${0}" ]]; then
   main "$@"
 fi
 

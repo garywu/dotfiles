@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # Check for old Bash and handle compatibility
-if [[  -n "${BASH_VERSION}"  ]]; then
+if [[ -n ${BASH_VERSION} ]]; then
   BASH_MAJOR_VERSION=$(echo "${BASH_VERSION}" | cut -d. -f1)
-  if [[  "${BASH_MAJOR_VERSION}" -lt 4  ]]; then
+  if [[ ${BASH_MAJOR_VERSION} -lt 4 ]]; then
     # Check if modern bash is already available
     MODERN_BASH_AVAILABLE=false
-    if [[  -x "$HOME/.nix-profile/bin/bash"  ]]; then
+    if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
       MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-      if [[  -n "$MODERN_BASH_VERSION"  ]]; then
+      if [[ -n $MODERN_BASH_VERSION ]]; then
         MODERN_BASH_AVAILABLE=true
       fi
     fi
 
-    if [[  "$MODERN_BASH_AVAILABLE" == "true"  ]]; then
+    if [[ $MODERN_BASH_AVAILABLE == "true" ]]; then
       echo "ℹ️  Bootstrap is running with system Bash ${BASH_VERSION}"
       echo "   ✅ Modern Bash ${MODERN_BASH_VERSION} is already installed at ~/.nix-profile/bin/bash"
       echo "   Your shell sessions will use the modern version."
@@ -32,10 +32,10 @@ fi
 # Setup logging
 # Source CI helpers if available
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [[  -f "${SCRIPT_DIR}/scripts/ci-helpers.sh"  ]]; then
+if [[ -f "${SCRIPT_DIR}/scripts/ci-helpers.sh" ]]; then
   # shellcheck source=/dev/null
   source "${SCRIPT_DIR}/scripts/ci-helpers.sh"
-elif [[  -f "${HOME}/.dotfiles/scripts/ci-helpers.sh"  ]]; then
+elif [[ -f "${HOME}/.dotfiles/scripts/ci-helpers.sh" ]]; then
   # shellcheck source=/dev/null
   source "${HOME}/.dotfiles/scripts/ci-helpers.sh"
 fi
@@ -84,7 +84,7 @@ command_exists() {
 # Function to set up PyUNO integration for unoserver on macOS
 setup_pyuno_macos() {
   # Only run on macOS when LibreOffice is available
-  if [[  "$OSTYPE" == darwin*  ]] && command_exists soffice; then
+  if [[ $OSTYPE == darwin* ]] && command_exists soffice; then
     print_status "Setting up PyUNO integration for unoserver..."
 
     # 1. Remove broken pipx installation if it exists
@@ -95,7 +95,7 @@ setup_pyuno_macos() {
 
     # 2. Create dedicated virtual environment
     LIBREOFFICE_VENV="$HOME/.local/libreoffice-venv"
-    if [[  ! -d "$LIBREOFFICE_VENV"  ]]; then
+    if [[ ! -d $LIBREOFFICE_VENV ]]; then
       print_status "  → Creating dedicated LibreOffice Python environment..."
       python3 -m venv "$LIBREOFFICE_VENV"
     fi
@@ -112,7 +112,7 @@ setup_pyuno_macos() {
 
     print_status "  ✅ PyUNO integration setup complete"
   else
-    if [[  "$OSTYPE" != darwin*  ]]; then
+    if [[ $OSTYPE != darwin* ]]; then
       print_status "  → Skipping PyUNO setup (not macOS)"
     elif ! command_exists soffice; then
       print_warning "  → LibreOffice not found, skipping PyUNO setup"
@@ -129,20 +129,20 @@ create_uno_wrappers() {
   local libreoffice_resources_path=""
   local libreoffice_frameworks_path=""
 
-  if [[  -d "/Applications/LibreOffice.app/Contents/Resources"  ]]; then
+  if [[ -d "/Applications/LibreOffice.app/Contents/Resources" ]]; then
     libreoffice_resources_path="/Applications/LibreOffice.app/Contents/Resources"
     libreoffice_frameworks_path="/Applications/LibreOffice.app/Contents/Frameworks"
-  elif [[  -d "/opt/homebrew/Caskroom/libreoffice"  ]]; then
+  elif [[ -d "/opt/homebrew/Caskroom/libreoffice" ]]; then
     # Find the latest LibreOffice version directory
     local latest_version
     latest_version=$(ls -1 /opt/homebrew/Caskroom/libreoffice/ | sort -V | tail -1)
-    if [[  -n "$latest_version" && -d "/opt/homebrew/Caskroom/libreoffice/$latest_version/LibreOffice.app/Contents/Resources"  ]]; then
+    if [[ -n $latest_version && -d "/opt/homebrew/Caskroom/libreoffice/$latest_version/LibreOffice.app/Contents/Resources" ]]; then
       libreoffice_resources_path="/opt/homebrew/Caskroom/libreoffice/$latest_version/LibreOffice.app/Contents/Resources"
       libreoffice_frameworks_path="/opt/homebrew/Caskroom/libreoffice/$latest_version/LibreOffice.app/Contents/Frameworks"
     fi
   fi
 
-  if [[  -z "$libreoffice_resources_path"  ]]; then
+  if [[ -z $libreoffice_resources_path ]]; then
     print_warning "  → Could not find LibreOffice UNO paths, wrappers may not work"
     libreoffice_resources_path="/Applications/LibreOffice.app/Contents/Resources"
     libreoffice_frameworks_path="/Applications/LibreOffice.app/Contents/Frameworks"
@@ -197,13 +197,13 @@ handle_nix_remnants() {
 
   # Check for backup files that block installation
   for backup_file in "${official_backups[@]}"; do
-    if [[  -f "${backup_file}"  ]]; then
+    if [[ -f ${backup_file} ]]; then
       found_backups=true
       print_warning "Found Nix backup file: ${backup_file}"
     fi
   done
 
-  if [[  "${found_backups}" = true  ]]; then
+  if [[ ${found_backups} == true ]]; then
     echo ""
     echo "According to the official Nix documentation, these backup files contain"
     echo "your original system configuration and should be restored."
@@ -221,61 +221,61 @@ handle_nix_remnants() {
     fi
 
     case "${response}" in
-    [nN] | [nN][oO])
-      print_warning "Moving backup files to /tmp (you can restore them later)"
-      local timestamp=$(date +%s)
-      for backup_file in "${official_backups[@]}"; do
-        if [[  -f "${backup_file}"  ]]; then
-          local basename=$(basename "${backup_file}")
-          sudo mv "${backup_file}" "/tmp/${basename}.${timestamp}" 2>/dev/null &&
-            echo "  → Moved ${backup_file} to /tmp/${basename}.${timestamp}"
+      [nN] | [nN][oO])
+        print_warning "Moving backup files to /tmp (you can restore them later)"
+        local timestamp=$(date +%s)
+        for backup_file in "${official_backups[@]}"; do
+          if [[ -f ${backup_file} ]]; then
+            local basename=$(basename "${backup_file}")
+            sudo mv "${backup_file}" "/tmp/${basename}.${timestamp}" 2>/dev/null &&
+              echo "  → Moved ${backup_file} to /tmp/${basename}.${timestamp}"
+          fi
+        done
+        ;;
+      *)
+        print_status "Restoring backup files (following official Nix documentation)..."
+
+        # Follow exact commands from official docs
+        if [[ -f "/etc/zshrc.backup-before-nix" ]]; then
+          sudo mv /etc/zshrc.backup-before-nix /etc/zshrc &&
+            print_status "  → Restored /etc/zshrc"
         fi
-      done
-      ;;
-    *)
-      print_status "Restoring backup files (following official Nix documentation)..."
 
-      # Follow exact commands from official docs
-      if [[  -f "/etc/zshrc.backup-before-nix"  ]]; then
-        sudo mv /etc/zshrc.backup-before-nix /etc/zshrc &&
-          print_status "  → Restored /etc/zshrc"
-      fi
+        if [[ -f "/etc/zsh/zshrc.backup-before-nix" ]]; then
+          sudo mv /etc/zsh/zshrc.backup-before-nix /etc/zsh/zshrc &&
+            print_status "  → Restored /etc/zsh/zshrc"
+        fi
 
-      if [[  -f "/etc/zsh/zshrc.backup-before-nix"  ]]; then
-        sudo mv /etc/zsh/zshrc.backup-before-nix /etc/zsh/zshrc &&
-          print_status "  → Restored /etc/zsh/zshrc"
-      fi
+        if [[ -f "/etc/bashrc.backup-before-nix" ]]; then
+          sudo mv /etc/bashrc.backup-before-nix /etc/bashrc &&
+            print_status "  → Restored /etc/bashrc"
+        fi
 
-      if [[  -f "/etc/bashrc.backup-before-nix"  ]]; then
-        sudo mv /etc/bashrc.backup-before-nix /etc/bashrc &&
-          print_status "  → Restored /etc/bashrc"
-      fi
+        if [[ -f "/etc/bash.bashrc.backup-before-nix" ]]; then
+          sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc &&
+            print_status "  → Restored /etc/bash.bashrc"
+        fi
 
-      if [[  -f "/etc/bash.bashrc.backup-before-nix"  ]]; then
-        sudo mv /etc/bash.bashrc.backup-before-nix /etc/bash.bashrc &&
-          print_status "  → Restored /etc/bash.bashrc"
-      fi
-
-      print_status "Backup files restored per official documentation."
-      print_status "System is now clean for a fresh Nix installation."
-      ;;
+        print_status "Backup files restored per official documentation."
+        print_status "System is now clean for a fresh Nix installation."
+        ;;
     esac
   fi
 
   # Clean up other remnants (also from official docs)
-  if [[  -f "/etc/nix/nix.conf"  ]]; then
+  if [[ -f "/etc/nix/nix.conf" ]]; then
     print_warning "Removing leftover Nix configuration..."
     sudo rm -rf /etc/nix 2>/dev/null || print_warning "Could not remove /etc/nix"
   fi
 
-  if [[  -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist"  ]]; then
+  if [[ -f "/Library/LaunchDaemons/org.nixos.nix-daemon.plist" ]]; then
     print_warning "Removing leftover Nix daemon service..."
     sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null || true
     sudo rm -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null ||
       print_warning "Could not remove daemon plist"
   fi
 
-  if [[  -f "/Library/LaunchDaemons/org.nixos.darwin-store.plist"  ]]; then
+  if [[ -f "/Library/LaunchDaemons/org.nixos.darwin-store.plist" ]]; then
     print_warning "Removing leftover Darwin store service..."
     sudo launchctl unload /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null || true
     sudo rm -f /Library/LaunchDaemons/org.nixos.darwin-store.plist 2>/dev/null ||
@@ -297,28 +297,28 @@ if ! command_exists nix; then
   if command -v is_ci &>/dev/null && is_ci; then
     print_status "Nix installed! Continuing in CI mode..."
     # In CI, source nix immediately to make it available
-    if [[  "$(uname)" == "Darwin"  ]]; then
+    if [[ "$(uname)" == "Darwin" ]]; then
       # macOS uses nix-daemon.sh for multi-user installation
-      if [[  -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh  ]]; then
+      if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
         # shellcheck source=/dev/null
         source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
       fi
     else
       # Linux uses nix.sh
-      if [[  -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh  ]]; then
+      if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]; then
         # shellcheck source=/dev/null
         source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
       fi
     fi
     # Also try user profile
-    if [[  -f "$HOME/.nix-profile/etc/profile.d/nix.sh"  ]]; then
+    if [[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]; then
       # shellcheck source=/dev/null
       source "$HOME/.nix-profile/etc/profile.d/nix.sh"
     fi
     # Ensure PATH includes Nix binaries
     export PATH="/nix/var/nix/profiles/default/bin:$HOME/.nix-profile/bin:$PATH"
     # Export PATH to GitHub Actions for subsequent steps
-    if [[  -n "${GITHUB_PATH}"  ]]; then
+    if [[ -n ${GITHUB_PATH} ]]; then
       echo "/nix/var/nix/profiles/default/bin" >>"${GITHUB_PATH}"
       echo "$HOME/.nix-profile/bin" >>"${GITHUB_PATH}"
     fi
@@ -341,12 +341,12 @@ if ! command_exists home-manager; then
   if command -v is_ci &>/dev/null && is_ci; then
     print_status "Home Manager installed! Continuing in CI mode..."
     # In CI, source the home-manager script to make it available immediately
-    if [[  -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"  ]]; then
+    if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
       # shellcheck source=/dev/null
       source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
     fi
     # Export PATH to GitHub Actions for subsequent steps (in case paths changed)
-    if [[  -n "${GITHUB_PATH}"  ]]; then
+    if [[ -n ${GITHUB_PATH} ]]; then
       echo "/nix/var/nix/profiles/default/bin" >>"${GITHUB_PATH}"
       echo "$HOME/.nix-profile/bin" >>"${GITHUB_PATH}"
     fi
@@ -357,14 +357,14 @@ if ! command_exists home-manager; then
 fi
 
 # Set NIX_PATH if not set (needed for home-manager to work properly)
-if [[  -z "${NIX_PATH}"  ]]; then
+if [[ -z ${NIX_PATH} ]]; then
   export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 fi
 
 # Setup Home Manager configuration link
 print_status "Setting up Home Manager configuration..."
 mkdir -p ~/.config/home-manager
-if [[  -f ~/.config/home-manager/home.nix  ]] && [[  ! -L ~/.config/home-manager/home.nix  ]]; then
+if [[ -f ~/.config/home-manager/home.nix ]] && [[ ! -L ~/.config/home-manager/home.nix ]]; then
   print_warning "Backing up existing home.nix..."
   mv ~/.config/home-manager/home.nix ~/.config/home-manager/home.nix.backup
 fi
@@ -377,7 +377,7 @@ if ! command_exists chezmoi; then
 fi
 
 # Get the repository URL
-if [[  -d .git  ]]; then
+if [[ -d .git ]]; then
   REPO_URL=$(git remote get-url origin 2>/dev/null) || print_error "Not a git repository or no remote 'origin' found"
 else
   print_error "Not a git repository"
@@ -424,9 +424,9 @@ NIX_PROFILE_PATH="${HOME}/.nix-profile/bin"
 
 # Add to shell configuration files to ensure proper PATH ordering
 for shell_config in "${HOME}/.zprofile" "${HOME}/.bash_profile" "${HOME}/.profile"; do
-  if [[  -f "${shell_config}"  ]] || [[  "${shell_config}" = "${HOME}/.zprofile"  ]]; then
+  if [[ -f ${shell_config} ]] || [[ ${shell_config} == "${HOME}/.zprofile" ]]; then
     # Remove any existing nix profile path entries to avoid duplicates
-    if [[  -f "${shell_config}"  ]]; then
+    if [[ -f ${shell_config} ]]; then
       grep -v "/.nix-profile/bin" "${shell_config}" >"${shell_config}.tmp" && mv "${shell_config}.tmp" "${shell_config}"
     fi
     # Add nix profile path at the beginning (prepend to PATH)
@@ -471,7 +471,7 @@ print_status "Verify with: /usr/bin/env bash --version (should show 5.2.x)"
 print_status "Setting up fish as default shell..."
 
 # Store current shell for restoration (used by uninstall script)
-if [[  ! -f "${HOME}/.dotfiles/.shell_backup"  ]]; then
+if [[ ! -f "${HOME}/.dotfiles/.shell_backup" ]]; then
   CURRENT_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
   echo "ORIGINAL_SHELL=$CURRENT_SHELL" >"$HOME/.dotfiles/.shell_backup"
 fi
@@ -489,7 +489,7 @@ chsh -s "$FISH_PATH" || print_warning "Failed to change default shell to fish"
 
 # Verify the change
 NEW_SHELL=$(dscl . -read "/Users/$USER" UserShell | cut -d' ' -f2)
-if [[  "${NEW_SHELL}" = "${FISH_PATH}"  ]]; then
+if [[ ${NEW_SHELL} == "${FISH_PATH}" ]]; then
   print_status "✅ Default shell changed to fish successfully"
   print_status "New terminals will use fish with starship prompt"
 else
@@ -497,9 +497,9 @@ else
 fi
 
 # On macOS, install Homebrew if not present and then install GUI apps
-if [[  "$(uname)" = "Darwin"  ]]; then
+if [[ "$(uname)" == "Darwin" ]]; then
   # Check if Homebrew is installed and working
-  if [[  -f "/opt/homebrew/bin/brew"  ]] || [[  -f "/usr/local/bin/brew"  ]]; then
+  if [[ -f "/opt/homebrew/bin/brew" ]] || [[ -f "/usr/local/bin/brew" ]]; then
     print_status "Homebrew is already installed"
     # Source Homebrew environment
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -518,7 +518,7 @@ if [[  "$(uname)" = "Darwin"  ]]; then
     if command -v is_ci &>/dev/null && is_ci; then
       print_status "Homebrew installed! Continuing in CI mode..."
       # Export Homebrew PATH to GitHub Actions for subsequent steps
-      if [[  -n "${GITHUB_PATH}"  ]]; then
+      if [[ -n ${GITHUB_PATH} ]]; then
         echo "/opt/homebrew/bin" >>"${GITHUB_PATH}"
         echo "/usr/local/bin" >>"${GITHUB_PATH}"
       fi
@@ -558,9 +558,47 @@ else
   print_status "Wrangler is already installed"
 fi
 
+# Install Playwright browsers (for end-to-end testing)
+print_section "Installing Playwright Browsers"
+if command -v playwright >/dev/null 2>&1; then
+  print_status "Installing all Playwright browsers for comprehensive testing..."
+
+  # Install all browsers for full cross-browser testing capability
+  if npx playwright install; then
+    print_success "All Playwright browsers installed successfully:"
+    print_status "  ✓ Chromium (Chrome/Edge)"
+    print_status "  ✓ Firefox"
+    print_status "  ✓ WebKit (Safari)"
+
+    # Also install system dependencies if on Linux
+    if [[ "$(uname -s)" == "Linux" ]]; then
+      print_status "Installing system dependencies for browsers on Linux..."
+      if npx playwright install-deps; then
+        print_success "Browser system dependencies installed"
+      else
+        print_warning "Failed to install some system dependencies - browsers may not work properly"
+        print_status "You may need to run with sudo: sudo npx playwright install-deps"
+      fi
+    fi
+  else
+    print_warning "Failed to install some Playwright browsers"
+    print_status "You can retry manually with: npx playwright install"
+
+    # Try to at least install Chromium as fallback
+    print_status "Attempting to install Chromium only as fallback..."
+    if npx playwright install chromium; then
+      print_success "Chromium browser installed as fallback"
+    else
+      print_error "Failed to install any Playwright browsers"
+    fi
+  fi
+else
+  print_status "Playwright not found - skipping browser installation"
+fi
+
 # Configure uv to use Nix Python (avoid Homebrew Python conflicts)
 UV_CONFIG_SCRIPT="$SCRIPT_DIR/scripts/configure-uv.sh"
-if [[  -f "$UV_CONFIG_SCRIPT"  ]]; then
+if [[ -f $UV_CONFIG_SCRIPT ]]; then
   print_status "Configuring uv to use Nix Python..."
   if "$UV_CONFIG_SCRIPT"; then
     print_status "uv configured successfully"
@@ -573,7 +611,7 @@ fi
 # This installs common Python development tools in isolated environments
 print_status "Setting up Python development tools..."
 PYTHON_TOOLS_SCRIPT="$SCRIPT_DIR/scripts/setup-python-tools-uv.sh"
-if [[  -f "$PYTHON_TOOLS_SCRIPT"  ]]; then
+if [[ -f $PYTHON_TOOLS_SCRIPT ]]; then
   print_status "Running Python tools setup with uv (this may take a few minutes)..."
   if "$PYTHON_TOOLS_SCRIPT"; then
     print_status "Python development tools installed successfully"
@@ -585,9 +623,9 @@ else
 fi
 
 # Optional: Set up OpenHands (AI coding assistant)
-if [[  "${SETUP_OPENHANDS:-}" == "true"  ]]; then
+if [[ ${SETUP_OPENHANDS:-} == "true" ]]; then
   print_status "Setting up OpenHands AI coding assistant..."
-  if [[  -x "$HOME/.dotfiles/scripts/setup-openhands.sh"  ]]; then
+  if [[ -x "$HOME/.dotfiles/scripts/setup-openhands.sh" ]]; then
     "$HOME/.dotfiles/scripts/setup-openhands.sh" install
     print_status "OpenHands setup complete!"
     print_status "Access at: http://localhost:3030"
@@ -602,10 +640,10 @@ fi
 print_status "Bootstrap completed!"
 
 # Final bash check if we were running with old bash
-if [[  -n "${BASH_VERSION}"  ]] && [[  "${BASH_MAJOR_VERSION}" -lt 4  ]]; then
-  if [[  -x "$HOME/.nix-profile/bin/bash"  ]]; then
+if [[ -n ${BASH_VERSION} ]] && [[ ${BASH_MAJOR_VERSION} -lt 4 ]]; then
+  if [[ -x "$HOME/.nix-profile/bin/bash" ]]; then
     MODERN_BASH_VERSION=$("$HOME/.nix-profile/bin/bash" --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
-    if [[  -n "$MODERN_BASH_VERSION"  ]]; then
+    if [[ -n $MODERN_BASH_VERSION ]]; then
       echo ""
       echo "🎉 Modern Bash ${MODERN_BASH_VERSION} is now available!"
       echo "   New terminal sessions will automatically use it."

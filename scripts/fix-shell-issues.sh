@@ -17,9 +17,12 @@ print_status() {
   local status=$1
   local message=$2
   case $status in
-    "INFO")  echo -e "${BLUE}[INFO]${NC} $message" ;;
-    "PASS")  echo -e "${GREEN}[✓]${NC} $message" ;;
-    "FIX")   echo -e "${YELLOW}[FIX]${NC} $message"; ((FIXES_APPLIED++)) ;;
+    "INFO") echo -e "${BLUE}[INFO]${NC} $message" ;;
+    "PASS") echo -e "${GREEN}[✓]${NC} $message" ;;
+    "FIX")
+      echo -e "${YELLOW}[FIX]${NC} $message"
+      ((FIXES_APPLIED++))
+      ;;
     "ERROR") echo -e "${RED}[✗]${NC} $message" ;;
   esac
 }
@@ -32,7 +35,7 @@ apply_shellcheck_fixes() {
     # Apply available shellcheck auto-fixes using diff format
     local diff_output
     if diff_output=$(shellcheck -f diff "$script" 2>/dev/null); then
-      if [[ -n "$diff_output" ]]; then
+      if [[ -n $diff_output ]]; then
         echo "$diff_output" | patch -s "$script" - 2>/dev/null || true
         print_status "FIX" "Applied ShellCheck auto-fixes to $(basename "$script")"
       fi
@@ -110,7 +113,7 @@ apply_formatting() {
 process_script() {
   local script="$1"
 
-  if [[ ! -r "$script" ]]; then
+  if [[ ! -r $script ]]; then
     print_status "ERROR" "Cannot read $script"
     return 1
   fi
@@ -169,7 +172,7 @@ main() {
 
 # Handle command line arguments
 case "${1:-}" in
-  "--help"|"-h")
+  "--help" | "-h")
     echo "Usage: $0 [--help]"
     echo ""
     echo "Automatically fixes common shell script issues including:"

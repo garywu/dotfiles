@@ -44,7 +44,7 @@ fi
 
 echo ""
 echo "====================================="
-if [[  $FAILED -eq 0  ]]; then
+if [[ $FAILED -eq 0 ]]; then
   echo "All key pages are accessible!"
   exit 0
 else

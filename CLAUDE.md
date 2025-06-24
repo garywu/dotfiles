@@ -184,6 +184,7 @@ make format-fish     # Format Fish scripts
 # Individual validation scripts
 ./scripts/validation/validate-packages.sh    # Check for duplicate packages
 ./scripts/validation/validate-environment.sh  # Check environment health
+./scripts/validation/validate-playwright.sh   # Check Playwright installation
 
 # View validation reports
 ls -la logs/validation/
@@ -198,6 +199,27 @@ ls -la logs/validation/
   - Running `brew update` or `brew upgrade`
   - Major system updates
   - Suspicious PATH behavior
+
+### Browser Automation and Testing
+
+```bash
+# Playwright - End-to-end testing framework
+playwright --help                    # Show all available commands
+playwright install                   # Install browser binaries (Chrome, Firefox, Safari)
+playwright codegen https://example.com  # Generate test code interactively
+playwright test                      # Run tests
+playwright test --ui                 # Run tests with UI mode
+playwright show-report               # Show HTML test report
+
+# Screenshot and PDF generation
+playwright screenshot https://example.com screenshot.png
+playwright pdf https://example.com page.pdf
+
+# Validation and setup
+./scripts/validation/validate-playwright.sh --verbose
+./scripts/validation/validate-playwright.sh --install-browsers
+./scripts/validation/validate-playwright.sh --generate-sample
+```
 
 ### Productivity Tools
 
@@ -230,6 +252,12 @@ jless file.json      # Interactive JSON viewer
 tokei                # Count lines of code
 hyperfine "cmd"      # Benchmark commands
 watchexec -e py pytest  # Run commands on file change
+
+# JavaScript Package Managers (all available after shell restart)
+npm install          # Node Package Manager (via fnm)
+yarn install         # Yarn Classic package manager
+pnpm install         # Fast, disk space efficient package manager
+bun install          # Ultra-fast all-in-one runtime & package manager
 
 # LaTeX/Document Processing
 pdflatex file.tex    # Compile LaTeX to PDF
@@ -369,6 +397,56 @@ npx astro sync          # Sync content collections if pages missing
    - Installed version 5.0.5 via Homebrew
    - Provides advanced BitTorrent features alongside WebTorrent
    - Updated documentation with BitTorrent clients section
+
+7. **Fixed triple bracket multiplication bug in agent-init**:
+   - Fixed critical bug: `[[[` syntax errors in 4 shell scripts
+   - Total 31 instances fixed across setup.sh, copy-templates.sh, etc.
+   - All scripts now pass bash syntax validation
+   - Committed fix to agent-init repository
+
+8. **Installed and configured Playwright** (Issue #multidev-10):
+   - Added playwright-test to nix/home.nix
+   - Created validation script: validate-playwright.sh
+   - Added browser installation to bootstrap.sh
+   - Updated documentation with Playwright commands
+
+9. **Implemented multi-version development environment**:
+   - **Go**: Native toolchain management (Go 1.21+) with GOTOOLCHAIN=auto
+   - **Node.js**: Added fnm (Fast Node Manager) for version management
+   - **Rust**: Configured for future oxalica/rust-overlay integration
+   - **Bun**: Kept alongside fnm for fast package management
+   - Created comprehensive validation script: validate-multiversion.sh
+   - Generated example projects in ~/multiversion-examples/
+
+### Multi-Version Development Commands
+
+```bash
+# Go - Native toolchain management (1.21+)
+go version                          # Check current version
+go mod edit -go=1.22               # Change project Go version
+go mod edit -toolchain=go1.22.0    # Use specific toolchain
+
+# Node.js - fnm (Fast Node Manager)
+fnm --version                       # Check fnm installation
+fnm list                           # List installed versions
+fnm install 20.11.0                # Install specific version
+fnm use                            # Use version from .nvmrc
+fnm install --lts                  # Install latest LTS
+fnm default 20.11.0                # Set default version
+
+# Bun - Fast JavaScript runtime
+bun --version                      # Check Bun version
+bun install                        # Fast package installation
+bunx <package>                     # Run packages without installing
+
+# Rust - Currently single version via Nix
+rustc --version                    # Check Rust version
+cargo --version                    # Check Cargo version
+# For multi-version: See oxalica/rust-overlay setup
+
+# Validation
+./scripts/validation/validate-multiversion.sh --create-examples
+```
 
 ### Key Validation Commands
 

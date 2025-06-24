@@ -63,7 +63,7 @@ run_validation() {
 
   print_status "INFO" "Running $validation_name..."
 
-  if [[ ! -f "$validation_script" ]]; then
+  if [[ ! -f $validation_script ]]; then
     if [[ $optional == "true" ]]; then
       print_status "SKIP" "$validation_name (script not found: $validation_script)"
       return 0
@@ -73,7 +73,7 @@ run_validation() {
     fi
   fi
 
-  if ! [[ -x "$validation_script" ]]; then
+  if ! [[ -x $validation_script ]]; then
     chmod +x "$validation_script"
   fi
 

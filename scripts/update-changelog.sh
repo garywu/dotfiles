@@ -42,42 +42,42 @@ other=()
 
 while IFS= read -r commit; do
   case "$commit" in
-  feat* | feat!* | feat\(*\)*)
-    added+=("$commit")
-    ;;
-  fix* | fix!* | fix\(*\)*)
-    fixed+=("$commit")
-    ;;
-  perf* | perf!* | perf\(*\)*)
-    changed+=("$commit")
-    ;;
-  refactor* | refactor!* | refactor\(*\)*)
-    changed+=("$commit")
-    ;;
-  style* | style!* | style\(*\)*)
-    changed+=("$commit")
-    ;;
-  chore* | chore!* | chore\(*\)*)
-    other+=("$commit")
-    ;;
-  docs* | docs!* | docs\(*\)*)
-    other+=("$commit")
-    ;;
-  test* | test!* | test\(*\)*)
-    other+=("$commit")
-    ;;
-  build* | build!* | build\(*\)*)
-    other+=("$commit")
-    ;;
-  ci* | ci!* | ci\(*\)*)
-    other+=("$commit")
-    ;;
-  revert* | revert!* | revert\(*\)*)
-    other+=("$commit")
-    ;;
-  *)
-    other+=("$commit")
-    ;;
+    feat* | feat!* | feat\(*\)*)
+      added+=("$commit")
+      ;;
+    fix* | fix!* | fix\(*\)*)
+      fixed+=("$commit")
+      ;;
+    perf* | perf!* | perf\(*\)*)
+      changed+=("$commit")
+      ;;
+    refactor* | refactor!* | refactor\(*\)*)
+      changed+=("$commit")
+      ;;
+    style* | style!* | style\(*\)*)
+      changed+=("$commit")
+      ;;
+    chore* | chore!* | chore\(*\)*)
+      other+=("$commit")
+      ;;
+    docs* | docs!* | docs\(*\)*)
+      other+=("$commit")
+      ;;
+    test* | test!* | test\(*\)*)
+      other+=("$commit")
+      ;;
+    build* | build!* | build\(*\)*)
+      other+=("$commit")
+      ;;
+    ci* | ci!* | ci\(*\)*)
+      other+=("$commit")
+      ;;
+    revert* | revert!* | revert\(*\)*)
+      other+=("$commit")
+      ;;
+    *)
+      other+=("$commit")
+      ;;
   esac
 done <<<"$commits"
 

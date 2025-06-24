@@ -35,10 +35,10 @@ log() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   case "$level" in
-  INFO) echo -e "${GREEN}[INFO]${NC} ${timestamp}: $message" ;;
-  WARN) echo -e "${YELLOW}[WARN]${NC} ${timestamp}: $message" ;;
-  ERROR) echo -e "${RED}[ERROR]${NC} ${timestamp}: $message" ;;
-  DEBUG) echo -e "${BLUE}[DEBUG]${NC} ${timestamp}: $message" ;;
+    INFO) echo -e "${GREEN}[INFO]${NC} ${timestamp}: $message" ;;
+    WARN) echo -e "${YELLOW}[WARN]${NC} ${timestamp}: $message" ;;
+    ERROR) echo -e "${RED}[ERROR]${NC} ${timestamp}: $message" ;;
+    DEBUG) echo -e "${BLUE}[DEBUG]${NC} ${timestamp}: $message" ;;
   esac
 }
 
@@ -151,7 +151,7 @@ measure_runtime_efficiency() {
 
   # Create test dataset if it doesn't exist
   local test_dir="${DATASETS_DIR}/medium"
-  if [[  ! -d "$test_dir"  ]] || [[  -z "$(ls -A "$test_dir" 2>/dev/null)"  ]]; then
+  if [[ ! -d $test_dir ]] || [[ -z "$(ls -A "$test_dir" 2>/dev/null)" ]]; then
     log INFO "Creating test dataset for benchmarks"
     mkdir -p "$test_dir"
 
@@ -305,7 +305,7 @@ main() {
 }
 
 # Script execution guard
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+if [[ ${BASH_SOURCE[0]} == "${0}" ]]; then
   main "$@"
 fi
 

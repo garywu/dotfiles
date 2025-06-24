@@ -51,7 +51,7 @@ install_uv() {
   if command -v python3 &>/dev/null; then
     local nix_python
     nix_python=$(command -v python3 | grep -E "\.nix-profile|/nix/store" | head -1)
-    if [[  -n "$nix_python"  ]]; then
+    if [[ -n $nix_python ]]; then
       export UV_PYTHON="$nix_python"
       print_status "Set UV_PYTHON to: $nix_python"
     fi

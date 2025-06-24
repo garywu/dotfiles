@@ -20,13 +20,13 @@ print_warning() {
 }
 
 # Check if running on macOS
-if [[  "$(uname)" != "Darwin"  ]]; then
+if [[ "$(uname)" != "Darwin" ]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
 
 # Check if running as root
-if [[  $EUID -eq 0  ]]; then
+if [[ $EUID -eq 0 ]]; then
   print_error "This script should not be run as root"
   exit 1
 fi
@@ -112,38 +112,38 @@ main() {
 
   # Parse command line arguments
   case "$1" in
-  "start")
-    start_tailscale
-    ;;
-  "stop")
-    stop_tailscale
-    ;;
-  "status")
-    check_status
-    ;;
-  "ip")
-    show_ip
-    ;;
-  "peers")
-    show_peers
-    ;;
-  "enable-exit")
-    enable_exit_node
-    ;;
-  "disable-exit")
-    disable_exit_node
-    ;;
-  "exit-status")
-    show_exit_node_status
-    ;;
-  "help" | "")
-    show_help
-    ;;
-  *)
-    print_error "Unknown command: $1"
-    show_help
-    exit 1
-    ;;
+    "start")
+      start_tailscale
+      ;;
+    "stop")
+      stop_tailscale
+      ;;
+    "status")
+      check_status
+      ;;
+    "ip")
+      show_ip
+      ;;
+    "peers")
+      show_peers
+      ;;
+    "enable-exit")
+      enable_exit_node
+      ;;
+    "disable-exit")
+      disable_exit_node
+      ;;
+    "exit-status")
+      show_exit_node_status
+      ;;
+    "help" | "")
+      show_help
+      ;;
+    *)
+      print_error "Unknown command: $1"
+      show_help
+      exit 1
+      ;;
   esac
 }
 

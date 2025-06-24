@@ -51,22 +51,22 @@ calculate_next_version() {
   local patch="${version_parts[2]:-0}"
 
   case "$bump_type" in
-  major)
-    major=$((major + 1))
-    minor=0
-    patch=0
-    ;;
-  minor)
-    minor=$((minor + 1))
-    patch=0
-    ;;
-  patch)
-    patch=$((patch + 1))
-    ;;
-  *)
-    print_error "Invalid bump type: $bump_type"
-    return 1
-    ;;
+    major)
+      major=$((major + 1))
+      minor=0
+      patch=0
+      ;;
+    minor)
+      minor=$((minor + 1))
+      patch=0
+      ;;
+    patch)
+      patch=$((patch + 1))
+      ;;
+    *)
+      print_error "Invalid bump type: $bump_type"
+      return 1
+      ;;
   esac
 
   echo "v${major}.${minor}.${patch}"
@@ -89,11 +89,11 @@ generate_changelog() {
     local hash=$(echo "$commit" | cut -d' ' -f1)
     local message=$(echo "$commit" | cut -d' ' -f2-)
 
-    if [[  "$message" =~ ^feat(\(.*\))?!?:  ]]; then
+    if [[ $message =~ ^feat(\(.*\))?!?: ]]; then
       features="${features}- ${message} (${hash})\n"
-    elif [[  "$message" =~ ^fix(\(.*\))?!?:  ]]; then
+    elif [[ $message =~ ^fix(\(.*\))?!?: ]]; then
       fixes="${fixes}- ${message} (${hash})\n"
-    elif [[  "$message" =~ ^docs(\(.*\))?!?:  ]]; then
+    elif [[ $message =~ ^docs(\(.*\))?!?: ]]; then
       docs="${docs}- ${message} (${hash})\n"
     else
       other="${other}- ${message} (${hash})\n"
@@ -103,19 +103,19 @@ generate_changelog() {
   # Build changelog
   local changelog=""
 
-  if [[  -n "$features"  ]]; then
+  if [[ -n $features ]]; then
     changelog="${changelog}### 🚀 Features\n${features}\n"
   fi
 
-  if [[  -n "$fixes"  ]]; then
+  if [[ -n $fixes ]]; then
     changelog="${changelog}### 🐛 Bug Fixes\n${fixes}\n"
   fi
 
-  if [[  -n "$docs"  ]]; then
+  if [[ -n $docs ]]; then
     changelog="${changelog}### 📚 Documentation\n${docs}\n"
   fi
 
-  if [[  -n "$other"  ]]; then
+  if [[ -n $other ]]; then
     changelog="${changelog}### 🔧 Other Changes\n${other}\n"
   fi
 
@@ -134,7 +134,7 @@ check_release_status() {
   echo "Latest commit: ${latest_commit:0:7}"
   echo "Commits since last release: ${commits_since_tag}"
 
-  if [[  $commits_since_tag -eq 0  ]]; then
+  if [[ $commits_since_tag -eq 0 ]]; then
     print_warning "No new commits since last release"
     return 1
   fi
@@ -167,7 +167,7 @@ create_release() {
   local current_version=$(get_current_version)
   local new_version=$(calculate_next_version "$current_version" "$bump_type")
 
-  if [[  -n "$prerelease"  ]]; then
+  if [[ -n $prerelease ]]; then
     new_version="${new_version}-${prerelease}.1"
   fi
 
@@ -175,7 +175,7 @@ create_release() {
   echo "Current version: $current_version"
   echo "New version: $new_version"
   echo "Release type: $bump_type"
-  if [[  -n "$prerelease"  ]]; then
+  if [[ -n $prerelease ]]; then
     echo "Prerelease: $prerelease"
   fi
 
@@ -188,7 +188,7 @@ create_release() {
   # Confirm
   echo -e "\n${YELLOW}Do you want to create this release? (y/N)${NC}"
   read -r confirm
-  if [[  "$confirm" != "y"  ]]; then
+  if [[ $confirm != "y" ]]; then
     print_warning "Release cancelled"
     return 0
   fi
@@ -231,7 +231,7 @@ ${changelog}"
 show_schedule() {
   print_header "Release Schedule"
 
-  if [[  ! -f "$RELEASE_CONFIG"  ]]; then
+  if [[ ! -f $RELEASE_CONFIG ]]; then
     print_error "Release schedule configuration not found"
     return 1
   fi
@@ -274,33 +274,33 @@ main() {
     read -r choice
 
     case $choice in
-    1)
-      check_release_status
-      ;;
-    2)
-      check_release_status && create_release "patch"
-      ;;
-    3)
-      check_release_status && create_release "minor"
-      ;;
-    4)
-      check_release_status && create_release "major"
-      ;;
-    5)
-      echo -e "\nPrerelease type (alpha/beta/rc): \c"
-      read -r prerelease_type
-      check_release_status && create_release "patch" "$prerelease_type"
-      ;;
-    6)
-      show_schedule
-      ;;
-    7)
-      print_success "Goodbye!"
-      exit 0
-      ;;
-    *)
-      print_error "Invalid option"
-      ;;
+      1)
+        check_release_status
+        ;;
+      2)
+        check_release_status && create_release "patch"
+        ;;
+      3)
+        check_release_status && create_release "minor"
+        ;;
+      4)
+        check_release_status && create_release "major"
+        ;;
+      5)
+        echo -e "\nPrerelease type (alpha/beta/rc): \c"
+        read -r prerelease_type
+        check_release_status && create_release "patch" "$prerelease_type"
+        ;;
+      6)
+        show_schedule
+        ;;
+      7)
+        print_success "Goodbye!"
+        exit 0
+        ;;
+      *)
+        print_error "Invalid option"
+        ;;
     esac
 
     echo -e "\n${YELLOW}Press Enter to continue...${NC}"
@@ -309,6 +309,6 @@ main() {
 }
 
 # Run main if not sourced
-if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+if [[ ${BASH_SOURCE[0]} == "${0}" ]]; then
   main "$@"
 fi

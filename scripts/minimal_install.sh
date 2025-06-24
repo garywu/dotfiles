@@ -27,7 +27,7 @@ command_exists() {
 
 # Get the repository URL from the current git remote
 get_repo_url() {
-  if [[  -d .git  ]]; then
+  if [[ -d .git ]]; then
     git remote get-url origin 2>/dev/null || print_error "Not a git repository or no remote 'origin' found"
   else
     print_error "Not a git repository"
@@ -45,7 +45,7 @@ if ! command_exists nix; then
   fi
 
   # Source Nix environment
-  if [[  -f ~/.nix-profile/etc/profile.d/nix.sh  ]]; then
+  if [[ -f ~/.nix-profile/etc/profile.d/nix.sh ]]; then
     # shellcheck source=/dev/null
     . ~/.nix-profile/etc/profile.d/nix.sh
   else
