@@ -243,6 +243,25 @@ rclone copy local remote:path  # Copy local to remote (no delete)
 rclone mount remote: ~/mnt     # Mount remote as filesystem
 rclone ls remote:              # List files on remote
 rsync -av src/ dest/          # Local/network sync with progress
+
+# Network Monitoring & Remote Access
+ssh user@host                # SSH remote access
+scp file user@host:/path     # Secure copy over SSH
+sftp user@host               # Interactive file transfer
+yt-dlp "url"                 # Download videos from various sites
+
+# Network Monitoring (Linux only - available on Linux systems)
+nethogs                       # Monitor per-process network usage
+bmon                         # Real-time network bandwidth monitor
+iftop                        # Display network usage by hosts
+nload                        # Console network traffic monitor
+transmission-remote host     # BitTorrent remote control
+
+# macOS Network Monitoring Alternatives
+nettop                       # Built-in macOS network monitor
+lsof -i                      # Show network connections
+netstat -rn                  # Show routing table
+# Install via Homebrew: brew install nethogs iftop nload bmon
 ```
 
 ## IMPORTANT: Default Tool Usage for Claude CLI
