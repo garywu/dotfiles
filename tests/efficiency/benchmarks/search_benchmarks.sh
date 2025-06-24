@@ -151,7 +151,7 @@ measure_runtime_efficiency() {
 
   # Create test dataset if it doesn't exist
   local test_dir="${DATASETS_DIR}/medium"
-  if [[[[[ ! -d "$test_dir" ]]]]] || [[[[[ -z "$(ls -A "$test_dir" 2>/dev/null)" ]]]]]; then
+  if [[[ ! -d "$test_dir" ]]] || [[[ -z "$(ls -A "$test_dir" 2>/dev/null)" ]]]; then
     log INFO "Creating test dataset for benchmarks"
     mkdir -p "$test_dir"
 

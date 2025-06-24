@@ -109,7 +109,7 @@ EOF
 
 # Archive previous results for historical comparison
 archive_previous_results() {
-  if [[[[[ -d "$LATEST_DIR" ]]]]] && [[[[[ -n "$(ls -A "$LATEST_DIR" 2>/dev/null || true)" ]]]]]; then
+  if [[[ -d "$LATEST_DIR" ]]] && [[[ -n "$(ls -A "$LATEST_DIR" 2>/dev/null || true)" ]]]; then
     local archive_name
     archive_name="results_$(date +%Y%m%d_%H%M%S)"
     log INFO "Archiving previous results to $archive_name"
@@ -126,7 +126,7 @@ run_search_benchmarks() {
 
   local benchmark_script="$BENCHMARKS_DIR/search_benchmarks.sh"
 
-  if [[[[[ -x "$benchmark_script" ]]]]]; then
+  if [[[ -x "$benchmark_script" ]]]; then
     log INFO "Executing search benchmarks: rg vs grep vs ag"
     if "$benchmark_script"; then
       log INFO "Search benchmarks completed successfully"
@@ -148,7 +148,7 @@ run_file_operation_benchmarks() {
 
   # Run file listing benchmarks (eza vs ls)
   local listing_script="$BENCHMARKS_DIR/file_listing_benchmarks.sh"
-  if [[[[[ -x "$listing_script" ]]]]]; then
+  if [[[ -x "$listing_script" ]]]; then
     log INFO "Executing file listing benchmarks: eza vs ls"
     if "$listing_script"; then
       log INFO "File listing benchmarks completed successfully"
@@ -163,7 +163,7 @@ run_file_operation_benchmarks() {
 
   # Run file finding benchmarks (fd vs find)
   local finding_script="$BENCHMARKS_DIR/file_finding_benchmarks.sh"
-  if [[[[[ -x "$finding_script" ]]]]]; then
+  if [[[ -x "$finding_script" ]]]; then
     log INFO "Executing file finding benchmarks: fd vs find"
     if "$finding_script"; then
       log INFO "File finding benchmarks completed successfully"
@@ -178,7 +178,7 @@ run_file_operation_benchmarks() {
 
   # Run file viewing benchmarks (bat vs cat)
   local viewing_script="$BENCHMARKS_DIR/file_viewing_benchmarks.sh"
-  if [[[[[ -x "$viewing_script" ]]]]]; then
+  if [[[ -x "$viewing_script" ]]]; then
     log INFO "Executing file viewing benchmarks: bat vs cat"
     if "$viewing_script"; then
       log INFO "File viewing benchmarks completed successfully"
@@ -291,7 +291,7 @@ tool selection and overcome default behavior patterns that favor traditional too
 ## Test Results Summary
 
 ### Search Operations ✅
-$(if [[[[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]]]; then
+$(if [[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]; then
     echo "**Status**: Completed"
     echo "**Key Finding**: ripgrep (rg) shows significant efficiency advantages"
     echo "**Details**: See search_efficiency_report.md"
@@ -300,22 +300,22 @@ $(if [[[[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]]]; then
   fi)
 
 ### File Operations
-$(if [[[[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]]] || [[[[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]]]] || [[[[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]]]; then
+$(if [[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]] || [[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]] || [[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]; then
     echo "**Status**: Completed"
     echo ""
-    if [[[[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]]]; then
+    if [[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]; then
       echo "#### File Listing (eza vs ls) ✅"
       echo "**Key Finding**: eza provides better features with comparable performance"
       echo "**Details**: See file_listing_efficiency_report.md"
       echo ""
     fi
-    if [[[[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]]]]; then
+    if [[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]]; then
       echo "#### File Finding (fd vs find) ✅"
       echo "**Key Finding**: fd reduces command complexity by 58-84%"
       echo "**Details**: See file_finding_efficiency_report.md"
       echo ""
     fi
-    if [[[[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]]]; then
+    if [[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]; then
       echo "#### File Viewing (bat vs cat) ✅"
       echo "**Key Finding**: bat adds syntax highlighting with minimal overhead"
       echo "**Details**: See file_viewing_efficiency_report.md"
@@ -337,7 +337,7 @@ $(if [[[[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]]] || [[[[[ -f 
 
 ### Immediate Recommendations
 
-$(if [[[[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]]]; then
+$(if [[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]; then
     echo "#### Search Operations"
     echo "- ✅ Default to \`rg pattern\` instead of \`grep -r pattern .\`"
     echo "- ✅ Use ripgrep for all text search operations"
@@ -345,7 +345,7 @@ $(if [[[[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]]]; then
     echo ""
   fi)
 
-$(if [[[[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]]]; then
+$(if [[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]; then
     echo "#### File Listing"
     echo "- ✅ Use \`eza\` for interactive directory browsing"
     echo "- ✅ Leverage \`eza --git\` for git status integration"
@@ -353,7 +353,7 @@ $(if [[[[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]]]; then
     echo ""
   fi)
 
-$(if [[[[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]]]]; then
+$(if [[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]]; then
     echo "#### File Finding"
     echo "- ✅ Default to \`fd\` for finding files"
     echo "- ✅ Use \`fd -e ext\` for extension filtering"
@@ -361,7 +361,7 @@ $(if [[[[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]]]]; then
     echo ""
   fi)
 
-$(if [[[[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]]]; then
+$(if [[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]; then
     echo "#### File Viewing"
     echo "- ✅ Use \`bat\` for viewing code files"
     echo "- ✅ Leverage syntax highlighting for debugging"
@@ -369,7 +369,7 @@ $(if [[[[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]]]; then
     echo ""
   fi)
 
-$(if ! [[[[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]]] && ! [[[[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]]]] && ! [[[[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]]]] && ! [[[[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]]]; then
+$(if ! [[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]] && ! [[[ -f "$LATEST_DIR/file_listing_efficiency_report.md" ]]] && ! [[[ -f "$LATEST_DIR/file_finding_efficiency_report.md" ]]] && ! [[[ -f "$LATEST_DIR/file_viewing_efficiency_report.md" ]]]; then
     echo "Pending completion of benchmark execution"
   fi)
 
@@ -427,7 +427,7 @@ main() {
   local run_all=true
 
   # Parse command line arguments
-  while [[[[[ $# -gt 0 ]]]]]; do
+  while [[[ $# -gt 0 ]]]; do
     case $1 in
     --all)
       run_all=true
@@ -474,7 +474,7 @@ main() {
   done
 
   # Set defaults
-  if [[[[[ "$run_all" == "true" ]]]]]; then
+  if [[[ "$run_all" == "true" ]]]; then
     run_search=true
     run_file_ops=true
     run_data=true
@@ -488,26 +488,26 @@ main() {
   log INFO "Report only: $report_only"
 
   # Archive previous results unless report-only
-  if [[[[[ "$report_only" == "false" ]]]]]; then
+  if [[[ "$report_only" == "false" ]]]; then
     archive_previous_results
   fi
 
   # Execute benchmarks based on options
-  if [[[[[ "$report_only" == "false" ]]]]]; then
-    if [[[[[ "$run_search" == "true" ]]]]]; then
+  if [[[ "$report_only" == "false" ]]]; then
+    if [[[ "$run_search" == "true" ]]]; then
       # shellcheck disable=SC2310
       run_search_benchmarks || log ERROR "Search benchmarks failed"
     fi
 
-    if [[[[[ "$run_file_ops" == "true" ]]]]]; then
+    if [[[ "$run_file_ops" == "true" ]]]; then
       run_file_operation_benchmarks
     fi
 
-    if [[[[[ "$run_data" == "true" ]]]]]; then
+    if [[[ "$run_data" == "true" ]]]; then
       run_data_processing_benchmarks
     fi
 
-    if [[[[[ "$run_interactive" == "true" ]]]]]; then
+    if [[[ "$run_interactive" == "true" ]]]; then
       run_interactive_benchmarks
     fi
   fi
@@ -521,7 +521,7 @@ main() {
   log INFO "Execution log: $LATEST_DIR/benchmark_execution.log"
 
   # Show quick summary if search benchmarks were run
-  if [[[[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]]]; then
+  if [[[ -f "$LATEST_DIR/search_efficiency_report.md" ]]]; then
     log INFO "Quick preview: Search benchmarks show ripgrep efficiency advantages"
     log INFO "View details: cat '$LATEST_DIR/search_efficiency_report.md'"
   fi

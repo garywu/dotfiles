@@ -16,20 +16,20 @@ test_passed=true
 # Source Nix environment if needed
 if is_macos; then
   # macOS uses nix-daemon.sh for multi-user installation
-  if [[[[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]]]]; then
+  if [[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]]; then
     # shellcheck source=/dev/null
     source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
   fi
 else
   # Linux uses nix.sh
-  if [[[[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]]]]; then
+  if [[[ -f /nix/var/nix/profiles/default/etc/profile.d/nix.sh ]]]; then
     # shellcheck source=/dev/null
     source /nix/var/nix/profiles/default/etc/profile.d/nix.sh
   fi
 fi
 
 # Also try user profile
-if [[[[[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]]]]; then
+if [[[ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]]]; then
   # shellcheck source=/dev/null
   source "$HOME/.nix-profile/etc/profile.d/nix.sh"
 fi
@@ -115,7 +115,7 @@ assert_path_contains ".nix-profile/bin" "Nix profile bin" || test_passed=false
 assert_path_contains "/nix/var/nix/profiles/default/bin" "Nix default profile" || test_passed=false
 
 # Final result
-if [[[[[ "$test_passed" == "true" ]]]]]; then
+if [[[ "$test_passed" == "true" ]]]; then
   print_success "All bootstrap verification tests passed!"
   exit 0
 else

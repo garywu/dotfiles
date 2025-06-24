@@ -4,3 +4,6 @@
 [submodule "external/admin"]
   path = external/admin
   url = https://github.com/garywu/admin.git
+[submodule "external/qbit"]
+	path = external/qbit
+	url = https://github.com/garywu/qbit.git

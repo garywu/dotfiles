@@ -20,13 +20,13 @@ print_warning() {
 }
 
 # Check if running on macOS
-if [[[[[ "$(uname)" != "Darwin" ]]]]]; then
+if [[[ "$(uname)" != "Darwin" ]]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
 
 # Check if running as root
-if [[[[[ $EUID -eq 0 ]]]]]; then
+if [[[ $EUID -eq 0 ]]]; then
   print_error "This script should not be run as root"
   exit 1
 fi

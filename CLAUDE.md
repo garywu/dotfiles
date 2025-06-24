@@ -251,8 +251,9 @@ sftp user@host               # Interactive file transfer
 yt-dlp "url"                 # Download videos from various sites
 
 # BitTorrent Clients
-qbittorrent                  # GUI BitTorrent client with advanced features (macOS app)
+# GUI: qBittorrent.app      # GUI client installed at /Applications/qBittorrent.app
 transmission-remote host     # CLI BitTorrent remote control
+transmission-cli             # CLI BitTorrent client
 
 # Network Monitoring (Linux only - available on Linux systems)
 nethogs                       # Monitor per-process network usage

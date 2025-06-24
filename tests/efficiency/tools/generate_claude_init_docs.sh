@@ -27,7 +27,7 @@ RESULTS_DIR="${EFFICIENCY_DIR}/results/latest"
 OUTPUT_FILE="${EFFICIENCY_DIR}/generated_claude_init_recommendations.md"
 
 # Check for results
-if [[[[[ ! -d "$RESULTS_DIR" ]]]]]; then
+if [[[ ! -d "$RESULTS_DIR" ]]]; then
   echo -e "${YELLOW}No test results found. Run benchmarks first.${NC}"
   exit 1
 fi
@@ -53,7 +53,7 @@ Each tool recommendation is based on two types of efficiency measurements:
 EOF
 
 # Add search tools section if results exist
-if [[[[[ -f "$RESULTS_DIR/search_efficiency_report.md" ]]]]]; then
+if [[[ -f "$RESULTS_DIR/search_efficiency_report.md" ]]]; then
   cat >>"$OUTPUT_FILE" <<'EOF'
 ### Text Search Operations
 
@@ -89,7 +89,7 @@ EOF
 fi
 
 # Add file finding section if results exist
-if [[[[[ -f "$RESULTS_DIR/file_finding_efficiency_report.md" ]]]]]; then
+if [[[ -f "$RESULTS_DIR/file_finding_efficiency_report.md" ]]]; then
   cat >>"$OUTPUT_FILE" <<'EOF'
 ### File Finding Operations
 
@@ -124,7 +124,7 @@ EOF
 fi
 
 # Add file viewing section if results exist
-if [[[[[ -f "$RESULTS_DIR/file_viewing_efficiency_report.md" ]]]]]; then
+if [[[ -f "$RESULTS_DIR/file_viewing_efficiency_report.md" ]]]; then
   cat >>"$OUTPUT_FILE" <<'EOF'
 ### File Viewing Operations
 
@@ -157,7 +157,7 @@ EOF
 fi
 
 # Add directory listing section if results exist
-if [[[[[ -f "$RESULTS_DIR/file_listing_efficiency_report.md" ]]]]]; then
+if [[[ -f "$RESULTS_DIR/file_listing_efficiency_report.md" ]]]; then
   cat >>"$OUTPUT_FILE" <<'EOF'
 ### Directory Listing Operations
 

@@ -34,20 +34,20 @@ Linux*)
     print_status "Installing Calibre via system package manager..."
 
     # Detect Linux distribution
-    if [[[[ -f /etc/debian_version ]]]]; then
+    if [[[ -f /etc/debian_version ]]]; then
       # Debian/Ubuntu
       print_status "Detected Debian/Ubuntu system"
       sudo apt-get update
       sudo apt-get install -y calibre
-    elif [[[[ -f /etc/redhat-release ]]]]; then
+    elif [[[ -f /etc/redhat-release ]]]; then
       # RHEL/Fedora/CentOS
       print_status "Detected Red Hat-based system"
       sudo dnf install -y calibre || sudo yum install -y calibre
-    elif [[[[ -f /etc/arch-release ]]]]; then
+    elif [[[ -f /etc/arch-release ]]]; then
       # Arch Linux
       print_status "Detected Arch Linux"
       sudo pacman -S --noconfirm calibre
-    elif [[[[ -f /etc/alpine-release ]]]]; then
+    elif [[[ -f /etc/alpine-release ]]]; then
       # Alpine Linux
       print_status "Detected Alpine Linux"
       sudo apk add calibre

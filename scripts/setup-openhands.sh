@@ -47,7 +47,7 @@ check_docker() {
   command_exists docker
   local docker_exists=$?
 
-  if [[[[[ $docker_exists -ne 0 ]]]]]; then
+  if [[[ $docker_exists -ne 0 ]]]; then
     print_error "Docker is not installed. Please install Docker first."
     return 1
   fi
@@ -176,7 +176,7 @@ logs_openhands() {
 # Function to create systemd service (Linux only)
 create_systemd_service() {
   uname_result=$(uname)
-  if [[[[[ "$uname_result" != "Linux" ]]]]]; then
+  if [[[ "$uname_result" != "Linux" ]]]; then
     print_warning "Systemd service creation is only available on Linux"
     return 0
   fi
@@ -209,7 +209,7 @@ EOF
 # Function to create launchd service (macOS)
 create_launchd_service() {
   uname_result=$(uname)
-  if [[[[[ "$uname_result" != "Darwin" ]]]]]; then
+  if [[[ "$uname_result" != "Darwin" ]]]; then
     print_warning "Launchd service creation is only available on macOS"
     return 0
   fi
@@ -270,11 +270,11 @@ uninstall_openhands() {
 
   # Remove services
   uname_result=$(uname)
-  if [[[[[ "$uname_result" == "Linux" ]]]]] && systemctl list-unit-files | grep -q "${SERVICE_NAME}"; then
+  if [[[ "$uname_result" == "Linux" ]]] && systemctl list-unit-files | grep -q "${SERVICE_NAME}"; then
     sudo systemctl disable "${SERVICE_NAME}"
     sudo rm "/etc/systemd/system/${SERVICE_NAME}.service"
     sudo systemctl daemon-reload
-  elif [[[[[ "$uname_result" == "Darwin" ]]]]] && [[[[[ -f "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist" ]]]]]; then
+  elif [[[ "$uname_result" == "Darwin" ]]] && [[[ -f "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist" ]]]; then
     launchctl unload "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist"
     rm "$HOME/Library/LaunchAgents/dev.all-hands.openhands.plist"
   fi
@@ -358,7 +358,7 @@ main() {
     ;;
   "service")
     uname_result=$(uname)
-    if [[[[[ "$uname_result" == "Darwin" ]]]]]; then
+    if [[[ "$uname_result" == "Darwin" ]]]; then
       create_launchd_service
     else
       create_systemd_service

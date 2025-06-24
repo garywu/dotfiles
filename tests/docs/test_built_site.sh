@@ -19,7 +19,7 @@ echo "================================"
 echo ""
 
 # Check if dist directory exists
-if [[[[[ ! -d "$DIST_DIR" ]]]]]; then
+if [[[ ! -d "$DIST_DIR" ]]]; then
   echo -e "${RED}Error: Distribution directory not found at $DIST_DIR${NC}"
   echo "Please run 'npm run build' first"
   exit 1
@@ -31,10 +31,10 @@ find "$DIST_DIR" -name "*.html" -type f | while read -r file; do
   # Get relative path from dist directory
   rel_path="${file#"$DIST_DIR"}"
   # Skip 404.html and other special files
-  [[[[[ "$rel_path" =~ ^/404\.html$ ]]]]] && continue
+  [[[ "$rel_path" =~ ^/404\.html$ ]]] && continue
   # Convert file path to URL path (remove index.html)
   url_path="${rel_path%/index.html}"
-  [[[[[ "$url_path" == "" ]]]]] && url_path="/"
+  [[[ "$url_path" == "" ]]] && url_path="/"
   echo "$url_path"
 done | sort -u >"$SITEMAP_FILE"
 
@@ -49,12 +49,12 @@ WARNINGS=0
 
 while IFS= read -r page; do
   file_path="${DIST_DIR}${page}"
-  [[[[[ "$page" != "/" ]]]]] && file_path="${file_path}/index.html"
-  [[[[[ "$page" == "/" ]]]]] && file_path="${DIST_DIR}/index.html"
+  [[[ "$page" != "/" ]]] && file_path="${file_path}/index.html"
+  [[[ "$page" == "/" ]]] && file_path="${DIST_DIR}/index.html"
 
   printf "Testing %s..." "$page"
 
-  if [[[[[ ! -f "$file_path" ]]]]]; then
+  if [[[ ! -f "$file_path" ]]]; then
     printf "\r%b✗%b %-50s (File not found)\n" "$RED" "$NC" "$page"
     ((FAILED++)) || true
     continue
@@ -68,7 +68,7 @@ while IFS= read -r page; do
     file_size=0
   fi
 
-  if [[[[[ $file_size -lt 1000 ]]]]]; then
+  if [[[ $file_size -lt 1000 ]]]; then
     printf "\r%b⚠%b %-50s (Suspiciously small: %d bytes)\n" "$YELLOW" "$NC" "$page" "$file_size"
     ((WARNINGS++)) || true
   fi
@@ -95,30 +95,30 @@ while IFS= read -r page; do
   broken_links=0
 
   while IFS= read -r link; do
-    [[[[[ -z "$link" ]]]]] && continue
+    [[[ -z "$link" ]]] && continue
 
     # Simple relative link check - resolve from current page directory
     page_dir=$(dirname "$page")
-    [[[[[ "$page_dir" == "." ]]]]] && page_dir=""
+    [[[ "$page_dir" == "." ]]] && page_dir=""
 
     # Basic resolution of ./relative/path
-    if [[[[[ "$link" =~ ^\.\/ ]]]]]; then
+    if [[[ "$link" =~ ^\.\/ ]]]; then
       link_path="${page_dir}/${link#./}"
       # Clean up path
       link_path=$(echo "$link_path" | sed 's|/\./|/|g' | sed 's|//|/|g' | sed 's|^/||')
 
       # Check if target exists (basic check)
       target_file="${DIST_DIR}/${link_path}"
-      [[[[[ ! "$link_path" =~ \.html$ ]]]]] && target_file="${target_file}/index.html"
+      [[[ ! "$link_path" =~ \.html$ ]]] && target_file="${target_file}/index.html"
 
-      if [[[[[ ! -f "$target_file" ]]]]]; then
+      if [[[ ! -f "$target_file" ]]]; then
         ((broken_links++)) || true
         break # Only report first broken link to avoid spam
       fi
     fi
   done <<<"$internal_links"
 
-  if [[[[[ $broken_links -gt 0 ]]]]]; then
+  if [[[ $broken_links -gt 0 ]]]; then
     printf "\r%b⚠%b %-50s (Has broken links)\n" "$YELLOW" "$NC" "$page"
     ((WARNINGS++)) || true
   else
@@ -138,10 +138,10 @@ echo -e "${RED}Failed: $FAILED${NC}"
 echo ""
 echo "Sitemap saved to: $SITEMAP_FILE"
 
-if [[[[[ $FAILED -gt 0 ]]]]]; then
+if [[[ $FAILED -gt 0 ]]]; then
   echo -e "${RED}Some pages have critical issues!${NC}"
   exit 1
-elif [[[[[ $WARNINGS -gt 0 ]]]]]; then
+elif [[[ $WARNINGS -gt 0 ]]]; then
   echo -e "${YELLOW}Some pages have warnings that should be reviewed${NC}"
   exit 0
 else

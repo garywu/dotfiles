@@ -48,7 +48,7 @@ info() {
 test_astro_base_config() {
   info "Testing Astro base path configuration..."
 
-  if [[[[[ ! -f "$CONFIG_FILE" ]]]]]; then
+  if [[[ ! -f "$CONFIG_FILE" ]]]; then
     error "Astro config file not found: $CONFIG_FILE"
     return
   fi
@@ -116,7 +116,7 @@ test_homepage_action_links() {
 
   # Check index.mdx for action links
   local index_file="$CONTENT_DIR/index.mdx"
-  if [[[[[ -f "$index_file" ]]]]] && grep -A 5 -B 2 "actions:" "$index_file" | grep -q "link:.*'/"; then
+  if [[[ -f "$index_file" ]]] && grep -A 5 -B 2 "actions:" "$index_file" | grep -q "link:.*'/"; then
     error "Found absolute paths in index.mdx action buttons"
     grep -A 5 -B 2 "actions:" "$index_file" | grep "link:" | while IFS= read -r line; do
       echo "    $line"
@@ -145,7 +145,7 @@ test_github_pages_requirements() {
 
   # Check for package.json build script
   local package_file="$DOCS_DIR/package.json"
-  if [[[[[ -f "$package_file" ]]]]]; then
+  if [[[ -f "$package_file" ]]]; then
     if grep -q '"build".*astro sync' "$package_file"; then
       success "Build script includes astro sync"
     else
@@ -157,7 +157,7 @@ test_github_pages_requirements() {
 
   # Check for GitHub Pages workflow
   local workflow_file=".github/workflows/deploy-docs.yml"
-  if [[[[[ -f "$workflow_file" ]]]]]; then
+  if [[[ -f "$workflow_file" ]]]; then
     success "GitHub Pages deployment workflow exists"
 
     # Check if it builds correctly
@@ -189,7 +189,7 @@ test_cross_reference_patterns() {
     echo "  Found absolute cross-references in AI tools"
   fi
 
-  if [[[[[ $invalid_patterns -eq 0 ]]]]]; then
+  if [[[ $invalid_patterns -eq 0 ]]]; then
     success "Cross-reference patterns are valid"
   else
     error "Found $invalid_patterns types of invalid cross-reference patterns"
@@ -200,15 +200,15 @@ test_cross_reference_patterns() {
 test_local_build() {
   info "Testing local build process..."
 
-  if [[[[[ ! -d "$DOCS_DIR/node_modules" ]]]]]; then
+  if [[[ ! -d "$DOCS_DIR/node_modules" ]]]; then
     warning "Node modules not installed - run 'npm install' in docs directory"
     return
   fi
 
   # Check if dist directory exists (previous build)
-  if [[[[[ -d "$DOCS_DIR/dist" ]]]]]; then
+  if [[[ -d "$DOCS_DIR/dist" ]]]; then
     # Check if critical files exist
-    if [[[[[ -f "$DOCS_DIR/dist/index.html" ]]]]]; then
+    if [[[ -f "$DOCS_DIR/dist/index.html" ]]]; then
       success "Previous build found - homepage exists"
 
       # Check for base path in generated files
@@ -288,10 +288,10 @@ main() {
   echo "Errors: $ERRORS"
   echo "Warnings: $WARNINGS"
 
-  if [[[[[ $ERRORS -eq 0 && $WARNINGS -eq 0 ]]]]]; then
+  if [[[ $ERRORS -eq 0 && $WARNINGS -eq 0 ]]]; then
     echo -e "${GREEN}✓ All link patterns are valid!${NC}"
     echo "Documentation should deploy correctly to GitHub Pages."
-  elif [[[[[ $ERRORS -eq 0 ]]]]]; then
+  elif [[[ $ERRORS -eq 0 ]]]; then
     echo -e "${YELLOW}⚠ Minor warnings found but no critical errors${NC}"
     echo "Documentation should deploy correctly but consider addressing warnings."
   else
