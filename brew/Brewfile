@@ -27,6 +27,13 @@ brew "mas"                       # Mac App Store command line interface
 # Tools not easily available in Nix or work better via Homebrew on Mac
 brew "aria2"                     # Lightweight download utility
 
+# Network monitoring tools (Linux-only in Nix, available via Homebrew on Mac)
+brew "nethogs"                   # Monitor per-process network usage
+brew "bmon"                      # Real-time network bandwidth monitor
+brew "iftop"                     # Display network usage by hosts
+brew "nload"                     # Console network traffic monitor
+brew "transmission-cli"          # BitTorrent client (command-line interface)
+
 # Mac App Store Apps
 mas "Xcode", id: 497799835
 mas "Slack", id: 803453959
