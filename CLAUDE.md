@@ -236,6 +236,13 @@ pdflatex file.tex    # Compile LaTeX to PDF
 latex file.tex       # Compile LaTeX to DVI
 bibtex file          # Process bibliography
 pandoc -o out.pdf in.md  # Convert markdown to PDF (requires LaTeX)
+
+# Cloud Storage Sync
+rclone sync local remote:path  # Sync local to remote
+rclone copy local remote:path  # Copy local to remote (no delete)
+rclone mount remote: ~/mnt     # Mount remote as filesystem
+rclone ls remote:              # List files on remote
+rsync -av src/ dest/          # Local/network sync with progress
 ```
 
 ## IMPORTANT: Default Tool Usage for Claude CLI
