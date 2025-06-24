@@ -54,6 +54,10 @@
     # System utilities
     coreutils # GNU core utilities (timeout, realpath, etc.)
 
+    # Network monitoring and utilities
+    openssh # SSH client and SFTP support
+    yt-dlp # Download videos from YouTube and other sites
+
     # Shell tools
     fish
     starship
@@ -135,6 +139,7 @@
     p7zip # Command-line 7-Zip (7z, 7za, 7zr)
     ghostscript # PostScript/PDF interpreter and tools
     lame # MP3 encoder
+    rclone # Cloud storage sync ("rsync for cloud storage")
 
     # Environment Variables & Secrets Management
     sops # Secrets management with encryption
@@ -196,7 +201,17 @@
       libreoffice
       # Document converter using LibreOffice engine (Linux only)
       unoconv
-    ] else [ ]
+      # Network monitoring tools (Linux only)
+      nethogs # Monitor per-process network usage
+      bmon # Real-time network bandwidth monitor
+      iftop # Display network usage by hosts
+      nload # Console network traffic monitor
+      transmission-remote-gtk # BitTorrent remote control
+    ] else [
+      # macOS alternatives for network monitoring
+      # Note: Some tools like nethogs, bmon, iftop, nload are Linux-only
+      # macOS users can use: Activity Monitor, nettop, or install via Homebrew
+    ]
   ));
 
   # Configure basic programs
