@@ -7,6 +7,7 @@ cask "insomnia"                  # REST client
 cask "tableplus"                 # Database GUI
 cask "dbeaver-community"         # Database tool
 cask "webtorrent"                # BitTorrent client
+cask "qbittorrent"               # Popular BitTorrent client with advanced features
 cask "libreoffice"               # Open source office suite (Writer, Calc, Impress, etc.)
 cask "calibre"                   # E-book management application (GUI)
 
