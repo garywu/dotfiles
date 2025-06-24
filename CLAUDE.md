@@ -250,12 +250,15 @@ scp file user@host:/path     # Secure copy over SSH
 sftp user@host               # Interactive file transfer
 yt-dlp "url"                 # Download videos from various sites
 
+# BitTorrent Clients
+qbittorrent                  # GUI BitTorrent client with advanced features (macOS app)
+transmission-remote host     # CLI BitTorrent remote control
+
 # Network Monitoring (Linux only - available on Linux systems)
 nethogs                       # Monitor per-process network usage
 bmon                         # Real-time network bandwidth monitor
 iftop                        # Display network usage by hosts
 nload                        # Console network traffic monitor
-transmission-remote host     # BitTorrent remote control
 
 # macOS Network Monitoring Alternatives
 nettop                       # Built-in macOS network monitor
@@ -359,6 +362,12 @@ npx astro sync          # Sync content collections if pages missing
    - Added macOS support via brew/Brewfile for network tools
    - Updated CLAUDE.md with usage examples and platform notes
    - Created atomic commits for each component
+
+6. **Added qBittorrent GUI client** (Issue #62):
+   - Added qBittorrent cask to brew/Brewfile
+   - Installed version 5.0.5 via Homebrew
+   - Provides advanced BitTorrent features alongside WebTorrent
+   - Updated documentation with BitTorrent clients section
 
 ### Key Validation Commands
 
