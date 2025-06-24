@@ -321,7 +321,7 @@ npm run preview         # Preview built site
 npx astro sync          # Sync content collections if pages missing
 ```
 
-## Current Session (2025-06-23)
+## Current Session (2025-06-24)
 
 ### Completed
 
@@ -350,6 +350,15 @@ npx astro sync          # Sync content collections if pages missing
    - Added ghostscript (gs command) for PostScript/PDF processing
    - Added lame for MP3 encoding
    - All installed via Nix for cross-platform availability
+
+5. **Added network monitoring and remote access tools** (Issue #61):
+   - Added openssh for SSH/SCP/SFTP support (Nix - cross-platform)
+   - Added yt-dlp for video downloads (Nix - cross-platform)
+   - Added Linux-specific network monitoring tools to nix/home.nix:
+     - nethogs, bmon, iftop, nload, transmission-remote-gtk
+   - Added macOS support via brew/Brewfile for network tools
+   - Updated CLAUDE.md with usage examples and platform notes
+   - Created atomic commits for each component
 
 ### Key Validation Commands
 
