@@ -130,7 +130,7 @@
     imagemagick # Image manipulation and conversion
     ffmpeg # Audio/video processing and conversion
     # calibre # E-book management and conversion CLI tools (marked as broken in nixpkgs across platforms)
-    
+
     # Archive, PDF, and audio tools
     p7zip # Command-line 7-Zip (7z, 7za, 7zr)
     ghostscript # PostScript/PDF interpreter and tools
