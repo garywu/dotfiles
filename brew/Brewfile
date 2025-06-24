@@ -18,15 +18,16 @@ cask "lm-studio"                 # GUI for running local LLMs
 cask "jan"                       # Open-source ChatGPT alternative
 cask "gpt4all"                   # Run LLMs locally with GPU support
 
-# Cloud Development Tools (Mac-specific installers)
-brew "awscli"                    # AWS CLI (prefer Homebrew version on Mac)
-cask "google-cloud-sdk"          # Google Cloud SDK
+# Cloud Development Tools
+# Note: awscli and google-cloud-sdk moved to Nix for consistency and reproducibility
+# (Previously had Mac-specific installers here, but Nix versions work fine)
 
 # Mac-specific tools
 brew "mas"                       # Mac App Store command line interface
 
 # Tools not easily available in Nix or work better via Homebrew on Mac
 brew "aria2"                     # Lightweight download utility
+# Note: wkhtmltopdf discontinued - using weasyprint or puppeteer as alternatives
 
 # Network monitoring tools (Linux-only in Nix, available via Homebrew on Mac)
 brew "nethogs"                   # Monitor per-process network usage
