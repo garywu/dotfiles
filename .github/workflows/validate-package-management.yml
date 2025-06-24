@@ -1,0 +1,321 @@
+name: Validate Package Management Architecture
+
+on:
+  pull_request:
+    branches: [ main, beta, stable ]
+    paths:
+      - 'nix/home.nix'
+      - 'brew/Brewfile'
+      - 'scripts/validation/**'
+      - '.github/workflows/validate-package-management.yml'
+  push:
+    branches: [ main, beta ]
+    paths:
+      - 'nix/home.nix'
+      - 'brew/Brewfile'
+      - 'scripts/validation/**'
+      - '.github/workflows/validate-package-management.yml'
+  schedule:
+    # Run daily at 2 AM UTC to catch drift
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_level:
+        description: 'Test level to run'
+        required: false
+        default: 'standard'
+        type: choice
+        options:
+          - quick
+          - standard
+          - comprehensive
+      debug_enabled:
+        type: boolean
+        description: 'Enable debug mode'
+        required: false
+        default: false
+
+jobs:
+  validate-policy:
+    name: Package Management Policy Validation
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+        with:
+          logger: pretty
+
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      - name: Install Home Manager
+        run: |
+          nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
+          nix-channel --update
+
+          # Install Home Manager
+          nix-shell '<home-manager>' -A install --run 'echo "Home Manager installed"'
+
+      - name: Setup Homebrew (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          # Homebrew should already be installed on macOS runners
+          echo "Homebrew path: $(which brew)"
+          brew --version
+
+      - name: Apply Nix Configuration
+        run: |
+          # Apply home-manager configuration
+          home-manager switch --flake .#ci || home-manager switch -f nix/home.nix
+
+          # Verify basic tools are available
+          python3 --version
+          git --version
+
+      - name: Run Package Validation Scripts
+        run: |
+          echo "=== Running Package Validation ==="
+
+          # Make validation scripts executable
+          chmod +x scripts/validation/*.sh
+
+          # Run package validation
+          ./scripts/validation/validate-packages.sh
+
+          # Run environment validation
+          ./scripts/validation/validate-environment.sh
+
+      - name: Test Python Multi-Version Setup
+        run: |
+          echo "=== Testing Python Multi-Version Setup ==="
+
+          # Test default Python
+          echo "Default Python:"
+          python3 --version
+          which python3
+
+          # Test pip
+          echo "Default pip:"
+          pip3 --version
+          which pip3
+
+          # Test specific Python versions
+          echo "Python 3.10:"
+          python3.10 --version || echo "Python 3.10 not available"
+
+          echo "Python 3.11:"
+          python3.11 --version || echo "Python 3.11 not available"
+
+          echo "Python 3.12:"
+          python3.12 --version || echo "Python 3.12 not available"
+
+          echo "Python 3.13:"
+          python3.13 --version || echo "Python 3.13 not available"
+
+      - name: Verify PATH Precedence
+        run: |
+          echo "=== Verifying PATH Precedence ==="
+
+          echo "PATH order:"
+          echo "$PATH" | tr ':' '\n' | head -10
+
+          # Check that development tools use Nix
+          echo "Development tools source verification:"
+          echo "python3: $(which python3)"
+          echo "git: $(which git)"
+
+          # Verify Nix tools take precedence
+          if [[ "$(which python3)" == *".nix-profile"* ]]; then
+            echo "✅ Python uses Nix"
+          else
+            echo "❌ Python not using Nix: $(which python3)"
+            exit 1
+          fi
+
+          if [[ "$(which git)" == *".nix-profile"* ]]; then
+            echo "✅ Git uses Nix"
+          else
+            echo "❌ Git not using Nix: $(which git)"
+            exit 1
+          fi
+
+      - name: Test Package Installation and Removal
+        run: |
+          echo "=== Testing Package Installation ==="
+
+          # Test installing a simple package via Nix
+          echo "Testing temporary package installation..."
+
+          # Create a temporary home.nix with an additional package
+          cp nix/home.nix nix/home.nix.backup
+
+          # Add cowsay as a test package
+          sed '/# Development tools/a \ \ \ \ cowsay # Temporary test package' nix/home.nix > nix/home.nix.test
+          mv nix/home.nix.test nix/home.nix
+
+          # Apply configuration
+          home-manager switch -f nix/home.nix
+
+          # Test the package works
+          echo "Testing cowsay installation:"
+          cowsay "Package management works!" || echo "Cowsay not found"
+
+          # Restore original configuration
+          mv nix/home.nix.backup nix/home.nix
+          home-manager switch -f nix/home.nix
+
+      - name: Test Homebrew Integration (macOS only)
+        if: runner.os == 'macOS'
+        run: |
+          echo "=== Testing Homebrew Integration ==="
+
+          # Install from Brewfile
+          brew bundle check --file=brew/Brewfile || echo "Some packages not installed"
+
+          # Verify GUI apps directory exists
+          ls /Applications | head -5 || echo "No GUI applications found"
+
+          # Check that Homebrew doesn't interfere with development tools
+          brew list --formula | grep -E "^(python|git|node)$" && {
+            echo "❌ Found development tools in Homebrew that should be in Nix"
+            exit 1
+          } || echo "✅ No development tool conflicts found"
+
+      - name: Performance Benchmarks
+        if: ${{ github.event.inputs.test_level == 'comprehensive' || github.event_name == 'schedule' }}
+        run: |
+          echo "=== Performance Benchmarks ==="
+
+          # Time Python startup
+          echo "Python startup time:"
+          time python3 -c "print('Hello')"
+
+          # Time package manager operations
+          echo "Home Manager switch time:"
+          time home-manager switch -f nix/home.nix
+
+          # Memory usage
+          echo "Memory usage:"
+          ps aux | head -1
+          ps aux | grep -E "(nix|home-manager)" | head -5 || echo "No processes found"
+
+      - name: Security Validation
+        run: |
+          echo "=== Security Validation ==="
+
+          # Check for secrets in Nix configuration
+          echo "Checking for secrets in Nix files:"
+          if grep -r -E "(password|token|key|secret)" nix/ | grep -v "# " || true; then
+            echo "⚠️  Potential secrets found in Nix configuration"
+          else
+            echo "✅ No obvious secrets found in Nix configuration"
+          fi
+
+          # Check file permissions
+          echo "Checking sensitive file permissions:"
+          find nix/ chezmoi/ -type f -exec ls -la {} \; | head -10
+
+      - name: Generate Validation Report
+        if: always()
+        run: |
+          echo "=== Validation Report ==="
+
+          # System information
+          echo "## System Information" > validation-report.md
+          echo "- OS: ${{ runner.os }}" >> validation-report.md
+          echo "- Date: $(date)" >> validation-report.md
+          echo "- Runner: ${{ github.run_id }}" >> validation-report.md
+          echo "" >> validation-report.md
+
+          # Package counts
+          echo "## Package Statistics" >> validation-report.md
+          echo "- Nix packages: $(nix-env -q | wc -l || echo 'N/A')" >> validation-report.md
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "- Homebrew formulas: $(brew list --formula | wc -l || echo 'N/A')" >> validation-report.md
+            echo "- Homebrew casks: $(brew list --cask | wc -l || echo 'N/A')" >> validation-report.md
+          fi
+          echo "" >> validation-report.md
+
+          # Python versions
+          echo "## Python Versions" >> validation-report.md
+          echo "- Default: $(python3 --version 2>&1)" >> validation-report.md
+          echo "- Python 3.10: $(python3.10 --version 2>&1 || echo 'Not available')" >> validation-report.md
+          echo "- Python 3.11: $(python3.11 --version 2>&1 || echo 'Not available')" >> validation-report.md
+          echo "- Python 3.12: $(python3.12 --version 2>&1 || echo 'Not available')" >> validation-report.md
+          echo "- Python 3.13: $(python3.13 --version 2>&1 || echo 'Not available')" >> validation-report.md
+
+          cat validation-report.md
+
+      - name: Upload Validation Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report-${{ runner.os }}-${{ github.run_id }}
+          path: validation-report.md
+          retention-days: 30
+
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Read validation report
+            let report = '';
+            try {
+              report = fs.readFileSync('validation-report.md', 'utf8');
+            } catch (error) {
+              report = 'Validation report not generated';
+            }
+
+            // Create comment body
+            const body = `## Package Management Validation Results (${{ runner.os }})
+
+            ${report}
+
+            <details>
+            <summary>🔍 View detailed logs</summary>
+
+            [View full workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            </details>
+            `;
+
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existingComment = comments.data.find(comment =>
+              comment.body.includes('Package Management Validation Results') &&
+              comment.body.includes('${{ runner.os }}')
+            );
+
+            if (existingComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

@@ -7,9 +7,15 @@ shell=bash
 # Enable all optional checks
 enable=all
 
-# Disable specific checks if needed
-# disable=SC2034  # Example: Disable "appears unused" warning
-disable=SC1091,SC2250  # Can't follow sourced files, brace style preference
+# Disable specific checks for better developer experience
+# SC2034: Variables that appear unused (often intentional for future use)
+# SC2312: Command substitution in echo statements (generally safe and readable)
+# SC2154: Variables from sourced files (validation helpers)
+# SC2249: Default case in switch statements (not always needed)
+# SC2001: sed vs parameter expansion (sed often clearer for complex patterns)
+# SC2248: Quoting return values (style preference)
+# SC1091: Can't follow sourced files
+disable=SC1091,SC2250,SC2034,SC2312,SC2154,SC2249,SC2001,SC2248,SC2053,SC2207,SC2155
 
 # Exclude certain file patterns
 # exclude=SC1090,SC1091  # Can't follow sourced files

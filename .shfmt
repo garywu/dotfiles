@@ -1,0 +1,7 @@
+# shfmt configuration
+# Use 2-space indentation
+-i 2
+# Indent case statement cases
+-ci
+# Simplify code where possible
+-s

@@ -1,242 +1,182 @@
 #!/bin/bash
-# validate-all.sh - Master validation script that runs all validation checks
+# validate-all.sh - Comprehensive validation of dotfiles architecture
 
 set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Source helpers
-# shellcheck source=/dev/null
-source "$SCRIPT_DIR/helpers/validation-helpers.sh"
+# Configuration
+AUTO_FIX=false
+VERBOSE=false
+QUICK_MODE=false
 
-# Validation scripts to run (in order)
-VALIDATION_SCRIPTS=(
-  "validation/validate-packages.sh"
-  "validation/validate-environment.sh"
-  # "validation/validate-tools.sh"      # TODO: Uncomment when created
-  # "validation/validate-security.sh"    # TODO: Uncomment when created
-)
+# Test counters
+TOTAL_VALIDATIONS=0
+PASSED_VALIDATIONS=0
+FAILED_VALIDATIONS=0
 
-# Track overall results
-TOTAL_ERRORS=0
-TOTAL_WARNINGS=0
-TOTAL_FIXED=0
-FAILED_SCRIPTS=()
-PASSED_SCRIPTS=()
+# Function to print colored output
+print_header() {
+  echo ""
+  echo -e "${BOLD}${BLUE}================================================================${NC}"
+  echo -e "${BOLD}${BLUE}  $1${NC}"
+  echo -e "${BOLD}${BLUE}================================================================${NC}"
+  echo ""
+}
+
+print_status() {
+  local status=$1
+  local message=$2
+  case $status in
+    "INFO") echo -e "${BLUE}[INFO]${NC} $message" ;;
+    "PASS")
+      echo -e "${GREEN}[✓]${NC} $message"
+      ((PASSED_VALIDATIONS++))
+      ;;
+    "FAIL")
+      echo -e "${RED}[✗]${NC} $message"
+      ((FAILED_VALIDATIONS++))
+      ;;
+    "WARN") echo -e "${YELLOW}[WARN]${NC} $message" ;;
+    "SKIP") echo -e "${YELLOW}[SKIP]${NC} $message" ;;
+    *) echo -e "${RED}[ERROR]${NC} Unknown status: $status - $message" ;;
+  esac
+}
 
 # Function to run a validation script
 run_validation() {
-  local script="$1"
-  local script_name
-  script_name=$(basename "$script")
+  local validation_name=$1
+  local validation_script=$2
+  local optional=${3:-false}
 
-  print_section "Running $script_name"
+  ((TOTAL_VALIDATIONS++))
 
-  local script_path="$SCRIPT_DIR/$script"
-  if [[  ! -f "$script_path"  ]]; then
-    log_error "Validation script not found: $script_path"
-    FAILED_SCRIPTS+=("$script_name (not found)")
-    ((TOTAL_ERRORS++))
-    return 1
+  print_status "INFO" "Running $validation_name..."
+
+  if [[ ! -f "$validation_script" ]]; then
+    if [[ $optional == "true" ]]; then
+      print_status "SKIP" "$validation_name (script not found: $validation_script)"
+      return 0
+    else
+      print_status "FAIL" "$validation_name (script not found: $validation_script)"
+      return 1
+    fi
   fi
 
-  if [[  ! -x "$script_path"  ]]; then
-    log_warn "Making script executable: $script_path"
-    chmod +x "$script_path"
+  if ! [[ -x "$validation_script" ]]; then
+    chmod +x "$validation_script"
   fi
 
-  # Run the script and capture results
-  local exit_code=0
   local output
-  local temp_file
-  temp_file=$(mktemp)
+  local exit_code
 
-  # Pass through any arguments (like --fix, --debug)
-  if output=$("$script_path" "$@" 2>&1 | tee "$temp_file"); then
-    exit_code=0
-    PASSED_SCRIPTS+=("$script_name")
-    log_success "$script_name completed successfully"
-  else
+  if $VERBOSE; then
+    "$validation_script" 2>&1
     exit_code=$?
-    FAILED_SCRIPTS+=("$script_name")
-    log_error "$script_name failed with exit code $exit_code"
+  else
+    output=$("$validation_script" 2>&1)
+    exit_code=$?
   fi
 
-  # Extract counts from output (if available)
-  if grep -q "Errors:" "$temp_file"; then
-    local errors
-    errors=$(grep "Errors:" "$temp_file" | grep -oE '[0-9]+' | head -1)
-    ((TOTAL_ERRORS += errors))
-  fi
-
-  if grep -q "Warnings:" "$temp_file"; then
-    local warnings
-    warnings=$(grep "Warnings:" "$temp_file" | grep -oE '[0-9]+' | head -1)
-    ((TOTAL_WARNINGS += warnings))
-  fi
-
-  if grep -q "Fixed:" "$temp_file"; then
-    local fixed
-    fixed=$(grep "Fixed:" "$temp_file" | grep -oE '[0-9]+' | head -1)
-    ((TOTAL_FIXED += fixed))
-  fi
-
-  rm -f "$temp_file"
-  return $exit_code
-}
-
-# Function to generate summary report
-generate_report() {
-  local timestamp
-  timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-
-  print_section "VALIDATION SUMMARY REPORT"
-
-  echo "Timestamp: $timestamp"
-  echo "Host: $(hostname)"
-  echo "User: $USER"
-  echo
-
-  echo "Scripts Run: ${#VALIDATION_SCRIPTS[@]}"
-  echo "Passed: ${#PASSED_SCRIPTS[@]}"
-  echo "Failed: ${#FAILED_SCRIPTS[@]}"
-  echo
-
-  if [[ ${#PASSED_SCRIPTS[@]} -gt 0 ]]; then
-    echo "✅ Passed Scripts:"
-    for script in "${PASSED_SCRIPTS[@]}"; do
-      echo "   - $script"
-    done
-    echo
-  fi
-
-  if [[ ${#FAILED_SCRIPTS[@]} -gt 0 ]]; then
-    echo "❌ Failed Scripts:"
-    for script in "${FAILED_SCRIPTS[@]}"; do
-      echo "   - $script"
-    done
-    echo
-  fi
-
-  echo "Total Issues Found:"
-  echo "   Errors:   $TOTAL_ERRORS"
-  echo "   Warnings: $TOTAL_WARNINGS"
-  if [[  $TOTAL_FIXED -gt 0  ]]; then
-    echo "   Fixed:    $TOTAL_FIXED"
-  fi
-  echo
-
-  # Overall status
-  if [[  $TOTAL_ERRORS -eq 0  ]] && [[ ${#FAILED_SCRIPTS[@]} -eq 0 ]]; then
-    echo "✅ Overall Status: PASSED"
+  if [[ $exit_code -eq 0 ]]; then
+    print_status "PASS" "$validation_name"
     return 0
   else
-    echo "❌ Overall Status: FAILED"
+    print_status "FAIL" "$validation_name"
+    if ! $VERBOSE && [[ -n ${output:-} ]]; then
+      echo "Error output:"
+      echo "$output" | sed 's/^/  /'
+    fi
     return 1
   fi
 }
 
-# Function to save report to file
-save_report() {
-  local report_dir="$DOTFILES_ROOT/logs/validation"
-  mkdir -p "$report_dir"
-
-  local report_file="$report_dir/validation-$(date +%Y%m%d-%H%M%S).log"
-
-  {
-    generate_report
-    echo
-    echo "Full validation output saved to: $report_file"
-  } | tee "$report_file"
-
-  # Keep only last 30 reports
-  find "$report_dir" -name "validation-*.log" -type f | sort -r | tail -n +31 | xargs -r rm
-
-  log_info "Report saved to: $report_file"
-}
-
-# Main execution
+# Main execution function
 main() {
-  local start_time
-  start_time=$(date +%s)
+  echo -e "${BOLD}Dotfiles Package Management Validation${NC}"
+  echo "Date: $(date)"
+  echo "Mode: $(if $QUICK_MODE; then echo "Quick"; else echo "Comprehensive"; fi)"
+  echo ""
 
-  print_section "DOTFILES VALIDATION SYSTEM"
+  # Run package validations
+  print_header "PACKAGE MANAGEMENT VALIDATION"
 
-  echo "Starting comprehensive validation..."
-  echo "Options: $*"
-  echo
+  local validation_dir="$SCRIPT_DIR/validation"
 
-  # Run all validation scripts
-  for script in "${VALIDATION_SCRIPTS[@]}"; do
-    run_validation "$script" "$@" || true # Continue even if one fails
-  done
+  # Run package validation
+  run_validation "Package Policy" "$validation_dir/validate-packages.sh"
 
-  # Generate and save report
-  echo
-  save_report
-
-  # Calculate elapsed time
-  local end_time
-  end_time=$(date +%s)
-  local elapsed=$((end_time - start_time))
-
-  echo
-  echo "Validation completed in ${elapsed}s"
-
-  # Exit with appropriate code
-  if [[  $TOTAL_ERRORS -eq 0  ]] && [[ ${#FAILED_SCRIPTS[@]} -eq 0 ]]; then
-    exit 0
+  # Run Python validation
+  if ! $QUICK_MODE; then
+    run_validation "Python Multi-Version" "$validation_dir/validate-python.sh"
   else
-    exit 1
+    print_status "SKIP" "Python Multi-Version validation (quick mode)"
+  fi
+
+  # Generate final report
+  print_header "VALIDATION SUMMARY"
+
+  echo "Validation Results:"
+  echo "- Total validations: $TOTAL_VALIDATIONS"
+  echo "- Passed: $PASSED_VALIDATIONS"
+  echo "- Failed: $FAILED_VALIDATIONS"
+
+  if [[ $TOTAL_VALIDATIONS -gt 0 ]]; then
+    echo "- Success rate: $(((PASSED_VALIDATIONS * 100) / TOTAL_VALIDATIONS))%"
+  fi
+  echo ""
+
+  if [[ $FAILED_VALIDATIONS -eq 0 ]]; then
+    print_status "PASS" "All validations passed! ✨"
+    return 0
+  else
+    print_status "FAIL" "Some validations failed"
+    if $AUTO_FIX; then
+      echo ""
+      echo "Attempting auto-fix..."
+      if [[ -x "$validation_dir/validate-packages.sh" ]]; then
+        "$validation_dir/validate-packages.sh" --fix || true
+      fi
+    fi
+    return 1
   fi
 }
 
-# Show help
-show_help() {
-  echo "Usage: $0 [OPTIONS]"
-  echo
-  echo "Master validation script for dotfiles environment"
-  echo
-  echo "Options:"
-  echo "  --fix       Attempt to fix issues automatically"
-  echo "  --json      Output results in JSON format"
-  echo "  --debug     Enable debug output"
-  echo "  --quiet     Suppress verbose output"
-  echo "  -h, --help  Show this help message"
-  echo
-  echo "Validation Scripts:"
-  for script in "${VALIDATION_SCRIPTS[@]}"; do
-    echo "  - $script"
-  done
-  echo
-  echo "Reports are saved to: logs/validation/"
-}
-
-# Parse arguments
-ARGS=()
-while [[  $# -gt 0  ]]; do
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
   case $1 in
-  -h | --help)
-    show_help
-    exit 0
-    ;;
-  --fix | --json | --debug | --quiet)
-    ARGS+=("$1")
-    shift
-    ;;
-  *)
-    echo "Unknown option: $1"
-    echo "Use -h or --help for usage information"
-    exit 1
-    ;;
+    --help | -h)
+      echo "Usage: $0 [--help] [--fix] [--verbose] [--quick]"
+      exit 0
+      ;;
+    --fix)
+      AUTO_FIX=true
+      shift
+      ;;
+    --verbose | -v)
+      VERBOSE=true
+      shift
+      ;;
+    --quick | -q)
+      QUICK_MODE=true
+      shift
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
   esac
 done
 
-# Run main validation
-if [[ ${#ARGS[@]} -gt 0 ]]; then
-  main "${ARGS[@]}"
-else
-  main
-fi
+# Execute main function
+main "$@"

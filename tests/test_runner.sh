@@ -52,34 +52,34 @@ QUIET=false
 CI_MODE=false
 TEST_SUITE="all"
 
-while [[  $# -gt 0  ]]; do
+while [[ $# -gt 0 ]]; do
   case $1 in
-  -h | --help)
-    usage
-    exit 0
-    ;;
-  -v | --verbose)
-    VERBOSE=true
-    shift
-    ;;
-  -q | --quiet)
-    QUIET=true
-    shift
-    ;;
-  --ci)
-    CI_MODE=true
-    export CI=true
-    shift
-    ;;
-  all | bootstrap | cleanup | integration | unit)
-    TEST_SUITE=$1
-    shift
-    ;;
-  *)
-    echo "Unknown option: $1"
-    usage
-    exit 1
-    ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -v | --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -q | --quiet)
+      QUIET=true
+      shift
+      ;;
+    --ci)
+      CI_MODE=true
+      export CI=true
+      shift
+      ;;
+    all | bootstrap | cleanup | integration | unit)
+      TEST_SUITE=$1
+      shift
+      ;;
+    *)
+      echo "Unknown option: $1"
+      usage
+      exit 1
+      ;;
   esac
 done
 
@@ -94,7 +94,7 @@ run_test_suite() {
   local suite_name=$1
   local suite_dir="$SCRIPT_DIR/$suite_name"
 
-  if [[  ! -d "$suite_dir"  ]]; then
+  if [[ ! -d "$suite_dir" ]]; then
     print_warning "Test suite '$suite_name' not found"
     return 1
   fi
@@ -105,7 +105,7 @@ run_test_suite() {
   local test_files
   test_files=$(find "$suite_dir" -name "test_*.sh" -type f | sort)
 
-  if [[  -z "$test_files"  ]]; then
+  if [[ -z "$test_files" ]]; then
     print_warning "No tests found in $suite_name suite"
     return 0
   fi
@@ -134,14 +134,14 @@ echo ""
 
 # Run the appropriate test suite(s)
 case $TEST_SUITE in
-all)
-  for suite in bootstrap cleanup integration unit; do
-    run_test_suite "$suite"
-  done
-  ;;
-*)
-  run_test_suite "$TEST_SUITE"
-  ;;
+  all)
+    for suite in bootstrap cleanup integration unit; do
+      run_test_suite "$suite"
+    done
+    ;;
+  *)
+    run_test_suite "$TEST_SUITE"
+    ;;
 esac
 
 # Print summary
@@ -151,7 +151,7 @@ echo -e "Tests failed:  ${RED}${TESTS_FAILED}${NC}"
 echo -e "Tests skipped: ${YELLOW}${TESTS_SKIPPED}${NC}"
 
 # Exit with appropriate code
-if [[  $TESTS_FAILED -gt 0  ]]; then
+if [[ $TESTS_FAILED -gt 0 ]]; then
   exit 1
 else
   exit 0

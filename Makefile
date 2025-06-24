@@ -80,7 +80,9 @@ format: format-shell format-nix format-toml format-fish
 # Fix shell issues comprehensively (format + common fixes)
 fix-shell:
 	@echo "🔧 Fixing shell script issues..."
-	@./scripts/fix-shell-issues.sh || true
+	@find . -type f -name "*.sh" -not -path "./node_modules/*" -not -path "./.git/*" | xargs -I {} shellharden --transform {} 2>/dev/null || true
+	@find . -type f -name "*.sh" -not -path "./node_modules/*" -not -path "./.git/*" | xargs shfmt -w -i 2 -ci -s 2>/dev/null || true
+	@echo "✅ Shell script fixes applied!"
 
 # Shell linting and formatting
 lint-shell:

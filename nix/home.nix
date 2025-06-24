@@ -15,6 +15,38 @@
     "$HOME/go/bin"
   ];
 
+  # Set up environment variables for development
+  home.sessionVariables = {
+    PKG_CONFIG_PATH = "$HOME/.nix-profile/lib/pkgconfig";
+  };
+
+  # Create wrapper scripts for additional Python versions
+  home.file = {
+    # Python 3.10 wrapper
+    ".local/bin/python3.10".source = pkgs.writeShellScript "python3.10" ''
+      exec ${pkgs.python310}/bin/python3.10 "$@"
+    '';
+    ".local/bin/pip3.10".source = pkgs.writeShellScript "pip3.10" ''
+      exec ${pkgs.python310}/bin/python3.10 -m pip "$@"
+    '';
+
+    # Python 3.12 wrapper
+    ".local/bin/python3.12".source = pkgs.writeShellScript "python3.12" ''
+      exec ${pkgs.python312}/bin/python3.12 "$@"
+    '';
+    ".local/bin/pip3.12".source = pkgs.writeShellScript "pip3.12" ''
+      exec ${pkgs.python312}/bin/python3.12 -m pip "$@"
+    '';
+
+    # Python 3.13 wrapper
+    ".local/bin/python3.13".source = pkgs.writeShellScript "python3.13" ''
+      exec ${pkgs.python313}/bin/python3.13 "$@"
+    '';
+    ".local/bin/pip3.13".source = pkgs.writeShellScript "pip3.13" ''
+      exec ${pkgs.python313}/bin/python3.13 -m pip "$@"
+    '';
+  };
+
   # This value determines the Home Manager release that your configuration is compatible with.
   home.stateVersion = "24.05";
 
@@ -25,13 +57,30 @@
   home.packages = with pkgs; ([
     # Development tools
     git
-    python311
+
+    # Python versions (default version plus alternatives)
+    python311 # Python 3.11 (default - available as 'python3', 'python3.11')
+    python311Packages.pip # pip for Python 3.11
+
+    # Additional Python versions with manual symlinking to avoid collisions
+    # Use: python3.10, python3.12, python3.13 for specific versions
+
+    # Other development tools
     nodejs_20
     bun
     go
     rustc
     cargo
     protobuf # Protocol Buffer compiler (protoc) for gRPC
+
+    # Graphics and UI development libraries
+    pkg-config # Package metadata toolkit for build systems
+    cairo # 2D graphics library with multiple output device support
+    cairo.dev # Cairo development headers and pkg-config files
+    pango # Text layout and rendering library
+    pango.dev # Pango development headers and pkg-config files
+    glib # GLib core library (required by Pango)
+    glib.dev # GLib development headers
 
     # Version managers
     # nvm           # Not available in nixpkgs, use installer instead
@@ -164,6 +213,7 @@
     # Linting and Formatting Tools
     shellcheck # Shell script analysis tool
     shfmt # Shell script formatter
+    shellharden # Shell script hardening tool (security-focused auto-fixes)
     nixpkgs-fmt # Nix code formatter
     # statix          # Nix static analysis tool (temporarily disabled due to gpgme dependency issue)
     yamllint # YAML linter
@@ -191,6 +241,13 @@
     hyperfine # Command-line benchmarking tool
     # gocyclo # Go cyclomatic complexity analyzer
     # lizard # Code complexity analyzer (multiple languages)
+
+    # Document processing and conversion tools
+    tesseract # OCR (Optical Character Recognition) engine
+    # Note: For HTML to PDF conversion, consider browser-based solutions like:
+    # - Puppeteer (npm install -g puppeteer)
+    # - Playwright (npm install -g playwright)
+    # - Or cloud services like DocRaptor, PDFShift
 
     # LaTeX/TeX distribution
     texlive.combined.scheme-basic
@@ -250,8 +307,6 @@
         if test -e /nix/var/nix/profiles/default/etc/profile.d/nix.fish
           source /nix/var/nix/profiles/default/etc/profile.d/nix.fish
         end
-        # Ensure all user-level bins are in PATH
-        set -gx PATH $HOME/.nix-profile/bin $HOME/.npm-global/bin $HOME/.local/bin $PATH
         # Add Homebrew to PATH if available (Apple Silicon first, then Intel)
         if test -e /opt/homebrew/bin/brew
           eval (/opt/homebrew/bin/brew shellenv)
@@ -260,6 +315,8 @@
         else if command -v brew >/dev/null 2>&1
           eval (brew shellenv)
         end
+        # Ensure Nix paths take precedence over Homebrew for development tools
+        set -gx PATH $HOME/.nix-profile/bin $HOME/.npm-global/bin $HOME/.local/bin $PATH
       '';
     };
 
