@@ -58,7 +58,7 @@ setup_age_key() {
   local age_key_dir="$HOME/.config/sops/age"
   local age_key_file="$age_key_dir/keys.txt"
 
-  if [[[ -f "$age_key_file" ]]]; then
+  if [[  -f "$age_key_file"  ]]; then
     log_success "Age key already exists at $age_key_file"
     return 0
   fi
@@ -85,7 +85,7 @@ create_sops_config() {
   local sops_config="$project_dir/.sops.yaml"
   local age_key_file="$HOME/.config/sops/age/keys.txt"
 
-  if [[[ -f "$sops_config" ]]]; then
+  if [[  -f "$sops_config"  ]]; then
     log_warning "SOPS configuration already exists at $sops_config"
     read -p "Overwrite? [y/N]: " -n 1 -r
     echo
@@ -94,7 +94,7 @@ create_sops_config() {
     fi
   fi
 
-  if [[[ ! -f "$age_key_file" ]]]; then
+  if [[  ! -f "$age_key_file"  ]]; then
     log_error "Age key not found. Run setup_age_key first."
     return 1
   fi
@@ -129,7 +129,7 @@ create_secrets_structure() {
   mkdir -p "$project_dir/secrets"
 
   # Create example .env.example file
-  if [[[ ! -f "$project_dir/.env.example" ]]]; then
+  if [[  ! -f "$project_dir/.env.example"  ]]; then
     cat >"$project_dir/.env.example" <<EOF
 # Environment Variables Template
 # Copy to .env.local and fill in actual values
@@ -155,7 +155,7 @@ EOF
   fi
 
   # Create example encrypted secrets file
-  if [[[ ! -f "$project_dir/secrets/dev.yaml" ]]]; then
+  if [[  ! -f "$project_dir/secrets/dev.yaml"  ]]; then
     # Create temporary unencrypted file
     cat >"/tmp/dev_secrets.yaml" <<EOF
 # Development Secrets
@@ -183,17 +183,17 @@ EOF
   fi
 
   # Create .envrc for direnv integration
-  if [[[ ! -f "$project_dir/.envrc" ]]]; then
+  if [[  ! -f "$project_dir/.envrc"  ]]; then
     cat >"$project_dir/.envrc" <<'EOF'
 #!/bin/bash
 
 # Load environment variables from .env.local if it exists
-if [[[ -f .env.local ]]]; then
+if [[  -f .env.local  ]]; then
     dotenv .env.local
 fi
 
 # Load secrets from SOPS (development environment)
-if [[[ -f secrets/dev.yaml ]]]; then
+if [[  -f secrets/dev.yaml  ]]; then
     # Check if we can decrypt (user has the key)
     if sops -d secrets/dev.yaml > /dev/null 2>&1; then
         # Load each secret as environment variable
@@ -218,7 +218,7 @@ EOF
 
   # Update .gitignore
   local gitignore="$project_dir/.gitignore"
-  if [[[ -f "$gitignore" ]]]; then
+  if [[  -f "$gitignore"  ]]; then
     # Check if secrets patterns are already there
     if ! grep -q "\.env\.local" "$gitignore"; then
       cat >>"$gitignore" <<EOF
@@ -264,7 +264,7 @@ create_helper_scripts() {
 ENVIRONMENT=${1:-dev}
 SECRETS_FILE="secrets/${ENVIRONMENT}.yaml"
 
-if [[[ ! -f "$SECRETS_FILE" ]]]; then
+if [[  ! -f "$SECRETS_FILE"  ]]; then
     echo "❌ Secrets file not found: $SECRETS_FILE"
     return 1
 fi
@@ -296,7 +296,7 @@ ENVIRONMENT=${1:-dev}
 SECRET_TYPE=${2:-api}
 SECRETS_FILE="secrets/${ENVIRONMENT}.yaml"
 
-if [[[ ! -f "$SECRETS_FILE" ]]]; then
+if [[  ! -f "$SECRETS_FILE"  ]]; then
     echo "❌ Secrets file not found: $SECRETS_FILE"
     exit 1
 fi

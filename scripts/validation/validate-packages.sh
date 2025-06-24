@@ -92,12 +92,12 @@ check_package_location() {
   if command_exists nix-env && nix-env -q 2>/dev/null | grep -q "^${package}"; then
     local already_found=false
     for item in "${found_in[@]}"; do
-      if [[[ "$item" =~ ^nix: ]]]; then
+      if [[  "$item" =~ ^nix:  ]]; then
         already_found=true
         break
       fi
     done
-    if [[[ "$already_found" == false ]]]; then
+    if [[  "$already_found" == false  ]]; then
       found_in+=("nix:package-list")
     fi
   fi
@@ -108,31 +108,31 @@ check_package_location() {
     if brew list 2>/dev/null | grep -q "^${package}$"; then
       local already_found=false
       for item in "${found_in[@]}"; do
-        if [[[ "$item" =~ ^homebrew: ]]]; then
+        if [[  "$item" =~ ^homebrew:  ]]; then
           already_found=true
           break
         fi
       done
-      if [[[ "$already_found" == false ]]]; then
+      if [[  "$already_found" == false  ]]; then
         found_in+=("homebrew:package-list")
       fi
     # Special case for aws/awscli
-    elif [[[ "$package" == "aws" ]]] && brew list 2>/dev/null | grep -q "^awscli$"; then
+    elif [[  "$package" == "aws"  ]] && brew list 2>/dev/null | grep -q "^awscli$"; then
       local already_found=false
       for item in "${found_in[@]}"; do
-        if [[[ "$item" =~ ^homebrew: ]]]; then
+        if [[  "$item" =~ ^homebrew:  ]]; then
           already_found=true
           break
         fi
       done
-      if [[[ "$already_found" == false ]]]; then
+      if [[  "$already_found" == false  ]]; then
         found_in+=("homebrew:awscli")
       fi
     fi
   fi
 
   # Check for Python specific issues
-  if [[[ "$package" == "python" || "$package" == "python3" ]]]; then
+  if [[  "$package" == "python" || "$package" == "python3"  ]]; then
     check_python_specific >/dev/null 2>&1
   fi
 
@@ -190,7 +190,7 @@ validate_package() {
 
   # Read locations into array
   while IFS= read -r line; do
-    [[[ -n "$line" ]]] && locations+=("$line")
+    [[  -n "$line"  ]] && locations+=("$line")
   done < <(check_package_location "$package")
 
   if [[ ${#locations[@]} -eq 0 ]]; then
@@ -200,14 +200,14 @@ validate_package() {
     local location="${locations[0]}"
     local manager="${location%%:*}"
 
-    if [[[ "$preferred_location" == "any" ]]]; then
+    if [[  "$preferred_location" == "any"  ]]; then
       log_success "$package: Installed via $manager"
-    elif [[[ "$manager" == "$preferred_location" ]]]; then
+    elif [[  "$manager" == "$preferred_location"  ]]; then
       log_success "$package: Correctly installed via $manager"
     else
       log_warn "$package: Installed via $manager (expected $preferred_location)"
 
-      if is_fix_mode && [[[ "$preferred_location" == "nix" ]]] && [[[ "$manager" == "homebrew" ]]]; then
+      if is_fix_mode && [[  "$preferred_location" == "nix"  ]] && [[  "$manager" == "homebrew"  ]]; then
         log_info "Attempting to fix: Moving $package from Homebrew to Nix..."
         fix_package_location "$package" "homebrew" "nix"
       fi
@@ -231,7 +231,7 @@ fix_package_location() {
   local from_manager="$2"
   local to_manager="$3"
 
-  if [[[ "$from_manager" == "homebrew" ]]] && [[[ "$to_manager" == "nix" ]]]; then
+  if [[  "$from_manager" == "homebrew"  ]] && [[  "$to_manager" == "nix"  ]]; then
     # Check if package exists in Nix packages
     if ! safe_run "brew uninstall $package" "Failed to uninstall $package from Homebrew"; then
       return 1
@@ -245,14 +245,14 @@ fix_duplicate_package() {
   local package="$1"
   local preferred="$2"
 
-  if [[[ "$preferred" == "nix" ]]]; then
+  if [[  "$preferred" == "nix"  ]]; then
     # Remove from Homebrew if in Nix
     if command_exists brew && brew list 2>/dev/null | grep -q "^${package}$"; then
       if safe_run "brew uninstall $package" "Failed to uninstall $package from Homebrew"; then
         log_fix "Removed $package from Homebrew (keeping Nix version)"
       fi
     fi
-  elif [[[ "$preferred" == "homebrew" ]]]; then
+  elif [[  "$preferred" == "homebrew"  ]]; then
     # Remove from Nix if in Homebrew
     if nix-env -q 2>/dev/null | grep -q "^${package}"; then
       if safe_run "nix-env -e $package" "Failed to uninstall $package from Nix"; then
@@ -325,13 +325,13 @@ main() {
 
   for i in "${!PATH_ARRAY[@]}"; do
     local path="${PATH_ARRAY[$i]}"
-    if [[[ "$path" =~ (\.nix-profile|/nix/store) ]]] && [[[ "$nix_found" == false ]]]; then
+    if [[  "$path" =~ (\.nix-profile|/nix/store)  ]] && [[  "$nix_found" == false  ]]; then
       nix_found=true
       log_info "  $((i + 1)). $path ${GREEN}[Nix]${NC}"
-    elif [[[ "$path" =~ (/opt/homebrew|/usr/local) ]]] && [[[ "$brew_found" == false ]]]; then
+    elif [[  "$path" =~ (/opt/homebrew|/usr/local)  ]] && [[  "$brew_found" == false  ]]; then
       brew_found=true
       log_info "  $((i + 1)). $path ${YELLOW}[Homebrew]${NC}"
-    elif [[[ $i -lt 5 ]]]; then
+    elif [[  $i -lt 5  ]]; then
       log_info "  $((i + 1)). $path"
     fi
   done
@@ -345,7 +345,7 @@ main() {
 }
 
 # Parse arguments
-while [[[ $# -gt 0 ]]]; do
+while [[  $# -gt 0  ]]; do
   case $1 in
   --fix)
     export FIX_MODE=true

@@ -28,13 +28,13 @@ print_warning() {
 }
 
 # Check if running on macOS
-if [[[ "$(uname)" != "Darwin" ]]]; then
+if [[  "$(uname)" != "Darwin"  ]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
 
 # Check if running as root
-if [[[ $EUID -eq 0 ]]]; then
+if [[  $EUID -eq 0  ]]; then
   print_error "This script should not be run as root"
   exit 1
 fi
@@ -75,7 +75,7 @@ restore_default_shell() {
   fi
 
   # Fallback: check if we're using fish and change to zsh
-  if [[[ "$SHELL" == *"fish"* ]]]; then
+  if [[  "$SHELL" == *"fish"*  ]]; then
     print_status "Changing from fish to zsh..."
     chsh -s /bin/zsh
     if ! verify_shell_change "/bin/zsh"; then

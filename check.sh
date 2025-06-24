@@ -146,7 +146,7 @@ cleanup_found_items() {
   echo -e "${RED}Are you absolutely sure you want to delete these items? (yes/no)${NC}"
   read -p "> " confirm
 
-  if [[[ "$confirm" != "yes" ]]]; then
+  if [[  "$confirm" != "yes"  ]]; then
     echo "Cleanup cancelled."
     return 0
   fi
@@ -202,7 +202,7 @@ cleanup_found_items() {
 #########################################
 
 # Check if running on macOS
-if [[[ "$(uname)" != "Darwin" ]]]; then
+if [[  "$(uname)" != "Darwin"  ]]; then
   print_error "This script is designed for macOS only"
   exit 1
 fi
@@ -307,7 +307,7 @@ DEFAULT_SHELL=$(dscl . -read /Users/$USER UserShell | cut -d' ' -f2)
 echo "Current shell: $CURRENT_SHELL"
 echo "Default shell: $DEFAULT_SHELL"
 
-if [[[ "$DEFAULT_SHELL" == *"fish"* ]]]; then
+if [[  "$DEFAULT_SHELL" == *"fish"*  ]]; then
   print_found "Default shell is Fish"
 fi
 

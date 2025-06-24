@@ -20,7 +20,7 @@ mkdir -p "$UV_CONFIG_DIR"
 # Find Nix Python path
 NIX_PYTHON=$(command -v python3 | grep -E "\.nix-profile|/nix/store" | head -1)
 
-if [[[ -z "$NIX_PYTHON" ]]]; then
+if [[  -z "$NIX_PYTHON"  ]]; then
   echo "Warning: Could not find Nix Python installation"
   exit 1
 fi
@@ -42,14 +42,14 @@ print_status "Created uv config at: $UV_CONFIG_DIR/config.toml"
 
 # Add environment variables to shell config
 SHELL_CONFIG=""
-if [[[ -f "$HOME/.bashrc" ]]]; then
+if [[  -f "$HOME/.bashrc"  ]]; then
   SHELL_CONFIG="$HOME/.bashrc"
-elif [[[ -f "$HOME/.zshrc" ]]]; then
+elif [[  -f "$HOME/.zshrc"  ]]; then
   SHELL_CONFIG="$HOME/.zshrc"
 fi
 
 # Add to Fish config separately
-if [[[ -d "$HOME/.config/fish" ]]]; then
+if [[  -d "$HOME/.config/fish"  ]]; then
   FISH_CONFIG="$HOME/.config/fish/conf.d/uv.fish"
   cat >"$FISH_CONFIG" <<EOF
 # Configure uv to use Nix Python
@@ -60,7 +60,7 @@ EOF
 fi
 
 # Add to bash/zsh config
-if [[[ -n "$SHELL_CONFIG" ]]]; then
+if [[  -n "$SHELL_CONFIG"  ]]; then
   # Check if already configured
   if ! grep -q "UV_PYTHON_PREFERENCE" "$SHELL_CONFIG"; then
     cat >>"$SHELL_CONFIG" <<EOF

@@ -11,7 +11,7 @@ source "$TEST_DIR/../test_helpers.sh"
 print_test_header "Full Bootstrap Cycle Integration Test"
 
 # This test should only run if specifically requested or in CI
-if [[[ "${RUN_INTEGRATION_TESTS:-false}" != "true" ]]] && ! is_ci; then
+if [[  "${RUN_INTEGRATION_TESTS:-false}" != "true"  ]] && ! is_ci; then
   skip_test "Integration tests must be explicitly enabled with RUN_INTEGRATION_TESTS=true"
 fi
 

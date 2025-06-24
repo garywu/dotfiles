@@ -198,7 +198,7 @@ measure_runtime_efficiency() {
   local test_dir="${DATASETS_DIR}/large"
   local dir_contents
   dir_contents=$(ls -A "$test_dir" 2>/dev/null || true)
-  if [[[ ! -d "$test_dir" ]]] || [[[ -z "$dir_contents" ]]]; then
+  if [[  ! -d "$test_dir"  ]] || [[  -z "$dir_contents"  ]]; then
     log INFO "Creating large test dataset for benchmarks"
     mkdir -p "$test_dir"
 

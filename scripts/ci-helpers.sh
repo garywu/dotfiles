@@ -4,7 +4,7 @@
 
 # Check if running in CI
 is_ci() {
-  [[[ "${CI:-}" == "true" ]]] || [[[ "${GITHUB_ACTIONS:-}" == "true" ]]] || [[[ "${GITLAB_CI:-}" == "true" ]]]
+  [[  "${CI:-}" == "true"  ]] || [[  "${GITHUB_ACTIONS:-}" == "true"  ]] || [[  "${GITLAB_CI:-}" == "true"  ]]
 }
 
 # CI-friendly confirmation function
@@ -59,7 +59,7 @@ ci_choice() {
     # Interactive mode
     PS3="${prompt} "
     select opt in "${options[@]}"; do
-      if [[[ -n "${opt}" ]]]; then
+      if [[  -n "${opt}"  ]]; then
         echo "${opt}"
         return 0
       fi

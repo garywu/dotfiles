@@ -62,7 +62,7 @@ for page in "${PAGES[@]}"; do
   # Use true to prevent exit on curl failure due to set -e
   status_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url" 2>/dev/null || echo "000")
 
-  if [[[ "$status_code" == "200" ]]]; then
+  if [[  "$status_code" == "200"  ]]; then
     printf "\r%b✓%b %-50s\n" "$GREEN" "$NC" "$page"
     ((PASSED++)) || true
   else
@@ -79,7 +79,7 @@ echo "Total pages tested: $((PASSED + FAILED))"
 echo "Passed: $PASSED"
 echo "Failed: $FAILED"
 
-if [[[ $FAILED -gt 0 ]]]; then
+if [[  $FAILED -gt 0  ]]; then
   printf "%bSome pages are not accessible!%b\n" "$RED" "$NC"
   exit 1
 else

@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Check for old Bash and handle compatibility
-if [[[ -n "$BASH_VERSION" ]]]; then
+if [[  -n "$BASH_VERSION"  ]]; then
     BASH_MAJOR_VERSION=$(echo $BASH_VERSION | cut -d. -f1)
-    if [[[ "$BASH_MAJOR_VERSION" -lt 4 ]]]; then
+    if [[  "$BASH_MAJOR_VERSION" -lt 4  ]]; then
         echo "⚠️  Detected old Bash version: $BASH_VERSION"
         echo "   macOS ships with Bash 3.2 (2007) due to licensing."
         echo "   Modern features may not work properly."
@@ -81,7 +81,7 @@ if ! command_exists home-manager; then
 fi
 
 # Set NIX_PATH if not set (needed for home-manager to work properly)
-if [[[ -z "$NIX_PATH" ]]]; then
+if [[  -z "$NIX_PATH"  ]]; then
     export NIX_PATH=$HOME/.nix-defexpr/channels${NIX_PATH:+:}$NIX_PATH
 fi
 
@@ -92,7 +92,7 @@ if ! command_exists chezmoi; then
 fi
 
 # Get the repository URL
-if [[[ -d .git ]]]; then
+if [[  -d .git  ]]; then
     REPO_URL=$(git remote get-url origin 2>/dev/null) || print_error "Not a git repository or no remote 'origin' found"
 else
     print_error "Not a git repository"
@@ -109,9 +109,9 @@ print_status "Activating Home-Manager configuration..."
 (cd "$HOME/.dotfiles/nix" && home-manager switch) || print_warning "home-manager switch failed"
 
 # On macOS, install Homebrew if not present and then install GUI apps
-if [[[ "$(uname)" = "Darwin" ]]]; then
+if [[  "$(uname)" = "Darwin"  ]]; then
     # Check if Homebrew is installed and working
-    if [[[ -f "/opt/homebrew/bin/brew" ]]] || [[[ -f "/usr/local/bin/brew" ]]]; then
+    if [[  -f "/opt/homebrew/bin/brew"  ]] || [[  -f "/usr/local/bin/brew"  ]]; then
         print_status "Homebrew is already installed"
         # Source Homebrew environment
         eval "$(/opt/homebrew/bin/brew shellenv)"
