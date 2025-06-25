@@ -558,6 +558,15 @@ else
   print_status "Wrangler is already installed"
 fi
 
+# Install Google Gemini CLI
+print_status "Installing Google Gemini CLI..."
+if ! command -v gemini >/dev/null 2>&1; then
+  npm install -g @google/gemini-cli
+  print_status "Gemini CLI installed successfully"
+else
+  print_status "Gemini CLI is already installed"
+fi
+
 # Install Playwright browsers (for end-to-end testing)
 print_section "Installing Playwright Browsers"
 if command -v playwright >/dev/null 2>&1; then

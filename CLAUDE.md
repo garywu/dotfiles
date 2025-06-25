@@ -272,6 +272,13 @@ rclone mount remote: ~/mnt     # Mount remote as filesystem
 rclone ls remote:              # List files on remote
 rsync -av src/ dest/          # Local/network sync with progress
 
+# AI/ML Tools
+gemini                       # Google Gemini CLI for AI-powered workflows
+# Note: Other AI tools can be installed with pip/pipx:
+# pipx install chatblade      # CLI for ChatGPT
+# pipx install litellm        # Multi-LLM CLI
+# brew install ollama         # Local LLM runner (macOS)
+
 # Network Monitoring & Remote Access
 ssh user@host                # SSH remote access
 scp file user@host:/path     # Secure copy over SSH
