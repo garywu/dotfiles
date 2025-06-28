@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Test Runner for Dotfiles
 # This script runs all tests or specific test suites
 

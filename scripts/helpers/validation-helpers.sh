@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # validation-helpers.sh - Common functions for validation scripts
 
 # Colors for output

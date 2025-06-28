@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # OS-Specific Dotfiles Setup Script
 # Detects the operating system and runs the appropriate setup

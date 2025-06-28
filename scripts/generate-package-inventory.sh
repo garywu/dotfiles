@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC2129  # Multiple redirects to same file is intentional for readability
 
 # generate-package-inventory.sh - Generate package inventory documentation

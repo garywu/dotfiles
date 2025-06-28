@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # validate-packages.sh - Detect and fix dual package installations
 
 set -euo pipefail

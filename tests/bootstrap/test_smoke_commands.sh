@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Smoke Test: Check if all expected commands are available
 # This is a simple test that verifies commands can be executed
 

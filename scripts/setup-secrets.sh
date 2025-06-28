@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Secrets Management Setup Script
 # Sets up SOPS with age encryption for secure secrets management

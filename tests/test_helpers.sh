@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Test Helper Functions
 # Common functions used across all test suites
 

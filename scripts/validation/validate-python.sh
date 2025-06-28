@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # validate-python.sh - Comprehensive Python multi-version validation
 
 set -euo pipefail

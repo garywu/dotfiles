@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Integration Test: Full Bootstrap Cycle
 # This test runs the complete bootstrap process and verifies the result
 

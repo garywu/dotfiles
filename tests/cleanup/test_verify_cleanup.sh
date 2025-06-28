@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Test: Verify Cleanup/Unbootstrap
 # This test verifies that unbootstrap properly removes installations
 

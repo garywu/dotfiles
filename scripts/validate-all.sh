@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # validate-all.sh - Comprehensive validation of dotfiles architecture
 
 set -euo pipefail
@@ -113,14 +113,36 @@ main() {
 
   local validation_dir="$SCRIPT_DIR/validation"
 
-  # Run package validation
-  run_validation "Package Policy" "$validation_dir/validate-packages.sh"
+  # Run all validation scripts
+  run_validation "Package conflicts" "$validation_dir/validate-packages.sh"
+  run_validation "Environment health" "$validation_dir/validate-environment.sh"
 
-  # Run Python validation
   if ! $QUICK_MODE; then
-    run_validation "Python Multi-Version" "$validation_dir/validate-python.sh"
+    run_validation "Python setup" "$validation_dir/validate-python.sh"
+    run_validation "Playwright setup" "$validation_dir/validate-playwright.sh"
+    run_validation "Multi-version tools" "$validation_dir/validate-multiversion.sh"
   else
-    print_status "SKIP" "Python Multi-Version validation (quick mode)"
+    print_status "SKIP" "Extended validations (quick mode)"
+  fi
+
+  # Check for updates (informational only)
+  if [[ ${SKIP_UPDATE_CHECK:-false} != "true" ]] && ! $QUICK_MODE; then
+    print_header "UPDATE CHECK"
+    print_status "INFO" "Checking for available updates..."
+    if [[ -x "$SCRIPT_DIR/check-updates.sh" ]]; then
+      # Run update check and show summary only
+      local update_output
+      update_output=$("$SCRIPT_DIR/check-updates.sh" 2>&1)
+      local total_updates=$(echo "$update_output" | grep "Total updates available:" | awk '{print $4}')
+
+      if [[ -n $total_updates ]] && [[ $total_updates -gt 0 ]]; then
+        print_status "WARN" "$total_updates updates available"
+        echo "Run './scripts/check-updates.sh' for details"
+        echo "Run './scripts/update-all.sh' to update everything"
+      else
+        print_status "PASS" "All packages are up to date"
+      fi
+    fi
   fi
 
   # Generate final report

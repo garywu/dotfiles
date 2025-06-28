@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # validate-environment.sh - Validate shell environment and configurations
 
 set -euo pipefail

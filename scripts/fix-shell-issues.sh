@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # fix-shell-issues.sh - Comprehensive automated shell script fixing
 set -euo pipefail
 

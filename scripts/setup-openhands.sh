@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # OpenHands Setup and Management Script
 # Provides easy installation, updates, and management of OpenHands

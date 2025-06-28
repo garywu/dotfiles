@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # check.sh
 # Pre-bootstrap system state checker and backup utility

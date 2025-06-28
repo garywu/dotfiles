@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Test script to verify bootstrap installation
 
 # Note: set -e disabled to allow test functions to fail gracefully

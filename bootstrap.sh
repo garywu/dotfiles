@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Check for old Bash and handle compatibility
 if [[ -n ${BASH_VERSION} ]]; then
@@ -644,6 +644,19 @@ if [[ ${SETUP_OPENHANDS:-} == "true" ]]; then
   fi
 else
   print_status "Tip: Set SETUP_OPENHANDS=true to install OpenHands AI coding assistant"
+fi
+
+# Set up Ollama (Local LLM server)
+print_status "Setting up Ollama for local LLM inference..."
+OLLAMA_SETUP_SCRIPT="$SCRIPT_DIR/scripts/setup-ollama.sh"
+if [[ -f $OLLAMA_SETUP_SCRIPT ]]; then
+  if "$OLLAMA_SETUP_SCRIPT"; then
+    print_status "Ollama setup completed successfully"
+  else
+    print_warning "Ollama setup encountered issues (non-critical)"
+  fi
+else
+  print_warning "Ollama setup script not found (skipping)"
 fi
 
 print_status "Bootstrap completed!"

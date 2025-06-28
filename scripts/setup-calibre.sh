@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Setup Calibre CLI tools across platforms
 # Since Nix package is broken, use platform-specific methods

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Test: Verify Bootstrap Installations
 # This test verifies that all expected tools are installed after bootstrap
 

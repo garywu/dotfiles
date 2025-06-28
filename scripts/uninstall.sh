@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # uninstall.sh (aka unbootstrap.sh)
 # This script will completely remove all tools, dotfiles, and configs installed by the bootstrap process.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # CI Helper Functions
 # Source this file to get CI-friendly versions of interactive functions
 

@@ -44,3 +44,13 @@ repos:
     rev: 3.0.3
     hooks:
       - id: editorconfig-checker
+
+  # Check for hardcoded bash paths
+  - repo: local
+    hooks:
+      - id: check-bash-shebang
+        name: Check bash shebang
+        entry: ./scripts/check-bash-shebang.sh
+        language: system
+        pass_filenames: false
+        stages: [commit]

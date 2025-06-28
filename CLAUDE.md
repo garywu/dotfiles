@@ -32,6 +32,31 @@
 - **Before committing shell scripts**: Run `make fix-shell` to fix issues automatically
 - **Verify completion** before closing issues
 
+## Shell Script Standards
+
+### Shebang Requirements
+
+**ALWAYS use `#!/usr/bin/env bash`** for bash scripts, never `#!/bin/bash`:
+
+```bash
+# ✅ CORRECT - finds modern bash in PATH
+#!/usr/bin/env bash
+
+# ❌ WRONG - uses ancient macOS bash 3.2 from 2007
+#!/bin/bash
+```
+
+**Why this matters:**
+- macOS ships with bash 3.2.57 (from 2007) at `/bin/bash` for GPL licensing reasons
+- Modern bash 5.2+ is installed via Nix at `~/.nix-profile/bin/bash`
+- Bash 3.2 lacks many modern features like associative arrays (`declare -A`)
+- Using `env bash` ensures scripts use the modern version from PATH
+
+**Enforcement:**
+- Pre-commit hook will reject commits with hardcoded bash paths
+- Run `make fix-shell` before committing (includes automatic shebang fix)
+- Or run `./scripts/fix-shebangs.sh` to fix just shebangs
+
 ## Important Commands
 
 ### Home Manager
@@ -190,6 +215,30 @@ make format-fish     # Format Fish scripts
 ls -la logs/validation/
 ```
 
+### Update Management
+
+```bash
+# Check for updates across all package managers
+./scripts/check-updates.sh
+
+# Update everything at once
+./scripts/update-all.sh
+
+# Update specific package managers
+nix-channel --update && home-manager switch  # Nix/Home Manager
+brew update && brew upgrade                   # Homebrew
+npm update -g                                 # NPM packages
+
+# Update Ollama specifically
+brew upgrade ollama  # If installed via Homebrew
+# OR
+curl -fsSL https://ollama.ai/install.sh | sh  # Official installer
+
+# Clean up old versions
+brew cleanup --prune=all              # Homebrew
+nix-collect-garbage --delete-older-than 30d  # Nix
+```
+
 #### Package Management Notes
 
 - **Primary strategy**: Nix-first for all development tools
@@ -224,6 +273,14 @@ playwright pdf https://example.com page.pdf
 ### Productivity Tools
 
 ```bash
+# Ollama - Local LLM Server
+ollama serve                 # Start server (auto-starts at boot)
+ollama pull llama3.2         # Download a model
+ollama run llama3.2          # Run a model interactively
+ollama list                  # List installed models
+ollama ps                    # Show running models
+curl http://localhost:11434/api/tags  # Check API status
+
 # Fast searching
 ag "pattern"         # Silver searcher - faster than grep
 rg "pattern"         # Ripgrep - even faster (already had)
@@ -274,10 +331,10 @@ rsync -av src/ dest/          # Local/network sync with progress
 
 # AI/ML Tools
 gemini                       # Google Gemini CLI for AI-powered workflows
+ollama                       # Local LLM server (auto-starts at boot)
 # Note: Other AI tools can be installed with pip/pipx:
 # pipx install chatblade      # CLI for ChatGPT
 # pipx install litellm        # Multi-LLM CLI
-# brew install ollama         # Local LLM runner (macOS)
 
 # Network Monitoring & Remote Access
 ssh user@host                # SSH remote access
