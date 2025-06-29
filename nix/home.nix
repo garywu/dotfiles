@@ -82,13 +82,26 @@
     gopls        # Go language server
     golangci-lint # Go linter aggregator
     delve        # Go debugger
+    gofumpt      # Stricter gofmt
+    go-tools     # Official Go tools (godoc, goimports, gorename, etc.)
+    gomodifytags # Add/remove struct tags
+    impl         # Generate method stubs for interfaces
+    gotests      # Generate table-driven tests
 
     # Rust development
     rustc
     cargo
+    rustfmt
+    clippy # Rust linter
     rust-analyzer # Rust language server
+    cargo-watch # Watch for changes and run commands
+    cargo-edit # Add/upgrade/remove dependencies from CLI
+    cargo-nextest # Next-generation test runner
 
     protobuf # Protocol Buffer compiler (protoc) for gRPC
+
+    # Build acceleration tools
+    sccache # Shared compilation cache for C/C++/Rust
 
     # Browser automation and testing
     playwright-test # Playwright test runner and CLI

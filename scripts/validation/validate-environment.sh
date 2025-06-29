@@ -133,6 +133,65 @@ check_home_manager() {
   fi
 }
 
+# Function to check Nix daemon status
+check_nix_daemon() {
+  local os_type
+  os_type=$(uname -s)
+
+  if [[ $os_type == "Darwin" ]]; then
+    # macOS: Check if daemon is loaded in launchctl
+    if launchctl list | grep -q "org.nixos.nix-daemon"; then
+      log_success "Nix daemon is loaded and running"
+    else
+      log_error "Nix daemon is not running"
+      log_info "  To start: sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist"
+
+      if [[ ${FIX_MODE:-false} == "true" ]]; then
+        log_info "  Attempting to start Nix daemon (requires sudo)..."
+        if sudo launchctl load /Library/LaunchDaemons/org.nixos.nix-daemon.plist 2>/dev/null; then
+          log_success "  Nix daemon started successfully"
+        else
+          log_error "  Failed to start Nix daemon (may need manual intervention)"
+        fi
+      fi
+    fi
+
+    # Check if daemon plist exists
+    if [[ ! -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist ]]; then
+      log_error "Nix daemon plist file not found - Nix may not be properly installed"
+    fi
+
+  elif [[ $os_type == "Linux" ]]; then
+    # Linux: Check systemd service
+    if systemctl is-active --quiet nix-daemon.service 2>/dev/null; then
+      log_success "Nix daemon is active"
+    else
+      log_error "Nix daemon is not running"
+      log_info "  To start: sudo systemctl start nix-daemon"
+
+      if [[ ${FIX_MODE:-false} == "true" ]]; then
+        log_info "  Attempting to start Nix daemon..."
+        if sudo systemctl start nix-daemon 2>/dev/null; then
+          log_success "  Nix daemon started successfully"
+        else
+          log_error "  Failed to start Nix daemon"
+        fi
+      fi
+    fi
+  fi
+
+  # Test daemon connectivity by trying an actual store operation
+  if nix store ping --store daemon 2>/dev/null; then
+    log_success "Nix daemon is responsive"
+  elif nix --version &>/dev/null; then
+    log_warn "Nix is working but daemon may not be running (single-user mode?)"
+    log_info "  Some operations may fail without the daemon"
+  else
+    log_error "Cannot connect to Nix - installation may be broken"
+    log_info "  Error: $(nix --version 2>&1 | grep -i error || echo 'Unknown error')"
+  fi
+}
+
 # Function to check environment variables
 check_env_vars() {
   for var in "${EXPECTED_ENV_VARS[@]}"; do
@@ -245,6 +304,10 @@ main() {
   # Check Home Manager
   print_section "Home Manager Status"
   check_home_manager
+
+  # Check Nix daemon
+  print_section "Nix Daemon Status"
+  check_nix_daemon
 
   # Check environment variables
   print_section "Environment Variables"

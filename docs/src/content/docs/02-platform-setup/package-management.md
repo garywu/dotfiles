@@ -31,6 +31,9 @@ We use three package managers, each with a **specific, non-overlapping role**:
 - ✅ **Cross-platform** - Works on macOS and Linux
 - ✅ **Isolated** - No conflicts between versions
 - ✅ **Declarative** - Everything defined in `nix/home.nix`
+- ✅ **Secure** - Multi-user daemon mode provides build isolation
+
+**Installation Mode**: We use [multi-user Nix with daemon](./nix-daemon.md) for security and multi-user support.
 
 ### 🖥️ Homebrew (macOS GUI Applications)
 
