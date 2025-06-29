@@ -4,7 +4,7 @@
 # This script validates that multi-version support for Go, Rust, and Node.js
 # is properly configured and working
 
-set -euo pipefail
+set -uo pipefail  # Removed -e for better error handling
 
 # Colors for output
 readonly RED='\033[0;31m'
@@ -90,7 +90,7 @@ test_go_setup() {
   ((total_tests++))
   local test_dir="/tmp/go-version-test-$$"
   mkdir -p "$test_dir"
-  cd "$test_dir"
+  cd "$test_dir" || return 1
 
   cat >go.mod <<'EOF'
 module test
@@ -108,7 +108,7 @@ EOF
     ((tests_passed++))
   fi
 
-  cd - >/dev/null
+  cd - >/dev/null || return 1
   rm -rf "$test_dir"
 
   # Summary
@@ -180,7 +180,7 @@ test_node_setup() {
   ((total_tests++))
   local test_dir="/tmp/node-version-test-$$"
   mkdir -p "$test_dir"
-  cd "$test_dir"
+  cd "$test_dir" || return 1
 
   echo "20.11.0" >.nvmrc
   if fnm use 2>&1 | grep -q "20.11.0"; then
@@ -191,7 +191,7 @@ test_node_setup() {
     ((tests_passed++))
   fi
 
-  cd - >/dev/null
+  cd - >/dev/null || return 1
   rm -rf "$test_dir"
 
   # Summary
@@ -257,7 +257,7 @@ test_rust_setup() {
   ((total_tests++))
   local test_dir="/tmp/rust-version-test-$$"
   mkdir -p "$test_dir"
-  cd "$test_dir"
+  cd "$test_dir" || return 1
 
   cat >rust-toolchain.toml <<'EOF'
 [toolchain]
@@ -269,7 +269,7 @@ EOF
   log_info "See recommendations for oxalica/rust-overlay setup"
   ((tests_passed++))
 
-  cd - >/dev/null
+  cd - >/dev/null || return 1
   rm -rf "$test_dir"
 
   # Summary
@@ -377,19 +377,19 @@ This example demonstrates using fnm for Node.js version management alongside Bun
 ## Setup
 
 1. Install Node.js version from .nvmrc:
-   ```bash
-   fnm install
-   fnm use
-   ```
+    ```bash
+    fnm install
+    fnm use
+    ```
 
 2. Install dependencies:
-   ```bash
-   # Using Bun (faster)
-   bun install
+    ```bash
+    # Using Bun (faster)
+    bun install
 
-   # Or using npm
-   npm install
-   ```
+    # Or using npm
+    npm install
+    ```
 
 ## Testing Different Versions
 

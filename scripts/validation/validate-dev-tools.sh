@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # validate-dev-tools.sh - Validate development tools installation
 
-set -euo pipefail
+set -uo pipefail  # Removed -e for better error handling
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

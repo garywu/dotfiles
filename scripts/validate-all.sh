@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # validate-all.sh - Comprehensive validation of dotfiles architecture
 
-set -euo pipefail
+set -uo pipefail  # Removed -e to prevent abrupt exits
+
+# Ensure we always show summary even on unexpected errors
+trap 'if [[ $? -ne 0 ]] && [[ $? -ne 1 ]]; then echo -e "\n${RED}[ERROR]${NC} Validation script terminated unexpectedly"; fi' EXIT
 
 # Colors for output
 RED='\033[0;31m'

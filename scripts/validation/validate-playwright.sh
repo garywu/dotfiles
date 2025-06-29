@@ -3,7 +3,7 @@
 #
 # This script validates that Playwright is properly installed and functional
 
-set -euo pipefail
+set -uo pipefail  # Removed -e for better error handling
 
 # Colors for output
 readonly RED='\033[0;31m'
@@ -91,7 +91,8 @@ test_browsers() {
   local expected_browsers=("chromium" "firefox" "webkit")
 
   for browser in "${expected_browsers[@]}"; do
-    if [[ -d "$browsers_dir/$browser"* ]] 2>/dev/null; then
+    # Use find to check for browser directories
+    if find "$browsers_dir" -maxdepth 1 -name "$browser*" -type d 2>/dev/null | grep -q .; then
       log_success "$browser is installed"
     else
       log_warning "$browser is not installed"

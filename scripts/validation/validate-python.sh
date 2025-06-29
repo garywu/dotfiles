@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # validate-python.sh - Comprehensive Python multi-version validation
 
-set -euo pipefail
+set -uo pipefail  # Removed -e for better error handling
 
 # Colors for output
 RED='\033[0;31m'
