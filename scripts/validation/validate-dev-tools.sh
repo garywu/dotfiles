@@ -19,8 +19,12 @@ RUST_TOOLS=(
   "clippy"
   "rust-analyzer"
   "cargo-watch"
-  "cargo-edit"
   "cargo-nextest"
+)
+
+# Optional Rust tools
+RUST_TOOLS_OPTIONAL=(
+  "cargo-edit"
 )
 
 # Expected Go tools
@@ -30,7 +34,6 @@ GO_TOOLS=(
   "golangci-lint"
   "dlv"
   "gofumpt"
-  "goimports"
   "gomodifytags"
   "impl"
   "gotests"
@@ -63,9 +66,18 @@ check_rust_tools() {
       if cargo --list 2>/dev/null | grep -q "^[[:space:]]*$subcommand"; then
         log_success "$tool is available as 'cargo $subcommand'"
       else
-        log_error "$tool not found"
-        log_info "  Install with: cargo install $tool"
+        if [[ $tool == "cargo-edit" ]]; then
+          log_warn "$tool not found (optional)"
+          log_info "  Install with: cargo install $tool"
+        else
+          log_error "$tool not found"
+          log_info "  Install with: cargo install $tool"
+        fi
       fi
+    elif [[ $tool == "clippy" ]] && cargo --list 2>/dev/null | grep -q "^[[:space:]]*clippy"; then
+      # Special case for clippy which is a cargo subcommand
+      local version=$(cargo clippy --version 2>/dev/null | cut -d' ' -f2 || echo "unknown")
+      log_success "$tool ($version)"
     elif command_exists "$tool"; then
       local version
       case "$tool" in
@@ -79,7 +91,11 @@ check_rust_tools() {
           version=$(rustfmt --version 2>/dev/null | cut -d' ' -f2 || echo "unknown")
           ;;
         clippy)
-          version=$(cargo clippy --version 2>/dev/null | cut -d' ' -f2 || echo "unknown")
+          if cargo --list 2>/dev/null | grep -q "^[[:space:]]*clippy"; then
+            version=$(cargo clippy --version 2>/dev/null | cut -d' ' -f2 || echo "unknown")
+          else
+            version=""
+          fi
           ;;
         *)
           version="installed"
