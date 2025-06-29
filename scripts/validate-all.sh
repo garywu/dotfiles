@@ -121,6 +121,7 @@ main() {
     run_validation "Python setup" "$validation_dir/validate-python.sh"
     run_validation "Playwright setup" "$validation_dir/validate-playwright.sh"
     run_validation "Multi-version tools" "$validation_dir/validate-multiversion.sh"
+    run_validation "Development tools" "$validation_dir/validate-dev-tools.sh"
   else
     print_status "SKIP" "Extended validations (quick mode)"
   fi
