@@ -53,4 +53,4 @@ repos:
         entry: ./scripts/check-bash-shebang.sh
         language: system
         pass_filenames: false
-        stages: [commit]
+        stages: [pre-commit]
