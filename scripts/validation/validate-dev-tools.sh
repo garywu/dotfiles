@@ -238,12 +238,15 @@ check_node_tools() {
 check_language_servers() {
   print_section "Language Servers (LSP)"
 
+  # Only check for LSPs we actually have installed via Nix
   local lsp_servers=(
     "rust-analyzer:Rust"
     "gopls:Go"
-    "typescript-language-server:TypeScript"
-    "pyright:Python"
   )
+
+  # Optional LSPs (not checked by default)
+  # "typescript-language-server:TypeScript"  # npm install -g typescript-language-server
+  # "pyright:Python"                         # pipx install pyright
 
   for entry in "${lsp_servers[@]}"; do
     local cmd="${entry%%:*}"
