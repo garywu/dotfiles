@@ -24,6 +24,7 @@ cask "gpt4all"                   # Run LLMs locally with GPU support
 
 # Mac-specific tools
 brew "mas"                       # Mac App Store command line interface
+brew "tailscale"                 # Zero-config VPN for secure connectivity
 
 # Tools not easily available in Nix or work better via Homebrew on Mac
 brew "aria2"                     # Lightweight download utility
