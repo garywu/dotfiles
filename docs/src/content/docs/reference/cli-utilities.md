@@ -118,6 +118,13 @@ This page lists all command-line utilities installed through Nix and Homebrew ac
 |---------|-------------|--------|-----------|
 | `gcloud` | Google Cloud SDK | Nix | All |
 
+### Container & Kubernetes Tools
+| Command | Description | Source | Platforms |
+|---------|-------------|--------|-----------|
+| `act` | Run GitHub Actions locally in Docker containers | Nix | All |
+| `dive` | Tool for exploring Docker image layers and reducing image size | Nix | All |
+| `k9s` | Terminal UI for Kubernetes - manage clusters with ease | Nix | All |
+
 ## Security & Quality
 
 ### Security Scanning
@@ -213,6 +220,19 @@ hyperfine "old_command" "new_command"  # Benchmark
 # JSON processing
 curl api.example.com | jq '.data[]'
 echo '{"key": "value"}' | fx  # Interactive exploration
+
+# Container & Kubernetes management
+act                           # Run GitHub Actions locally
+act -l                        # List available workflows
+act push                      # Run push event workflows
+act -W .github/workflows/ci.yml  # Run specific workflow
+
+dive docker-image:tag         # Analyze Docker image layers
+dive --source docker-archive image.tar  # Analyze from tar
+
+k9s                          # Kubernetes CLI dashboard
+k9s --context prod           # Connect to specific context
+k9s --namespace web          # Start in specific namespace
 ```
 
 ## Special Setups

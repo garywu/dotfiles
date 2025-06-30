@@ -167,6 +167,7 @@
     gh # GitHub CLI
     hub # GitHub command-line tool
     glab # GitLab CLI
+    act # Run GitHub Actions locally
     jq # JSON processor
     yq # YAML processor
     htop # Process viewer
@@ -181,6 +182,10 @@
     wget # Network downloader
     curl # Network transfer
     tree # Directory tree
+
+    # Container & Kubernetes Tools
+    dive # Docker image layer explorer
+    k9s # Kubernetes CLI dashboard
 
     # AI/ML Tools
     # ollama is installed via Homebrew on macOS (see bootstrap.sh)

@@ -179,6 +179,14 @@ Last updated: 2025-06-22 21:07:49 UTC
 | libreoffice | unknown | Nix |  |
 | unoconv | unknown | Nix |  |
 
+### Container and Kubernetes Tools
+
+| Package | Installed Version | Source | Description |
+|---------|-------------------|--------|-------------|
+| act | unknown | Nix | Run GitHub Actions locally in Docker containers |
+| dive | unknown | Nix | Tool for exploring Docker image layers |
+| k9s | unknown | Nix | Terminal UI for Kubernetes clusters |
+
 ## Homebrew Packages
 
 ### Casks (GUI Applications)

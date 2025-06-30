@@ -51,6 +51,12 @@ Modern command-line tools that replace traditional Unix utilities with enhanced 
 - **jq** - JSON processor and formatter
 - **fx** - Interactive JSON viewer
 
+## Container & DevOps
+
+- **act** - Run GitHub Actions locally in Docker
+- **dive** - Analyze Docker image layers
+- **k9s** - Terminal UI for Kubernetes clusters
+
 ## Getting Started
 
 See the [Modern CLI Replacements](./modern-replacements/) page for detailed usage examples and comparisons with
@@ -118,6 +124,27 @@ All tools are installed via Home Manager and configured with fish shell aliases 
       command: "hyperfine 'grep pattern file' 'rg pattern file'",
       useCase: "Comparing performance of commands",
       tags: ["performance", "benchmarking", "optimization"]
+    },
+    {
+      name: "act",
+      description: "Run GitHub Actions locally in Docker containers",
+      command: "act push -W .github/workflows/ci.yml",
+      useCase: "Testing CI/CD workflows without pushing",
+      tags: ["ci/cd", "docker", "github", "testing"]
+    },
+    {
+      name: "dive",
+      description: "Tool for exploring Docker image layers",
+      command: "dive nginx:latest",
+      useCase: "Optimizing Docker image size",
+      tags: ["docker", "containers", "optimization", "analysis"]
+    },
+    {
+      name: "k9s",
+      description: "Terminal UI for Kubernetes cluster management",
+      command: "k9s --context production",
+      useCase: "Managing Kubernetes resources interactively",
+      tags: ["kubernetes", "k8s", "devops", "management"]
     }
   ]}
 />

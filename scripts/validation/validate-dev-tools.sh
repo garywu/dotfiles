@@ -55,6 +55,13 @@ NODE_TOOLS=(
   "fnm"
 )
 
+# Expected container & Kubernetes tools
+CONTAINER_TOOLS=(
+  "act"
+  "dive"
+  "k9s"
+)
+
 # Function to check Rust tools
 check_rust_tools() {
   print_section "Rust Development Tools"
@@ -259,6 +266,36 @@ check_language_servers() {
   done
 }
 
+# Function to check container & Kubernetes tools
+check_container_tools() {
+  print_section "Container & Kubernetes Tools"
+
+  for tool in "${CONTAINER_TOOLS[@]}"; do
+    if command_exists "$tool"; then
+      local version
+      case "$tool" in
+        act)
+          version=$(act --version 2>/dev/null | grep -o '[0-9.]*' | head -1 || echo "installed")
+          log_success "$tool ($version)"
+          ;;
+        dive)
+          version=$(dive --version 2>/dev/null | grep -o 'Version: [0-9.]*' | cut -d' ' -f2 || echo "installed")
+          log_success "$tool ($version)"
+          ;;
+        k9s)
+          version=$(k9s version --short 2>/dev/null | grep -o 'Version[[:space:]]*[v0-9.]*' | awk '{print $2}' || echo "installed")
+          log_success "$tool ($version)"
+          ;;
+        *)
+          log_success "$tool"
+          ;;
+      esac
+    else
+      log_error "$tool not found"
+    fi
+  done
+}
+
 # Main validation
 main() {
   print_section "DEVELOPMENT TOOLS VALIDATION"
@@ -268,6 +305,7 @@ main() {
   check_go_tools
   check_build_tools
   check_node_tools
+  check_container_tools
   check_language_servers
 
   # Summary

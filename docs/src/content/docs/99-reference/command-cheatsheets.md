@@ -279,6 +279,18 @@ alias dps='docker ps'
 alias dimg='docker images'
 alias dlogs='docker logs -f'
 alias dexec='docker exec -it'
+
+# Container & Kubernetes Tools
+act                             # Run GitHub Actions locally
+act -l                          # List available workflows
+act push                        # Run push event workflows
+dive nginx:latest               # Analyze Docker image layers
+k9s                            # Terminal UI for Kubernetes
+
+# Advanced container workflows
+alias act-ci='act -W .github/workflows/ci.yml'
+alias dive-local='dive $(docker images -q | head -1)'
+alias k9s-prod='k9s --context production'
 ```
 
 ## 🔄 **System Management**

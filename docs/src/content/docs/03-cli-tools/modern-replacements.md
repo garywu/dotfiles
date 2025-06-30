@@ -437,6 +437,81 @@ xh --download example.com/file.zip
 | top | htop/procs | More efficient |
 | du | dust | 2-5x faster |
 
+## Container & DevOps Tools
+
+### act
+Run GitHub Actions locally
+
+```bash
+# List available workflows
+act -l
+
+# Run push event workflows
+act push
+
+# Run specific workflow
+act -W .github/workflows/ci.yml
+
+# Run with specific event
+act pull_request
+
+# Dry run
+act -n
+
+# Use specific Docker image
+act -P ubuntu-latest=nektos/act-environments-ubuntu:18.04
+```
+
+### dive
+Docker image analyzer
+
+```bash
+# Analyze image layers
+dive nginx:latest
+
+# Analyze local image
+dive myapp:dev
+
+# Build and analyze
+dive build -t myapp .
+
+# Analyze from tar
+dive --source docker-archive image.tar
+
+# CI mode (non-interactive)
+dive --ci nginx:latest
+
+# Show image efficiency score
+dive nginx:latest --highestUserWastedPercent 0.1
+```
+
+### k9s
+Kubernetes terminal UI
+
+```bash
+# Connect to default context
+k9s
+
+# Specific context
+k9s --context production
+
+# Specific namespace
+k9s --namespace web
+
+# Read-only mode
+k9s --readonly
+
+# Custom config
+k9s --kubeconfig ~/custom-config
+
+# Common shortcuts in k9s:
+# :ns     - Switch namespace
+# :ctx    - Switch context
+# :quit   - Exit
+# /       - Search resources
+# ?       - Show help
+```
+
 ### Key Advantages
 
 1. **Better Defaults**: Smart ignore patterns, colors, sensible options
