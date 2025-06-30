@@ -26,6 +26,8 @@ help:
 	@echo "Development:"
 	@echo "  make lint           - Run all linters"
 	@echo "  make format         - Run all formatters"
+	@echo "  make fix           - Fix all auto-fixable issues"
+	@echo "  make pre-commit-fix - Fix common pre-commit issues"
 	@echo "  make pr-ready       - Prepare for pull request"
 	@echo "  make ci-test        - Run CI tests locally"
 	@echo ""
@@ -68,6 +70,11 @@ help:
 # Aliases
 check: lint
 fix: format
+
+# Fix common pre-commit issues
+pre-commit-fix:
+	@echo "🔧 Fixing common pre-commit issues..."
+	@./scripts/pre-commit-fix.sh
 
 # Run all linters
 lint: lint-shell lint-nix lint-yaml lint-markdown lint-toml lint-fish

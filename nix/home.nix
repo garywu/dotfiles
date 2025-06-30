@@ -19,7 +19,7 @@
   home.sessionVariables = {
     PKG_CONFIG_PATH = "$HOME/.nix-profile/lib/pkgconfig";
     # Go toolchain management (1.21+)
-    GOTOOLCHAIN = "auto";  # Enable automatic toolchain switching
+    GOTOOLCHAIN = "auto"; # Enable automatic toolchain switching
     # Rust/Cargo configuration
     CARGO_HOME = "$HOME/.cargo";
     RUSTUP_HOME = "$HOME/.rustup";
@@ -72,21 +72,21 @@
 
     # JavaScript/Node.js development
     # nodejs_20    # Commented out - will use fnm for version management
-    fnm          # Fast Node Manager - for multiple Node.js versions
-    bun          # Fast all-in-one JavaScript runtime & package manager
-    yarn         # Classic Yarn package manager
+    fnm # Fast Node Manager - for multiple Node.js versions
+    bun # Fast all-in-one JavaScript runtime & package manager
+    yarn # Classic Yarn package manager
     nodePackages.pnpm # Fast, disk space efficient package manager
 
     # Go development (with native toolchain management)
-    go           # Latest stable Go with built-in version management (1.21+)
-    gopls        # Go language server
+    go # Latest stable Go with built-in version management (1.21+)
+    gopls # Go language server
     golangci-lint # Go linter aggregator
-    delve        # Go debugger
-    gofumpt      # Stricter gofmt
-    go-tools     # Official Go tools (godoc, goimports, gorename, etc.)
+    delve # Go debugger
+    gofumpt # Stricter gofmt
+    go-tools # Official Go tools (godoc, goimports, gorename, etc.)
     gomodifytags # Add/remove struct tags
-    impl         # Generate method stubs for interfaces
-    gotests      # Generate table-driven tests
+    impl # Generate method stubs for interfaces
+    gotests # Generate table-driven tests
 
     # Rust development
     rustc
@@ -322,6 +322,8 @@
         co = "checkout";
         br = "branch";
         ci = "commit";
+        smart-commit = "!${config.home.homeDirectory}/.dotfiles/scripts/git-smart-commit.sh";
+        sc = "!${config.home.homeDirectory}/.dotfiles/scripts/git-smart-commit.sh";
       };
       extraConfig = {
         init.defaultBranch = "main";

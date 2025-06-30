@@ -8,7 +8,7 @@ schedules:
     minor:
       schedule: "0 9 1-7 * 1"  # First Monday at 9 AM UTC
       description: "Monthly feature release with new functionality"
-      
+
     # Weekly patch releases (every Monday)
     patch:
       schedule: "0 9 * * 1"     # Every Monday at 9 AM UTC
@@ -22,13 +22,13 @@ schedules:
       schedule: "0 2 * * 1-5"   # 2 AM UTC, Monday-Friday
       description: "Daily alpha builds with latest changes"
       branches: ["main", "develop"]
-      
+
     # Weekly beta releases (Fridays)
     beta:
       schedule: "0 14 * * 5"    # 2 PM UTC on Fridays
       description: "Weekly beta releases for testing"
       min_commits: 5            # Only release if 5+ commits since last beta
-      
+
     # Release candidates (manual trigger)
     rc:
       manual_only: true
@@ -43,12 +43,12 @@ version_rules:
       - "^feat!:"
       - "^fix!:"
     require_approval: true      # Require manual approval for major releases
-    
+
   minor:
     patterns:
       - "^feat:"
       - "^feat(.*!):"
-    
+
   patch:
     patterns:
       - "^fix:"
@@ -65,12 +65,12 @@ channels:
     name: "Stable"
     description: "Production-ready releases"
     include_prereleases: false
-    
+
   beta:
     name: "Beta"
     description: "Beta testing channel"
     include_prereleases: ["beta", "rc"]
-    
+
   nightly:
     name: "Nightly"
     description: "Latest development builds"
@@ -82,19 +82,19 @@ changelog:
   sections:
     - title: "🚀 Features"
       labels: ["feature", "enhancement"]
-      
+
     - title: "🐛 Bug Fixes"
       labels: ["bug", "fix"]
-      
+
     - title: "📚 Documentation"
       labels: ["documentation", "docs"]
-      
+
     - title: "🔧 Maintenance"
       labels: ["chore", "maintenance"]
-      
+
     - title: "⚡ Performance"
       labels: ["performance"]
-      
+
     - title: "🔒 Security"
       labels: ["security"]
 
@@ -102,15 +102,15 @@ changelog:
 auto_labels:
   - pattern: "^feat"
     labels: ["feature"]
-    
+
   - pattern: "^fix"
     labels: ["bug"]
-    
+
   - pattern: "^docs"
     labels: ["documentation"]
-    
+
   - pattern: "^chore"
     labels: ["chore"]
-    
+
   - pattern: "BREAKING CHANGE"
     labels: ["breaking-change", "major"]
