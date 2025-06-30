@@ -1,0 +1,123 @@
+{
+  "core": [
+    "git",
+    "7zip",
+    "aria2",
+    "dark"
+  ],
+  "development": [
+    "python",
+    "nodejs-lts",
+    "go",
+    "rust",
+    "fnm",
+    "bun",
+    "yarn",
+    "pnpm"
+  ],
+  "shell_tools": [
+    "starship",
+    "eza",
+    "bat",
+    "fd",
+    "ripgrep",
+    "tldr",
+    "fzf",
+    "zoxide",
+    "delta",
+    "glow",
+    "btop",
+    "dust",
+    "duf",
+    "procs",
+    "lsd",
+    "tokei",
+    "hyperfine",
+    "watchexec",
+    "sd",
+    "choose",
+    "gron",
+    "jless",
+    "hexyl"
+  ],
+  "git_tools": [
+    "gh",
+    "hub",
+    "glab",
+    "lazygit",
+    "git-cliff",
+    "tig",
+    "gitui",
+    "gitleaks"
+  ],
+  "cloud_tools": [
+    "aws",
+    "gcloud",
+    "cloudflared"
+  ],
+  "developer_tools": [
+    "jq",
+    "yq",
+    "mkcert",
+    "httpie",
+    "wget",
+    "curl",
+    "tree",
+    "ncdu",
+    "neovim",
+    "direnv",
+    "chezmoi",
+    "act",
+    "dive",
+    "k9s",
+    "protobuf",
+    "sccache"
+  ],
+  "network_tools": [
+    "openssh",
+    "yt-dlp",
+    "mosh",
+    "rsync",
+    "rclone"
+  ],
+  "multimedia": [
+    "imagemagick",
+    "ffmpeg",
+    "pandoc",
+    "tesseract",
+    "ghostscript",
+    "lame"
+  ],
+  "security_tools": [
+    "sops",
+    "age",
+    "trivy",
+    "hadolint"
+  ],
+  "linting_tools": [
+    "shellcheck",
+    "shfmt",
+    "yamllint",
+    "markdownlint",
+    "taplo",
+    "pre-commit"
+  ],
+  "system_monitoring": [
+    "htop",
+    "bottom",
+    "procs",
+    "duf"
+  ],
+  "file_managers": [
+    "broot",
+    "vifm"
+  ],
+  "interactive_tools": [
+    "gum"
+  ],
+  "extras": [
+    "pipx",
+    "fswatch",
+    "borgbackup"
+  ]
+}

@@ -72,6 +72,8 @@ See [Issue #24](https://github.com/garywu/dotfiles/issues/24) for migration deta
 
 ## 🚀 Quick Start
 
+### macOS / Linux / WSL
+
 ```bash
 git clone https://github.com/garywu/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
@@ -80,14 +82,29 @@ cd ~/.dotfiles
 
 - After each major step, restart your terminal and re-run `./bootstrap.sh` if prompted.
 
+### Native Windows (No WSL)
+
+```powershell
+git clone https://github.com/garywu/dotfiles.git $HOME\.dotfiles
+cd $HOME\.dotfiles\windows
+.\bootstrap.ps1
+```
+
+- See [windows/README.md](windows/README.md) for the native Windows development environment.
+
 ## 📁 Project Structure
 
 ```text
 ~/.dotfiles/
-├── bootstrap.sh      # Main installation script
+├── bootstrap.sh      # Main installation script (Unix)
 ├── unbootstrap.sh    # Complete removal script
+├── nix/              # Nix package declarations
 ├── chezmoi/          # Chezmoi-managed files (secrets/meta only)
 ├── brew/             # Homebrew packages (macOS GUI apps)
+├── windows/          # Native Windows environment
+│   ├── bootstrap.ps1 # Windows installation script
+│   ├── packages/     # Scoop package manifests
+│   └── powershell/   # PowerShell configuration
 ├── logs/             # Bootstrap execution logs
 └── README.md         # This file
 ```
@@ -120,7 +137,7 @@ See [`tests/docs/README.md`](tests/docs/README.md) for comprehensive testing doc
 
 ### Core Features
 - **Zero-Config Setup**: One command to configure your entire development environment
-- **Cross-Platform**: Works on macOS, Linux, and Windows WSL
+- **Cross-Platform**: Works on macOS, Linux, Windows WSL, and native Windows
 - **Declarative Configuration**: All settings in version-controlled Nix files
 - **Automated Updates**: Keep all tools current with simple commands
 - **Safe Rollbacks**: Revert to any previous configuration instantly
