@@ -93,6 +93,38 @@ jobs:
           # Run environment validation
           ./scripts/validation/validate-environment.sh
 
+      - name: Run Development Tools Validation
+        run: |
+          echo "=== Running Development Tools Validation ==="
+
+          # Run dev tools validation (Rust, Go, Node.js, Container tools)
+          ./scripts/validation/validate-dev-tools.sh || true
+
+      - name: Run Multi-Version Tools Validation
+        run: |
+          echo "=== Running Multi-Version Tools Validation ==="
+
+          # Run multi-version validation (fnm, Go toolchain, etc.)
+          ./scripts/validation/validate-multiversion.sh || true
+
+      - name: Run Python Validation
+        run: |
+          echo "=== Running Python Validation ==="
+
+          # Run Python setup validation
+          ./scripts/validation/validate-python.sh || true
+
+      - name: Run Documentation Validation
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          echo "=== Running Documentation Validation ==="
+
+          # Run documentation coverage validation
+          ./scripts/validation/validate-docs.sh || true
+
+          # Generate coverage report
+          ./scripts/validation/doc-coverage-report.sh || true
+
       - name: Test Python Multi-Version Setup
         run: |
           echo "=== Testing Python Multi-Version Setup ==="
